@@ -1,0 +1,40 @@
+# IDEs and OS files
+.idea/
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environments
+venv/
+env/
+.env
+
+# User Uploaded Media files
+online_auction/media/
+
+# Databases and Database Dumps (Sensitive Info)
+*.sqlite3
+online_auction/auctionss.sql
+
+# Sensitive JSON Data (Users, Sessions, Conversation Histories)
+online_auction/core/users.json
+online_auction/core/sessions.json
+online_auction/core/conversation_history.json
+online_auction/core/answered_questions.json
+online_auction/core/new_questions.json
+
+# Machine Learning Models and Artifacts (Large Files)
+online_auction/core/chatbot_bert_model/
+online_auction/core/chatbot_t5_model/
+online_auction/core/nltk_data/
+online_auction/core/*.pkl
+
+# Important Configurations containing Passwords / Keys
+# NOTE: settings.py contains the Django SECRET_KEY, MySQL Root passwords, and SMTP email passwords!
+# You should transition these to a .env file and commit a settings.py template, but for now ignoring it to secure your keys.
+online_auction/online_auction/settings.py
+
+# Logs
+*.log

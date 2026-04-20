@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Auction | AuctionPro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+        }
+
+        body {
+            background-color: #f5f8fa;
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--primary) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            font-size: 1.5rem;
+        }
+
+        .navbar-nav .nav-link {
+            color: rgba(255,255,255,0.85) !important;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 0.8rem 1rem;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: white !important;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+
+        .container {
+            max-width: 1000px;
+            padding: 1.5rem;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .form-header {
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h1 {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        label {
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #ddd;
+            padding: 0.7rem;
+            border-radius: 6px;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.2);
+        }
+
+        .auction-type-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .auction-type-card {
+            flex: 1;
+            min-width: 240px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .auction-type-card:hover {
+            border-color: #ddd;
+            background-color: #f9f9f9;
+        }
+
+        .auction-type-card.selected {
+            border-color: var(--secondary);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .auction-type-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: #f1f1f1;
+            border-color: #ccc;
+        }
+
+        .auction-type-card.disabled:hover {
+            background-color: #f1f1f1;
+            border-color: #ccc;
+        }
+
+        .auction-type-card i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .auction-type-card h5 {
+            font-weight: 600;
+        }
+
+        .auction-type-card p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .form-section {
+            padding: 1.5rem;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            background-color: #fcfcfc;
+        }
+
+        .form-section-title {
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-section-title i {
+            margin-right: 0.5rem;
+            color: var(--secondary);
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary);
+            border: none;
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .image-preview-item {
+            width: 100px;
+            height: 100px;
+            border-radius: 6px;
+            background-color: #f3f3f3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #ccc;
+            position: relative;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .file-input-wrapper:hover .file-input-btn {
+            background-color: #e9ecef;
+        }
+
+        .tooltip-icon {
+            color: #999;
+            font-size: 0.9rem;
+            margin-left: 0.4rem;
+            cursor: help;
+        }
+
+        .lock-message {
+            text-align: center;
+            color: var(--accent);
+            font-weight: 500;
+            padding: 1rem;
+            background-color: #ffebee;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .auction-type-card {
+                min-width: 100%;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-gavel me-2"></i>AuctionPro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'auct_list' %}">
+                            <i class="fas fa-list me-1"></i> Auctions
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'udash' %}">
+                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profman' %}">
+                            <i class="fas fa-user-circle me-1"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt me-1"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <h1><i class="fas fa-plus-circle me-2"></i>Create Auction</h1>
+                <p class="text-muted">List your item and start receiving bids</p>
+            </div>
+
+            {% if locked %}
+                <div class="lock-message">
+                    You have reached the limit of one auction as a non-premium user. Please <a href="{% url 'upgrade' %}">go premium</a> to create more auctions or sealed bid auctions.
+                </div>
+            {% else %}
+                <form method="POST" enctype="multipart/form-data" action="{% url 'create_auction' %}" id="auctionForm">
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <label class="form-label">Select Auction Type:</label>
+                        <div class="auction-type-selector">
+                            <div class="auction-type-card {% if not premium and user_auction_count >= 1 %}disabled{% endif %}" id="regular-card" onclick="selectAuctionType('regular', this)">
+                                <i class="fas fa-gavel"></i>
+                                <h5>Regular Auction</h5>
+                                <p>Multiple bidders compete with increasing bids</p>
+                                <input type="radio" id="regular" name="auction_type" value="regular" class="d-none" {% if not premium and user_auction_count >= 1 %}disabled{% endif %} required>
+                            </div>
+                            <div class="auction-type-card {% if not premium and user_auction_count >= 1 %}disabled{% endif %}" id="buy_it_now-card" onclick="selectAuctionType('buy_it_now', this)">
+                                <i class="fas fa-shopping-cart"></i>
+                                <h5>Buy It Now</h5>
+                                <p>Fixed price with instant purchase option</p>
+                                <input type="radio" id="buy_it_now" name="auction_type" value="buy_it_now" class="d-none" {% if not premium and user_auction_count >= 1 %}disabled{% endif %} required>
+                            </div>
+                            <div class="auction-type-card {% if not premium %}disabled{% endif %}" id="sealed_bid-card" onclick="selectAuctionType('sealed_bid', this)">
+                                <i class="fas fa-lock"></i>
+                                <h5>Sealed Auction</h5>
+                                <p>Hidden bids with winner revealed at end</p>
+                                <input type="radio" id="sealed_bid" name="auction_type" value="sealed_bid" class="d-none" {% if not premium %}disabled{% endif %} required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4 class="form-section-title"><i class="fas fa-info-circle"></i> Item Details</h4>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                                <input type="text" id="title" name="title" class="form-control" placeholder="Enter a descriptive title for your item" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                            <textarea id="description" name="description" class="form-control" rows="4" placeholder="Provide detailed information about your item" required></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
+                                <select id="category" name="category" class="form-select" required>
+                                    <option value="" disabled selected>Select a category</option>
+                                    <option value="electronics">Electronics</option>
+                                    <option value="fashion">Fashion</option>
+                                    <option value="home_appliances">Home Appliances</option>
+                                    <option value="books">Books</option>
+                                    <option value="toys">Toys</option>
+                                    <option value="automobiles">Automobiles</option>
+                                    <option value="sports">Sports</option>
+                                    <option value="antiques">Antiques</option>
+                                    <option value="art">Art</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="item_condition" class="form-label">Condition <span class="text-danger">*</span></label>
+                                <select id="item_condition" name="item_condition" class="form-select" required>
+                                    <option value="" disabled selected>Select condition</option>
+                                    <option value="new">New</option>
+                                    <option value="like_new">Like New</option>
+                                    <option value="used_good">Used - Good</option>
+                                    <option value="used_fair">Used - Fair</option>
+                                    <option value="for_parts">For Parts or Not Working</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="condition_description" class="form-label">Condition Description <span class="text-danger">*</span></label>
+                            <textarea id="condition_description" name="condition_description" class="form-control" rows="3" placeholder="Provide details about the item's condition, any flaws or special features" required></textarea>
+                        </div>
+                    </div>
+
+                    <div id="regular-fields" class="form-section hide">
+                        <h4 class="form-section-title"><i class="fas fa-gavel"></i> Regular Auction Settings</h4>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="starting_price" class="form-label">Starting Price <span class="text-danger">*</span>
+                                    <i class="fas fa-question-circle tooltip-icon" data-bs-toggle="tooltip" title="The initial bid price"></i>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" step="0.01" min="0.01" id="starting_price" name="starting_price" class="form-control" placeholder="0.00">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="reserve_price" class="form-label">Reserve Price
+                                    <i class="fas fa-question-circle tooltip-icon" data-bs-toggle="tooltip" title="Minimum price you're willing to accept"></i>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" step="0.01" min="0" id="reserve_price" name="reserve_price" class="form-control" placeholder="0.00">
+                                </div>
+                                <div class="form-text">Optional. Item won't sell unless bids reach this amount.</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bid_increment" class="form-label">Bid Increment <span class="text-danger">*</span>
+                                <i class="fas fa-question-circle tooltip-icon" data-bs-toggle="tooltip" title="Minimum amount by which a bid must exceed the current highest bid"></i>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" step="0.01" min="0.01" id="bid_increment" name="bid_increment" class="form-control" value="1.00">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="regular_images" class="form-label">Upload Images <span class="text-danger">*</span></label>
+                            <div class="file-input-wrapper">
+                                <div class="file-input-btn">
+                                    <i class="fas fa-cloud-upload-alt me-2"></i> Choose Files
+                                </div>
+                                <input type="file" id="regular_images" name="regular_images" accept="image/*" multiple onchange="previewImages(this, 'regular-image-preview')">
+                            </div>
+                            <div class="form-text">Upload clear images of your item (max 5 images, 5MB each)</div>
+                            <div id="regular-image-preview" class="image-preview"></div>
+                        </div>
+                    </div>
+
+                    <div id="buy-it-now-fields" class="form-section hide">
+                        <h4 class="form-section-title"><i class="fas fa-shopping-cart"></i> Buy It Now Settings</h4>
+                        <div class="mb-3">
+                            <label for="buy_it_now_price" class="form-label">Buy It Now Price <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" step="0.01" min="0.01" id="buy_it_now_price" name="buy_it_now_price" class="form-control" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" id="is_make_offer_enabled" name="is_make_offer_enabled" class="form-check-input">
+                            <label for="is_make_offer_enabled" class="form-check-label">Enable "Make Offer" option
+                                <i class="fas fa-question-circle tooltip-icon" data-bs-toggle="tooltip" title="Allow buyers to make offers below your asking price"></i>
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="buy_it_now_images" class="form-label">Upload Images <span class="text-danger">*</span></label>
+                            <div class="file-input-wrapper">
+                                <div class="file-input-btn">
+                                    <i class="fas fa-cloud-upload-alt me-2"></i> Choose Files
+                                </div>
+                                <input type="file" id="buy_it_now_images" name="buy_it_now_images" accept="image/*" multiple onchange="previewImages(this, 'buy-now-image-preview')">
+                            </div>
+                            <div class="form-text">Upload clear images of your item (max 5 images, 5MB each)</div>
+                            <div id="buy-now-image-preview" class="image-preview"></div>
+                        </div>
+                    </div>
+
+                    <div id="sealed_bid_fields" class="form-section hide">
+                        <h4 class="form-section-title"><i class="fas fa-lock"></i> Sealed Auction Settings</h4>
+                        <div class="mb-3">
+                            <label for="sealed_reserve_price" class="form-label">Reserve Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" step="0.01" min="0" id="sealed_reserve_price" name="sealed_reserve_price" placeholder="0.00" class="form-control">
+                            </div>
+                            <div class="form-text">Optional. Item won't sell unless highest bid reaches this amount.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="winner_selection_date" class="form-label">Winner Selection Date <span class="text-danger">*</span></label>
+                            <input type="datetime-local" id="winner_selection_date" name="winner_selection_date" class="form-control">
+                            <div class="form-text">Date when you'll review all bids and select a winner</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sealed_bid_images" class="form-label">Upload Images <span class="text-danger">*</span></label>
+                            <div class="file-input-wrapper">
+                                <div class="file-input-btn">
+                                    <i class="fas fa-cloud-upload-alt me-2"></i> Choose Files
+                                </div>
+                                <input type="file" id="sealed_bid_images" name="sealed_bid_images" accept="image/*" multiple onchange="previewImages(this, 'sealed-image-preview')">
+                            </div>
+                            <div class="form-text">Upload clear images of your item (max 5 images, 5MB each)</div>
+                            <div id="sealed-image-preview" class="image-preview"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4 class="form-section-title"><i class="fas fa-calendar-alt"></i> Auction Schedule</h4>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="start_date" class="form-label">Start Date and Time <span class="text-danger">*</span></label>
+                                <input type="datetime-local" id="start_date" name="start_date" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="end_date" class="form-label">End Date and Time <span class="text-danger">*</span></label>
+                                <input type="datetime-local" id="end_date" name="end_date" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100" id="createAuctionBtn">
+                        <i class="fas fa-check-circle me-2"></i>Create Auction
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 AuctionPro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Automatically select the first available auction type
+            const availableTypes = ['regular', 'buy_it_now', 'sealed_bid'];
+            const firstAvailableType = availableTypes.find(type => {
+                const card = document.getElementById(`${type}-card`);
+                return !card.classList.contains('disabled');
+            });
+
+            if (firstAvailableType) {
+                selectAuctionType(firstAvailableType, document.getElementById(`${firstAvailableType}-card`));
+            }
+
+            // Form submission handler
+            const form = document.getElementById('auctionForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const selectedAuctionType = document.querySelector('input[name="auction_type"]:checked')?.value;
+                    const startDateInput = document.getElementById('start_date').value;
+                    const endDateInput = document.getElementById('end_date').value;
+                    const winnerSelectionDateInput = document.getElementById('winner_selection_date').value;
+
+                    // Validate auction type
+                    if (!selectedAuctionType) {
+                        alert('Please select an auction type.');
+                        return;
+                    }
+
+                    // Validate dates
+                    const now = new Date();
+                    const startDate = startDateInput ? new Date(startDateInput) : null;
+                    const endDate = endDateInput ? new Date(endDateInput) : null;
+                    const winnerSelectionDate = winnerSelectionDateInput ? new Date(winnerSelectionDateInput) : null;
+
+                    if (!startDate || !endDate) {
+                        alert('Please fill in both start and end dates.');
+                        return;
+                    }
+
+                    if (startDate <= now) {
+                        alert('Start date must be in the future.');
+                        return;
+                    }
+
+                    if (endDate <= startDate) {
+                        alert('End date must be after start date.');
+                        return;
+                    }
+
+                    // Validate auction type-specific fields
+                    if (selectedAuctionType === 'regular') {
+                        const startingPrice = document.getElementById('starting_price').value;
+                        const bidIncrement = document.getElementById('bid_increment').value;
+                        const regularImages = document.getElementById('regular_images').files.length;
+                        if (!startingPrice) {
+                            alert('Starting price is required for Regular Auction.');
+                            return;
+                        }
+                        if (!bidIncrement) {
+                            alert('Bid increment is required for Regular Auction.');
+                            return;
+                        }
+                        if (!regularImages) {
+                            alert('At least one image is required for Regular Auction.');
+                            return;
+                        }
+                    } else if (selectedAuctionType === 'buy_it_now') {
+                        const buyItNowPrice = document.getElementById('buy_it_now_price').value;
+                        const buyItNowImages = document.getElementById('buy_it_now_images').files.length;
+                        if (!buyItNowPrice) {
+                            alert('Buy It Now price is required.');
+                            return;
+                        }
+                        if (!buyItNowImages) {
+                            alert('At least one image is required for Buy It Now Auction.');
+                            return;
+                        }
+                    } else if (selectedAuctionType === 'sealed_bid') {
+                        if (!winnerSelectionDate) {
+                            alert('Winner selection date is required for Sealed Auction.');
+                            return;
+                        }
+                        if (winnerSelectionDate <= now) {
+                            alert('Winner selection date must be in the future.');
+                            return;
+                        }
+                        if (winnerSelectionDate <= endDate) {
+                            alert('Winner selection date must be after the end date for Sealed Auction.');
+                            return;
+                        }
+                        const sealedBidImages = document.getElementById('sealed_bid_images').files.length;
+                        if (!sealedBidImages) {
+                            alert('At least one image is required for Sealed Bid Auction.');
+                            return;
+                        }
+                    }
+
+                    // If all validations pass, submit the form
+                    console.log('Form submission validated successfully');
+                    form.submit();
+                });
+            }
+        });
+
+        function selectAuctionType(type, card) {
+            if (card.classList.contains('disabled')) {
+                console.log(`Auction type ${type} is disabled`);
+                return;
+            }
+
+            // Hide all form sections
+            const regularFields = document.getElementById('regular-fields');
+            const sealedBidFields = document.getElementById('sealed_bid_fields');
+            const buyItNowFields = document.getElementById('buy-it-now-fields');
+
+            regularFields.classList.add('hide');
+            sealedBidFields.classList.add('hide');
+            buyItNowFields.classList.add('hide');
+
+            // Remove selected class from all cards
+            document.querySelectorAll('.auction-type-card').forEach(c => c.classList.remove('selected'));
+
+            // Select the clicked radio and card
+            const radio = document.getElementById(type);
+            if (radio && !radio.disabled) {
+                radio.checked = true;
+                card.classList.add('selected');
+
+                // Show the corresponding form section and set required fields
+                if (type === 'regular') {
+                    regularFields.classList.remove('hide');
+                    document.getElementById('starting_price').setAttribute('required', 'required');
+                    document.getElementById('bid_increment').setAttribute('required', 'required');
+                    document.getElementById('regular_images').setAttribute('required', 'required');
+                    document.getElementById('buy_it_now_price').removeAttribute('required');
+                    document.getElementById('buy_it_now_images').removeAttribute('required');
+                    document.getElementById('winner_selection_date').removeAttribute('required');
+                    document.getElementById('sealed_bid_images').removeAttribute('required');
+                } else if (type === 'buy_it_now') {
+                    buyItNowFields.classList.remove('hide');
+                    document.getElementById('buy_it_now_price').setAttribute('required', 'required');
+                    document.getElementById('buy_it_now_images').setAttribute('required', 'required');
+                    document.getElementById('starting_price').removeAttribute('required');
+                    document.getElementById('bid_increment').removeAttribute('required');
+                    document.getElementById('regular_images').removeAttribute('required');
+                    document.getElementById('winner_selection_date').removeAttribute('required');
+                    document.getElementById('sealed_bid_images').removeAttribute('required');
+                } else if (type === 'sealed_bid') {
+                    sealedBidFields.classList.remove('hide');
+                    document.getElementById('winner_selection_date').setAttribute('required', 'required');
+                    document.getElementById('sealed_bid_images').setAttribute('required', 'required');
+                    document.getElementById('starting_price').removeAttribute('required');
+                    document.getElementById('bid_increment').removeAttribute('required');
+                    document.getElementById('regular_images').removeAttribute('required');
+                    document.getElementById('buy_it_now_price').removeAttribute('required');
+                    document.getElementById('buy_it_now_images').removeAttribute('required');
+                }
+            } else {
+                console.log(`Radio for ${type} is disabled or not found`);
+            }
+        }
+
+        function previewImages(input, previewId) {
+            const preview = document.getElementById(previewId);
+            preview.innerHTML = '';
+
+            if (input.files) {
+                const fileCount = Math.min(input.files.length, 5);
+
+                for (let i = 0; i < fileCount; i++) {
+                    const reader = new FileReader();
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'image-preview-item';
+
+                    reader.onload = function(e) {
+                        imageContainer.style.backgroundImage = `url(${e.target.result})`;
+                        imageContainer.style.backgroundSize = 'cover';
+                        imageContainer.style.backgroundPosition = 'center';
+                        imageContainer.innerHTML = '';
+                    };
+
+                    reader.readAsDataURL(input.files[i]);
+                    preview.appendChild(imageContainer);
+                }
+
+                if (input.files.length > 5) {
+                    const infoElement = document.createElement('div');
+                    infoElement.textContent = `Note: Only the first 5 of ${input.files.length} selected images will be uploaded`;
+                    infoElement.className = 'mt-2 text-danger';
+                    preview.appendChild(infoElement);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

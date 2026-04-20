@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Second Winner Offer Payment</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .form-control {
+            transition: all 0.2s;
+        }
+        .form-control:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .form-control.error {
+            border-color: #ef4444;
+        }
+        .form-control.valid {
+            border-color: #10b981;
+        }
+        .payment-option {
+            transition: all 0.2s;
+        }
+        .payment-option.active {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .submit-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-t-xl p-6 text-center">
+            <h1 class="text-2xl md:text-3xl font-bold">Second Winner Offer Payment</h1>
+            <p class="mt-2 text-sm md:text-base">Complete your purchase for {{ item.title }}</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="bg-white rounded-b-xl shadow-lg overflow-hidden">
+            <!-- Auction Details -->
+            <div class="flex flex-col md:flex-row p-6 border-b border-gray-200">
+                {% if item.image_url and item.image_url != '/static/images/fallback.png' %}
+                <div class="md:w-1/3 mb-4 md:mb-0 md:mr-6">
+                    <img src="{{ item.image_url }}" alt="{{ item.title }}" class="w-full rounded-lg shadow-sm" onerror="this.src='/static/images/fallback.png'">
+                </div>
+                {% endif %}
+                <div class="flex-1">
+                    <h2 class="text-xl font-semibold text-gray-800">{{ item.title }}</h2>
+                    <p class="mt-2 text-gray-600"><strong>Description:</strong> {{ item.description }}</p>
+                    <p class="mt-2 text-gray-600"><strong>Condition:</strong> {{ item.condition }} - {{ item.condition_description }}</p>
+                    <p class="mt-2 text-gray-600"><strong>Category:</strong> {{ item.category }}</p>
+                </div>
+            </div>
+
+            <!-- Price Info -->
+            <div class="bg-gray-50 p-6 border-b border-gray-200">
+                <p class="text-gray-700"><strong>Offer Price:</strong> ₹{{ item.price|floatformat:2 }}</p>
+                <p class="text-gray-700"><strong>Tax (1%):</strong> ₹{{ item.tax|floatformat:2 }}</p>
+                <p class="text-2xl font-bold text-blue-600"><strong>Total Amount:</strong> ₹{{ item.total_amount|floatformat:2 }}</p>
+            </div>
+
+            <!-- Payment Form -->
+            <form method="post" action="{% url 'offer_checkout' item.offer_id %}" class="p-6">
+                {% csrf_token %}
+                <!-- Shipping Details -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Shipping Details</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="full_name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <input type="text" id="full_name" name="full_name" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="John Doe" required>
+                            <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid full name (letters only, at least 2 characters).</span>
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                            <input type="text" id="phone" name="phone" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="+91 1234567890" required>
+                            <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid phone number (e.g., +91 followed by 10 digits).</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+                        <input type="text" id="address" name="address" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="123 Main St, Apt 4B" required>
+                        <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid address (at least 5 characters).</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                        <div>
+                            <label for="city" class="block text-sm font-medium text-gray-700">City</label>
+                            <input type="text" id="city" name="city" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="Mumbai" required>
+                            <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid city name (letters only).</span>
+                        </div>
+                        <div>
+                            <label for="state" class="block text-sm font-medium text-gray-700">State</label>
+                            <input type="text" id="state" name="state" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="Maharashtra" required>
+                            <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid state name (letters only).</span>
+                        </div>
+                        <div>
+                            <label for="zip" class="block text-sm font-medium text-gray-700">ZIP Code</label>
+                            <input type="text" id="zip" name="zip" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="400001" required>
+                            <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid ZIP code (5-6 digits).</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
+                        <input type="text" id="country" name="country" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="India" required>
+                        <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid country name (letters only).</span>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Select Payment Method</h2>
+                    <div class="space-y-4">
+                        <!-- Credit Card -->
+                        <div class="payment-option border rounded-lg p-4 bg-white">
+                            <div class="flex items-center mb-3">
+                                <input type="radio" id="credit_card" name="payment_method" value="credit_card" class="h-4 w-4 text-blue-600" required>
+                                <label for="credit_card" class="ml-2 text-sm font-medium text-gray-700">Credit Card</label>
+                            </div>
+                            <div class="payment-fields hidden">
+                                <div class="mb-4">
+                                    <label for="card_number" class="block text-sm font-medium text-gray-700">Card Number</label>
+                                    <input type="text" id="card_number" name="card_number" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="1234 5678 9012 3456">
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid 16-digit card number.</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="expiry_date" class="block text-sm font-medium text-gray-700">Expiry Date</label>
+                                        <input type="text" id="expiry_date" name="expiry_date" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="MM/YY">
+                                        <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid expiry date (MM/YY).</span>
+                                    </div>
+                                    <div>
+                                        <label for="cvv" class="block text-sm font-medium text-gray-700">CVV</label>
+                                        <input type="text" id="cvv" name="cvv" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="123">
+                                        <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid 3-4 digit CVV.</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <label for="card_holder" class="block text-sm font-medium text-gray-700">Cardholder Name</label>
+                                    <input type="text" id="card_holder" name="card_holder" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="John Doe">
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid cardholder name (letters only).</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- PayPal -->
+                        <div class="payment-option border rounded-lg p-4 bg-white">
+                            <div class="flex items-center mb-3">
+                                <input type="radio" id="paypal" name="payment_method" value="paypal" class="h-4 w-4 text-blue-600">
+                                <label for="paypal" class="ml-2 text-sm font-medium text-gray-700">PayPal</label>
+                            </div>
+                            <div class="payment-fields hidden">
+                                <div>
+                                    <label for="paypal_email" class="block text-sm font-medium text-gray-700">PayPal Email</label>
+                                    <input type="email" id="paypal_email" name="paypal_email" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="email@example.com">
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid email address.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Bank Transfer -->
+                        <div class="payment-option border rounded-lg p-4 bg-white">
+                            <div class="flex items-center mb-3">
+                                <input type="radio" id="bank_transfer" name="payment_method" value="bank_transfer" class="h-4 w-4 text-blue-600">
+                                <label for="bank_transfer" class="ml-2 text-sm font-medium text-gray-700">Bank Transfer</label>
+                            </div>
+                            <div class="payment-fields hidden">
+                                <div class="mb-4">
+                                    <label for="iban" class="block text-sm font-medium text-gray-700">IBAN</label>
+                                    <input type="text" id="iban" name="iban" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="DE89 3704 0044 0532 0130 00">
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid IBAN (15-34 alphanumeric characters).</span>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="bic" class="block text-sm font-medium text-gray-700">BIC / SWIFT</label>
+                                    <input type="text" id="bic" name="bic" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="COBADEFFXXX">
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid BIC/SWIFT code (8-11 characters).</span>
+                                </div>
+                                <div>
+                                    <label for="account_holder" class="block text-sm font-medium text-gray-700">Account Holder</label>
+                                    <input type="text" id="account_holder" name="account_holder" class="form-control mt-1 w-full p-3 border rounded-lg" placeholder="John Doe">
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden">Please enter a valid account holder name (letters only).</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="payment-error text-red-500 text-sm mt-2 hidden" id="payment-method-error">Please select a payment method.</div>
+                </div>
+
+                <button type="submit" class="submit-btn w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 disabled:bg-gray-400" disabled>Complete Payment</button>
+                <div class="mt-4">
+                    <a href="{% url 'udash' %}" class="w-full bg-gray-400 hover:bg-gray-500 text-white font-semibold py-3 rounded-lg text-center transition duration-200">Go Back to Home</a>
+                </div>
+            </form>
+
+            <!-- Messages -->
+            {% if messages %}
+            <div class="p-6 border-t border-gray-200">
+                {% for message in messages %}
+                    <p class="{% if message.tags == 'success' %}text-green-600{% else %}text-red-600{% endif %} font-semibold">{{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const submitBtn = document.querySelector('.submit-btn');
+            const paymentOptions = document.querySelectorAll('.payment-option');
+            const radioButtons = document.querySelectorAll('input[name="payment_method"]');
+            const paymentError = document.getElementById('payment-method-error');
+
+            // Validation patterns
+            const patterns = {
+                full_name: /^[A-Za-z\s]{2,}$/,
+                phone: /^\+\d{1,3}\s?\d{6,14}$/,
+                address: /^.{5,}$/,
+                city: /^[A-Za-z\s-]{2,}$/,
+                state: /^[A-Za-z\s-]{2,}$/,
+                zip: /^\d{5,6}$/,
+                country: /^[A-Za-z\s-]{2,}$/,
+                card_number: /^\d{16}$/,
+                expiry_date: /^(0[1-9]|1[0-2])\/\d{2}$/,
+                cvv: /^\d{3,4}$/,
+                card_holder: /^[A-Za-z\s]{2,}$/,
+                paypal_email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                iban: /^[A-Z]{2}\d{2}[A-Z0-9]{11,30}$/,
+                bic: /^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/,
+                account_holder: /^[A-Za-z\s]{2,}$/
+            };
+
+            const alphaOnlyFields = ['full_name', 'city', 'state', 'country', 'card_holder', 'account_holder'];
+
+            function validateField(input) {
+                const fieldName = input.id;
+                const value = input.value.trim();
+                const formGroup = input.closest('div');
+                const errorMessage = formGroup.querySelector('.error-message');
+
+                if (input.hasAttribute('required') && !value) {
+                    input.classList.remove('valid');
+                    input.classList.add('error');
+                    errorMessage.classList.remove('hidden');
+                    return false;
+                }
+
+                if (patterns[fieldName] && !patterns[fieldName].test(value)) {
+                    input.classList.remove('valid');
+                    input.classList.add('error');
+                    errorMessage.classList.remove('hidden');
+                    return false;
+                }
+
+                input.classList.remove('error');
+                input.classList.add('valid');
+                errorMessage.classList.add('hidden');
+                return true;
+            }
+
+            function restrictToAlpha(input) {
+                input.addEventListener('input', (e) => {
+                    const originalValue = e.target.value;
+                    const alphaOnlyValue = originalValue.replace(/[^A-Za-z\s-]/g, '');
+                    if (originalValue !== alphaOnlyValue) {
+                        e.target.value = alphaOnlyValue;
+                    }
+                    validateField(input);
+                    validateForm();
+                });
+            }
+
+            function updatePaymentOptions() {
+                paymentOptions.forEach(option => {
+                    option.classList.remove('active');
+                    option.querySelector('.payment-fields').classList.add('hidden');
+                });
+                const selectedMethod = document.querySelector('input[name="payment_method"]:checked');
+                if (selectedMethod) {
+                    const activeOption = selectedMethod.closest('.payment-option');
+                    activeOption.classList.add('active');
+                    activeOption.querySelector('.payment-fields').classList.remove('hidden');
+                    paymentError.classList.add('hidden');
+                } else {
+                    paymentError.classList.remove('hidden');
+                }
+                validateForm();
+            }
+
+            function validateForm() {
+                let isValid = true;
+
+                // Validate shipping fields
+                const shippingFields = document.querySelectorAll('.form-control:not(.payment-fields .form-control)');
+                shippingFields.forEach(field => {
+                    if (!validateField(field)) {
+                        isValid = false;
+                    }
+                });
+
+                // Validate payment method and fields
+                const selectedMethod = document.querySelector('input[name="payment_method"]:checked');
+                if (!selectedMethod) {
+                    isValid = false;
+                    paymentError.classList.remove('hidden');
+                } else {
+                    paymentError.classList.add('hidden');
+                    const paymentFields = document.querySelectorAll('.payment-option.active .form-control');
+                    paymentFields.forEach(field => {
+                        // Skip non-required fields if empty
+                        if (!field.hasAttribute('required') && !field.value.trim()) {
+                            field.classList.remove('error', 'valid');
+                            const errorMessage = field.closest('div').querySelector('.error-message');
+                            if (errorMessage) errorMessage.classList.add('hidden');
+                            return;
+                        }
+                        if (!validateField(field)) {
+                            isValid = false;
+                        }
+                    });
+                }
+
+                submitBtn.disabled = !isValid;
+            }
+
+            // Add real-time validation for all inputs
+            const allInputs = document.querySelectorAll('.form-control');
+            allInputs.forEach(input => {
+                if (alphaOnlyFields.includes(input.id)) {
+                    restrictToAlpha(input);
+                } else {
+                    input.addEventListener('input', () => {
+                        validateField(input);
+                        validateForm();
+                    });
+                }
+            });
+
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    updatePaymentOptions();
+                    // Re-validate all fields after payment method change
+                    const paymentFields = document.querySelectorAll('.payment-option.active .form-control');
+                    paymentFields.forEach(field => {
+                        validateField(field);
+                    });
+                    validateForm();
+                });
+            });
+
+            updatePaymentOptions();
+            validateForm();
+
+            form.addEventListener('submit', (e) => {
+                if (submitBtn.disabled) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

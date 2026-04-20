@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .reset-password-container {
+            background-color: #fff;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        .reset-password-container h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #1f2937;
+            font-weight: 600;
+            font-size: 1.75rem;
+        }
+        .reset-password-container input {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+        .reset-password-container input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        .reset-password-container input.is-invalid {
+            border-color: #dc2626;
+            background: #fff5f5;
+        }
+        .reset-password-container button {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .reset-password-container button:hover {
+            background: linear-gradient(90deg, #4f46e5 0%, #9333ea 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+        .reset-password-container button:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .error-message {
+            color: #dc2626;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        .error-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #374151;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .suggest-password-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            background: #f3f4f6;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .suggest-password-btn:hover {
+            background: #e5e7eb;
+            border-color: #6366f1;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.2);
+        }
+        .suggest-password-btn ion-icon {
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="reset-password-container">
+        <h2>Reset Your Password</h2>
+        {% if messages %}
+            <div class="error-message show">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form method="POST" id="resetPasswordForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="otp">OTP:</label>
+                <input type="text" name="otp" id="otp" placeholder="Enter OTP" required aria-describedby="otp-error">
+                <div class="error-message" id="otp-error"></div>
+            </div>
+            <div class="form-group">
+                <label for="new_password">New Password:</label>
+                <input type="password" name="new_password" id="new_password" placeholder="Enter new password" required aria-describedby="new_password-error">
+                <div class="error-message" id="new_password-error"></div>
+                <button type="button" class="suggest-password-btn">
+                    <ion-icon name="sparkles-outline"></ion-icon> Suggest Strong Password
+                </button>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirm New Password:</label>
+                <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm new password" required aria-describedby="confirm_password-error">
+                <div class="error-message" id="confirm_password-error"></div>
+            </div>
+            <button type="submit" id="submit-btn" disabled>Reset Password</button>
+        </form>
+    </div>
+
+    <script>
+        // Password Suggestion
+        function suggestPassword() {
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const digits = '0123456789';
+            const special = '@$!%*?&';
+            const allChars = lowercase + uppercase + digits + special;
+
+            const getRandomChar = (str) => str[Math.floor(Math.random() * str.length)];
+            let password = [
+                getRandomChar(lowercase),
+                getRandomChar(uppercase),
+                getRandomChar(digits),
+                getRandomChar(special)
+            ];
+
+            for (let i = 4; i < 12; i++) {
+                password.push(getRandomChar(allChars));
+            }
+
+            for (let i = password.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [password[i], password[j]] = [password[j], password[i]];
+            }
+
+            return password.join('');
+        }
+
+        // Validation Functions
+        function validateOTP(otp) {
+            return otp.length >= 4 && /^[0-9]+$/.test(otp);
+        }
+
+        function validatePassword(password) {
+            const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            return re.test(password);
+        }
+
+        function showError(input, message) {
+            const errorEl = document.getElementById(`${input.id}-error`);
+            input.classList.add('is-invalid');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        function clearError(input) {
+            const errorEl = document.getElementById(`${input.id}-error`);
+            input.classList.remove('is-invalid');
+            errorEl.textContent = '';
+            errorEl.classList.remove('show');
+        }
+
+        function validateForm(form) {
+            const inputs = form.querySelectorAll('input');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                const value = input.value.trim();
+                const id = input.id;
+
+                if (id === 'otp') {
+                    if (!value) {
+                        showError(input, 'OTP is required');
+                        isValid = false;
+                    } else if (!validateOTP(value)) {
+                        showError(input, 'OTP must be at least 4 digits');
+                        isValid = false;
+                    } else {
+                        clearError(input);
+                    }
+                } else if (id === 'new_password') {
+                    if (!value) {
+                        showError(input, 'Password is required');
+                        isValid = false;
+                    } else if (!validatePassword(value)) {
+                        showError(input, 'Password must be at least 8 characters, with uppercase, lowercase, number, and special character');
+                        isValid = false;
+                    } else {
+                        clearError(input);
+                    }
+                } else if (id === 'confirm_password') {
+                    const password = form.querySelector('#new_password').value;
+                    if (!value) {
+                        showError(input, 'Please confirm your password');
+                        isValid = false;
+                    } else if (value !== password) {
+                        showError(input, 'Passwords do not match');
+                        isValid = false;
+                    } else {
+                        clearError(input);
+                    }
+                }
+            });
+
+            form.querySelector('#submit-btn').disabled = !isValid;
+            return isValid;
+        }
+
+        // Event Listeners
+        window.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('resetPasswordForm');
+            const inputs = form.querySelectorAll('input');
+            const suggestBtn = document.querySelector('.suggest-password-btn');
+
+            // Real-time validation
+            inputs.forEach(input => {
+                input.addEventListener('input', () => validateForm(form));
+                input.addEventListener('blur', () => validateForm(form));
+            });
+
+            // Form submission validation
+            form.addEventListener('submit', (e) => {
+                if (!validateForm(form)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Password suggestion
+            if (suggestBtn) {
+                suggestBtn.addEventListener('click', () => {
+                    const passwordInput = document.getElementById('new_password');
+                    const confirmPasswordInput = document.getElementById('confirm_password');
+                    const newPassword = suggestPassword();
+                    passwordInput.value = newPassword;
+                    confirmPasswordInput.value = newPassword;
+                    validateForm(form);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1432 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "hi",
+        "hello",
+        "hey",
+        "good morning",
+        "hi there",
+        "hey you",
+        "greetings",
+        "howdy",
+        "salutations",
+        "hllo",
+        "helo",
+        "hiy",
+        "hai",
+        "hey there",
+        "yo",
+        "what's up",
+        "hola",
+        "hey buddy",
+        "hi friend",
+        "morning!",
+        "hey what’s good",
+        "hi auctionhub",
+        "hello there bot",
+        "sup"
+      ],
+      "responses": [
+        "Hey! Welcome to AuctionHub—ready to explore some cool auctions? 😄",
+        "Hi there! Excited to help you navigate AuctionHub—what’s up? 😊",
+        "Hello! Let’s dive into the world of bidding—what can I do for you? 🚀"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "bye",
+        "goodbye",
+        "see you",
+        "later",
+        "catch you later",
+        "farewell",
+        "so long",
+        "take care",
+        "i’m out",
+        "gotta go",
+        "leaving now",
+        "see ya",
+        "till next time",
+        "i’m done",
+        "peace out",
+        "cya"
+      ],
+      "responses": [
+        "See you soon! Happy bidding on AuctionHub! 👋",
+        "Catch you later—come back for more auction fun! 🌟",
+        "Take care! I’ll be here when you’re ready to bid again! 😄"
+      ]
+    },
+    {
+      "tag": "about",
+      "patterns": [
+        "who are you",
+        "what are you",
+        "who the hell are you",
+        "what is this",
+        "tell me about you",
+        "who am I talking to",
+        "what’s this about",
+        "what is auctionhub",
+        "tell me about auctionhub",
+        "who runs this",
+        "what’s your purpose",
+        "what does this site do",
+        "why does this exist",
+        "what kind of bot are you",
+        "what’s auctionhub all about",
+        "tell me about this website",
+        "who made auctionhub",
+        "what’s the point of this bot"
+      ],
+      "responses": [
+        "I’m your AuctionHub assistant, here to guide you through bidding and auctions! AuctionHub’s all about finding unique items—what’s on your mind? 😄",
+        "Hey! I’m the AuctionHub bot, making auctions fun and easy. Ask me anything about bidding or items! 🤝",
+        "AuctionHub’s your go-to for awesome auctions, and I’m the friendly bot to help you out. What do you want to explore? 🚀"
+      ]
+    },
+    {
+      "tag": "auctions_overview",
+      "patterns": [
+        "what are auctions",
+        "how do auctions work",
+        "tell me about auctions",
+        "what is an auction",
+        "explain auctions",
+        "auctions explained",
+        "what happens in auctions",
+        "how does auctioning work",
+        "what is the concept of auctions",
+        "can you describe auctions",
+        "i want to know about auctions",
+        "tell me about auctions on this platform",
+        "what are the auctions here",
+        "auctions in this platform",
+        "how auctions run here",
+        "what’s an auction like",
+        "auction basics",
+        "give me auction info",
+        "how are auctions organized",
+        "what’s the deal with auctions",
+        "how do online auctions work",
+        "what’s the deal with your auctions",
+        "explain how auctions happen here",
+        "are auctions fair",
+        "how auctions are verified"
+      ],
+      "responses": [
+        "Auctions are exciting competitions where you bid to win unique items! At AuctionHub, we’ve got Regular auctions for live bidding, Sealed Bid auctions where you submit a private offer, and Buy It Now or Make Offer for quick purchases. Want details on one type? 🎉",
+        "Think of auctions as a game to score cool stuff! AuctionHub offers Regular auctions (bid live), Sealed Bid (secret offers), and Buy It Now or Make Offer (buy fast or negotiate). Easy for beginners—what else can I explain? 😊",
+        "An auction lets you bid against others to win items. AuctionHub has Regular auctions for real-time fun, Sealed Bid for strategy, and Buy It Now or Make Offer for convenience. Curious about trying one? 🚀"
+      ]
+    },
+    {
+      "tag": "bidding_overview",
+      "patterns": [
+        "what is bidding",
+        "how does bidding work",
+        "tell me about bidding",
+        "explain bidding",
+        "bidding explained",
+        "how do I bid",
+        "what happens when I bid",
+        "what is the bidding process",
+        "what do you mean by bidding",
+        "can you explain what bidding is",
+        "what does bidding mean",
+        "tell me the meaning of bidding",
+        "how does bidding happen",
+        "what is involved in bidding",
+        "how to place a bid",
+        "bidding instructions",
+        "how to win a bid",
+        "bidding steps",
+        "what’s bidding like",
+        "bid process",
+        "what’s the minimum bid increment",
+        "how do I start bidding",
+        "what’s the catch with bidding",
+        "can I bid on multiple items",
+        "how to bid smart",
+        "what if I bid too high",
+        "how to avoid overbidding",
+        "is bidding competitive",
+        "can i bid on multiple items at once in a sealed bid auction?"
+      ],
+      "responses": [
+        "Bidding’s how you compete for an item by offering a price! In AuctionHub’s Regular auctions, you bid live, and the highest wins. Proxy bidding lets you set a max, and we bid for you up to it. Pick an item and jump in—need help starting? 😄",
+        "Bidding means naming your price to win something cool. At AuctionHub, Regular auctions are live, and proxy bidding auto-bids for you. It’s simple—choose an item and try! Any questions? 🤝",
+        "Bidding’s your shot to grab an item! AuctionHub offers live Regular auctions or proxy bidding, where we handle bids up to your limit. The minimum increment’s shown on each listing—want to try one? 🚀"
+      ]
+    },
+    {
+      "tag": "auction_rules",
+      "patterns": [
+        "any rules for participating in auctions",
+        "auction rules",
+        "what are the auction rules",
+        "rules for bidding",
+        "how to participate in auctions",
+        "auction participation rules",
+        "guidelines for auctions",
+        "bidding regulations",
+        "what rules do I follow",
+        "auction terms",
+        "rules to bid",
+        "how to join auctions properly",
+        "auction requirements",
+        "what can’t I do in auctions",
+        "are there bidding limits",
+        "rules for new bidders",
+        "what happens if I break a rule",
+        "do I need to verify to bid",
+        "can I bid without paying",
+        "what’s forbidden in auctions"
+      ],
+      "responses": [
+        "Great question! To participate in AuctionHub auctions, you need a registered account. Place bids honestly—highest bid wins in Regular auctions, or submit one offer in Sealed Bid. For Buy It Now, just pay the listed price. Always check the auction’s end time and minimum increment. Fraudulent bids can lead to account suspension. Want tips on bidding smart? 😊",
+        "AuctionHub’s rules are simple: register to bid, follow the auction type (Regular, Sealed Bid, or Buy It Now), and meet deadlines. Bids must be genuine—fake bids risk penalties like account bans. Need help understanding any part? 🤝",
+        "To join auctions, sign up and bid fairly. Regular auctions need live bids, Sealed Bid takes one secret offer, and Buy It Now is instant. Check each listing’s rules. Dishonest bidding can lead to serious consequences, like losing your account. Ready to start? 🚀"
+      ]
+    },
+    {
+      "tag": "fake_bidding",
+      "patterns": [
+        "fake bid",
+        "cheat in auction",
+        "place fake bid",
+        "how to fake bid",
+        "manipulate auction",
+        "rig bidding",
+        "false bid",
+        "scam auction",
+        "dishonest bidding",
+        "fake offer",
+        "trick bidding",
+        "bid fraud",
+        "illegal bidding",
+        "what if I bid just to mess around",
+        "can I bid to raise the price",
+        "is it okay to fake a bid",
+        "what happens with fake bidding",
+        "how do you catch cheaters",
+        "can I test a bid",
+        "what if I don’t pay my bid"
+      ],
+      "responses": [
+        "Whoa, let’s keep it fair! Placing fake bids on AuctionHub is strictly against our rules. It can lead to account suspension, permanent bans, or even legal action if it violates laws. Honest bidding’s the way to go—want to learn how to bid smart instead? 😊",
+        "Fake bidding’s a no-go! It’s unfair and can get you banned from AuctionHub or face legal consequences, like fines for fraud. Stick to real bids to enjoy the fun—need help with bidding rules? 🤝",
+        "Hey, bidding’s gotta be legit! Fake bids risk serious trouble—account bans or legal penalties, depending on the case. Let’s focus on winning fair and square—any auction you’re eyeing? 🚀"
+      ]
+    },
+    {
+      "tag": "auction_type",
+      "patterns": [
+        "what is sealed bid",
+        "explain sealed bid",
+        "how does sealed bid work",
+        "what is sealed bid auction",
+        "tell me about sealed bid",
+        "sealed bid explained",
+        "what is buy it now",
+        "what is make offer",
+        "explain buy it now",
+        "how does buy it now work",
+        "what is regular auction",
+        "explain regular auction",
+        "tell me about regular auctions",
+        "what are the auction types",
+        "different auctions",
+        "types of auctions",
+        "auction styles",
+        "what kind of auctions",
+        "how are auctions different",
+        "list auction types",
+        "difference between auction types",
+        "what’s best: sealed or regular",
+        "can I switch auction types",
+        "which auction is easiest",
+        "is only regular auctions are there",
+        "tell me about types of auctions",
+        "explain auction types",
+        "what are auction styles",
+        "tell me about auction kinds",
+        "what is regular,sealedand buy it now auctions",
+        "what is regular,",
+        "what is sealedand buy it now",
+        "what is regular auction and sealed bid",
+        "can i offer a discount on the ‘buy it now’ price for specific bidders?"
+      ],
+      "responses": [
+        {
+          "tag": "sealed_bid",
+          "responses": [
+            "Sealed Bid auctions are strategic! You submit one private offer, hidden until the end, and the highest wins. Perfect for planning your bid—want to try one? 🎉",
+            "In a Sealed Bid auction, you send a secret offer, and we reveal the highest when it closes. It’s all about strategy—interested? 😊",
+            "Sealed Bid means your offer stays confidential until the auction ends, then the top bid wins. Great for a careful approach—ready to explore? 🚀"
+          ]
+        },
+        {
+          "tag": "buy_it_now_make_offer",
+          "responses": [
+            "Buy It Now lets you grab an item instantly at a set price, while Make Offer lets you propose a deal. Quick and flexible—want to check some out? 🎉",
+            "With Buy It Now, you pay the listed price and it’s yours. Make Offer? Suggest a price to negotiate. Perfect for fast buys—curious? 😊",
+            "Buy It Now is instant purchase; Make Offer is your chance to haggle. Both are super easy—any items you’re eyeing? 🚀"
+          ]
+        },
+        {
+          "tag": "regular_auction",
+          "responses": [
+            "Regular auctions are live and thrilling! You bid against others in real-time, and the highest bid wins when time’s up. Want to join the action? 🎉",
+            "In Regular auctions, you place bids live, competing to get the top offer by the end. It’s exciting—ready to try? 😊",
+            "Regular auctions let you bid in real-time, with the highest offer winning. Pure auction fun—fancy giving it a go? 🚀"
+          ]
+        },
+        {
+          "tag": "general",
+          "responses": [
+            "AuctionHub offers Regular auctions for live bidding, Sealed Bid for private offers, and Buy It Now or Make Offer for quick buys. Which type interests you? 🎉",
+            "We have Regular auctions (live), Sealed Bid (secret offers), and Buy It Now or Make Offer (instant or negotiable). Want to dive into one? 😊",
+            "Our auction types are Regular (real-time), Sealed Bid (private), and Buy It Now or Make Offer (fast buys). Curious about any? 🚀"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "auctions",
+      "patterns": [
+        "what auctions are available",
+        "current auctions",
+        "list auctions",
+        "show me auctions",
+        "what's up for bid",
+        "any auctions now",
+        "what can I bid on",
+        "available auctions",
+        "auction listings",
+        "auctions",
+        "auction",
+        "what auctions do you have",
+        "what's being auctioned",
+        "current bids",
+        "auction items",
+        "what's on auction",
+        "find auctions",
+        "show ongoing auctions",
+        "what’s open for bidding",
+        "active auctions",
+        "new auctions",
+        "upcoming auctions",
+        "any live auctions",
+        "today’s auctions",
+        "what’s hot in auctions now",
+        "show me new auctions",
+        "any auctions ending soon",
+        "can I see my active auctions",
+        "what’s trending in auctions",
+        "what’s the most expensive thing ever sold on auctionhub?"
+      ],
+      "responses": [
+        "Check out live auctions in the 'Auctions' section! We’ve got Regular auctions for real-time bidding, Sealed Bid for private offers, and Buy It Now or Make Offer for quick deals. Want me to find something specific? 🎉",
+        "Head to 'Auctions' to see what’s up! Regular auctions let you bid live, Sealed Bid keeps it secret, and Buy It Now or Make Offer is instant. What catches your eye? 😊",
+        "Lots of auctions to explore! Visit the 'Auctions' tab for Regular, Sealed Bid, or Buy It Now options. Need help picking one? 🚀"
+      ]
+    },
+    {
+      "tag": "categories",
+      "patterns": [
+        "what categories",
+        "available categories",
+        "types of items",
+        "what do you sell",
+        "item types",
+        "what's for sale",
+        "categories available",
+        "list categories",
+        "what kind of stuff",
+        "category options",
+        "are there categories like antiques",
+        "do you have antiques",
+        "categories with antiques",
+        "antique categories",
+        "do you sell jewelry",
+        "any watches",
+        "car auctions",
+        "collectibles available",
+        "what items are there",
+        "specific items",
+        "type of products",
+        "got any rare items",
+        "what’s in luxury watches",
+        "do you have art auctions",
+        "are there vintage cars"
+      ],
+      "responses": [
+        "We’ve got awesome categories: Luxury Watches, Rare Collectibles (like antiques), Luxury Cars, and Jewelry & Diamonds. Browse them in 'Categories'—what’s your vibe? 🎉",
+        "AuctionHub’s categories include Rare Collectibles for antiques, plus Luxury Watches, Luxury Cars, and Jewelry & Diamonds. Check 'Categories'—any favorites? 😊",
+        "Explore Luxury Watches, Rare Collectibles, Luxury Cars, and Jewelry & Diamonds in our 'Categories' section. What are you hunting for? 🚀"
+      ]
+    },
+    {
+      "tag": "promotions",
+      "patterns": [
+        "are there any offers",
+        "any discounts",
+        "offers for new customers",
+        "discounts available",
+        "is there have any offers",
+        "is there have any discounts",
+        "deals for beginners",
+        "special offers",
+        "new customer deals",
+        "anything free",
+        "promotions",
+        "coupons",
+        "promo codes",
+        "any sales",
+        "discount for first bid",
+        "free shipping deals",
+        "new user discounts",
+        "any special promotions",
+        "current deals",
+        "what’s on sale"
+      ],
+      "responses": [
+        "No promos right now, but low starting bids are a steal! Check 'Auctions' for deals. Want me to keep you posted on offers? 📩",
+        "We don’t have discounts today, but auctions start cheap! Browse 'Auctions'—need help finding a bargain? 😊",
+        "No special deals at the moment, but our auctions are full of opportunities. Want tips to save big? 🚀"
+      ]
+    },
+    {
+      "tag": "help",
+      "patterns": [
+        "help",
+        "support",
+        "need assistance",
+        "can you help me",
+        "I need help",
+        "assist me",
+        "help me out",
+        "guide me",
+        "support me",
+        "how can you help",
+        "what can you do",
+        "I’m stuck",
+        "need some guidance",
+        "help with auctions",
+        "troubleshooting",
+        "I don’t understand",
+        "explain something",
+        "can you clarify",
+        "what’s this random thing",
+        "i am new guide me",
+        "new user",
+        "first time here",
+        "how do i start",
+        "beginner help",
+        "getting started",
+        "I’m confused about bidding",
+        "help with my account",
+        "like inappropriate topics",
+        "how can i withdraw my auction listing before it starts?"
+      ],
+      "responses": [
+        "I’m here to help! AuctionHub has auctions for watches, cars, and more. Want to explore bidding, categories, or your dashboard? What’s up? 🤝",
+        "Let’s get you sorted! Try browsing auctions or checking your profile. What do you need guidance on? 😊",
+        "Happy to assist! Ask about auctions, bidding, or anything else—where do you want to start? 🚀"
+      ]
+    },
+    {
+      "tag": "payment",
+      "patterns": [
+        "payment options",
+        "how to pay",
+        "what payments do you accept",
+        "paying for items",
+        "payment methods",
+        "can I use paypal",
+        "credit card payment",
+        "bank transfer",
+        "how do I pay after winning",
+        "payment process",
+        "is payment secure",
+        "do you accept crypto",
+        "payment deadlines",
+        "installment payments",
+        "can I pay later",
+        "how to complete payment",
+        "payment issues",
+        "paypal supported",
+        "credit card accepted"
+      ],
+      "responses": [
+        "You can pay with credit cards, PayPal, or bank transfers after winning. It’s secure, with clear instructions post-auction—any payment questions? 🔒",
+        "Payments are easy: use PayPal, credit cards, or bank transfers. We guide you after you win—need more details? 😊",
+        "Win an auction? Pay securely with PayPal, cards, or transfers. Check your account for steps—got concerns? 🚀"
+      ]
+    },
+    {
+      "tag": "shipping",
+      "patterns": [
+        "shipping",
+        "delivery",
+        "how is shipping handled",
+        "shipping costs",
+        "when will it arrive",
+        "delivery options",
+        "shipping details",
+        "how much is shipping",
+        "international shipping",
+        "do you ship worldwide",
+        "shipping time",
+        "delivery fees",
+        "track my item",
+        "shipping policies",
+        "how long does shipping take",
+        "where do you ship",
+        "free shipping",
+        "shipping after winning"
+      ],
+      "responses": [
+        "We ship worldwide, with costs based on the item and location. Everything’s insured, and you’ll get details after winning—any shipping questions? 📦",
+        "Shipping’s global with tracking! Costs vary, and we share specifics post-auction. Need clarity on delivery? 😊",
+        "Global shipping, insured! Check your order after winning for costs and times—want more info? 🚀"
+      ]
+    },
+    {
+      "tag": "platform_overview",
+      "patterns": [
+        "what do your platform have",
+        "tell me about the platform",
+        "what is this platform",
+        "platform features",
+        "what does auctionhub offer",
+        "how does the platform work",
+        "explain the platform",
+        "platform overview",
+        "what are the features",
+        "what is this site for",
+        "what can I do here",
+        "how is auctionhub different",
+        "what makes this platform special",
+        "site features",
+        "what’s cool about auctionhub",
+        "platform details",
+        "how does this site work",
+        "explain the varieties",
+        "what this platform for"
+      ],
+      "responses": [
+        "AuctionHub’s a marketplace for unique items! Bid in Regular, Sealed Bid, or Buy It Now auctions, manage your profile, and pay securely. Live updates keep it fun—want to check it out? 🎉",
+        "Explore AuctionHub’s auctions, from watches to cars! Features include bidding, secure payments, and a dashboard. New here? Let’s dive in! 😊",
+        "AuctionHub offers auctions, user profiles, and safe transactions. Bid live or buy instantly—it’s built for fun! Curious about something specific? 🚀"
+      ]
+    },
+    {
+      "tag": "bidding_types",
+      "patterns": [
+        "what are the bidding types",
+        "tell me about bidding types",
+        "what kinds of auctions",
+        "explain bidding types",
+        "different auction types",
+        "types of bidding",
+        "how many bidding types",
+        "list bidding types",
+        "what’s the difference in bidding",
+        "bidding styles",
+        "how bidding varies",
+        "types of bids"
+      ],
+      "responses": [
+        "AuctionHub’s got variety: English auctions (live bidding), Dutch auctions (price drops), Sealed Bid (private), Reserve (minimum price), and Proxy (auto-bids). Which sounds fun? 🎉",
+        "We offer English (live), Dutch (decreasing prices), Sealed Bid (secret), Reserve (protected), and Proxy bidding (automatic). Want to try one? 😊",
+        "Bidding types include English for live action, Dutch for deals, Sealed Bid for strategy, Reserve for safety, and Proxy for ease. Pick your style! 🚀"
+      ]
+    },
+    {
+      "tag": "security_features",
+      "patterns": [
+        "how secure is the platform",
+        "what security features",
+        "is it safe",
+        "tell me about security",
+        "platform security",
+        "safety measures",
+        "is my data safe",
+        "how do you protect users",
+        "security details",
+        "is bidding safe",
+        "fraud protection",
+        "how safe is payment",
+        "prevent scams",
+        "user safety",
+        "trustworthy platform"
+      ],
+      "responses": [
+        "AuctionHub’s secure with multi-factor authentication, ID verification, and fraud detection. Payments and data are protected—bid with confidence! Questions? 🔒",
+        "We’ve got your back with ID checks, fraud monitoring, and secure storage. Everything’s safe—want more details? 😊",
+        "Safety’s key! Multi-factor login, fraud detection, and encrypted data keep you secure. Curious about any feature? 🚀"
+      ]
+    },
+    {
+      "tag": "help_desk",
+      "patterns": [
+        "how can i get help",
+        "support options",
+        "need assistance",
+        "where is the help desk",
+        "help me with issues",
+        "customer support",
+        "contact support",
+        "who to call for help",
+        "support team",
+        "how to reach you",
+        "help with problems",
+        "technical support",
+        "auction issues",
+        "where’s customer service",
+        "get support",
+        "report a problem"
+      ],
+      "responses": [
+        "Need help? Check our FAQs, tutorials, or live chat in the 'Support' section. What’s the issue? 🤝",
+        "I’ve got you! Use the help desk’s FAQs, guides, or chat for quick answers. Tell me what’s up! 😄",
+        "Support’s easy—FAQs, tickets, or live chat in 'Support'. What do you need? 🚀"
+      ]
+    },
+    {
+      "tag": "registration_info",
+      "patterns": [
+        "should i need to register for know more",
+        "do i need to register",
+        "is registration required",
+        "what if i register",
+        "do i need an account",
+        "should i sign up for more info",
+        "is registration necessary",
+        "tell me about registering",
+        "why register",
+        "how to register",
+        "sign up process",
+        "create account",
+        "how do I join",
+        "registering steps",
+        "benefits of registering",
+        "why should I sign up",
+        "account setup",
+        "how to make an account",
+        "is signing up free",
+        "i am new to this",
+        "new account",
+        "just joined",
+        "should i need to complete the profile before diving into auctions",
+        "do i need to finish my profile",
+        "complete profile to bid",
+        "profile needed for auctions",
+        "must i complete profile"
+      ],
+      "responses": [
+        "You’re all set to bid and explore! Check auctions or your dashboard—want a quick guide? 🚀",
+        "Registering’s done, so you’re ready! Browse auctions or update your profile. Need help? 😊",
+        "Sign up’s free and unlocks bidding and more. Not registered? It’s quick—want to start? 📝"
+      ]
+    },
+    {
+      "tag": "account_management",
+      "patterns": [
+        "how to update my account",
+        "change password",
+        "update profile",
+        "edit my details",
+        "delete my account",
+        "how to log in",
+        "forgot password",
+        "reset password",
+        "account settings",
+        "manage my account",
+        "login issues",
+        "how to sign out",
+        "account recovery",
+        "change email",
+        "update payment info",
+        "profile management",
+        "account problems",
+        "verify my account",
+        "profile",
+        "my profile",
+        "account",
+        "manage profile",
+        "edit profile"
+      ],
+      "responses": [
+        "Update your profile, password, or payment info in 'Profile'. Need help with a specific step? 😊",
+        "Manage your account in 'Profile'—change details or reset passwords. Stuck anywhere? 🚀",
+        "Head to 'Profile' to edit info or recover access. Tell me what you need! 🤝"
+      ]
+    },
+    {
+      "tag": "bid_management",
+      "patterns": [
+        "how to cancel a bid",
+        "can I change my bid",
+        "withdraw bid",
+        "edit my bid",
+        "bid mistakes",
+        "what if I bid wrong",
+        "cancel my offer",
+        "how to increase bid",
+        "bid adjustment",
+        "manage my bids",
+        "check my bids",
+        "where are my bids",
+        "bid history",
+        "track my bids",
+        "current bids status",
+        "how to check my bid status",
+        "can I see all my bids",
+        "what if I want to cancel a bid",
+        "how to fix a wrong bid",
+        "where’s my bidding history",
+        "why was my bid rejected",
+        "bid not accepted"
+      ],
+      "responses": [
+        "Check your bids in your dashboard. Some auctions allow changes—need help with one? 😊",
+        "Your bids are in 'Bidding'. Canceling depends on the auction—want me to check? 🚀",
+        "View bids in your profile. Tell me the auction, and I’ll guide you on edits! 🤝"
+      ]
+    },
+    {
+      "tag": "auction_timing",
+      "patterns": [
+        "how long do auctions last",
+        "auction duration",
+        "when do auctions end",
+        "auction times",
+        "how much time left",
+        "auction deadlines",
+        "bidding time",
+        "when does it close",
+        "time for auctions",
+        "auction schedule",
+        "how long is bidding open",
+        "end time for auctions",
+        "can auctions be extended"
+      ],
+      "responses": [
+        "Auctions usually last days—check the listing for the exact end time. Want me to find one? 😊",
+        "Each auction’s duration is on its page, often a few days. Need a specific one’s timing? 🚀",
+        "See the countdown on the auction page. Tell me which one you’re curious about! 🤝"
+      ]
+    },
+    {
+      "tag": "fees",
+      "patterns": [
+        "are there fees",
+        "what are the fees",
+        "bidding fees",
+        "auction fees",
+        "service charges",
+        "platform fees",
+        "any hidden costs",
+        "cost to bid",
+        "do I pay to bid",
+        "fees for winning",
+        "buyer’s premium",
+        "extra charges",
+        "what’s the cost",
+        "are fees refundable"
+      ],
+      "responses": [
+        "Bidding’s free, but winners pay a small buyer’s premium—check the auction details. Need clarity? 😊",
+        "No fees to bid! Just a buyer’s premium if you win, listed per auction. Questions? 🚀",
+        "Only a buyer’s premium applies if you win—no hidden costs. Want to check one? 🤝"
+      ]
+    },
+    {
+      "tag": "returns_refunds",
+      "patterns": [
+        "can I return an item",
+        "return policy",
+        "what if item is damaged",
+        "refund process",
+        "how to get a refund",
+        "returns for auctions",
+        "what if I don’t like it",
+        "money back",
+        "refund options",
+        "damaged item",
+        "wrong item delivered",
+        "return instructions",
+        "what if my item’s broken",
+        "can I get my money back",
+        "how to return something",
+        "refund rules for auctions",
+        "item not as described",
+        "what’s the process for getting a refund if i overbid by mistake?"
+      ],
+      "responses": [
+        "Returns are okay for damaged or wrong items—check the auction’s terms. Need help with a case? 😊",
+        "If an item’s not right, see the listing’s return policy. I can guide you! 🚀",
+        "Damaged or incorrect items may qualify for refunds—check the rules. Any issues? 🤝"
+      ]
+    },
+    {
+      "tag": "seller_info",
+      "patterns": [
+        "how to sell",
+        "can I sell items",
+        "become a seller",
+        "selling process",
+        "how do I list an item",
+        "sell my stuff",
+        "seller account",
+        "listing items",
+        "how to be a seller",
+        "sell on auctionhub",
+        "seller requirements",
+        "start selling",
+        "how to auction my item"
+      ],
+      "responses": [
+        "Selling’s easy! Create a seller account and list items in 'Sell'. Need setup help? 😊",
+        "Sign up as a seller and add items in 'Sell'. Want a step-by-step? 🚀",
+        "List your items in 'Sell' after registering as a seller. Any questions? 🤝"
+      ]
+    },
+    {
+      "tag": "notifications",
+      "patterns": [
+        "how to get alerts",
+        "auction notifications",
+        "bid updates",
+        "get notified",
+        "email alerts",
+        "how do I know if I win",
+        "notify me",
+        "updates on bids",
+        "auction reminders",
+        "alert settings",
+        "track auction status",
+        "push notifications"
+      ],
+      "responses": [
+        "Set bid or win alerts in your account settings. Need help turning them on? 😊",
+        "Get updates via email or app—check notification settings. Want a walkthrough? 🚀",
+        "Enable alerts in your profile for real-time updates. Trouble with setup? 🤝"
+      ]
+    },
+    {
+      "tag": "auction_tips",
+      "patterns": [
+        "how to win an auction",
+        "best way to bid",
+        "tips for getting good deals",
+        "how to beat other bidders",
+        "how to bid strategically",
+        "secrets to winning auctions"
+      ],
+      "responses": [
+        "Winning auctions takes strategy! Set a budget, use proxy bidding to stay competitive, and watch the clock for last-minute bids in Regular auctions. Want tips for a specific item? 😊",
+        "To score deals, research items in ‘Categories’ and bid late in Regular auctions. Proxy bidding helps you stay in without overpaying. Ready to try? 🚀",
+        "Best tip? Know your max price and use proxy bidding for Regular auctions. Check ‘Auctions’ for low-competition items—any category you like? 🎉"
+      ]
+    },
+    {
+      "tag": "auction_disputes",
+      "patterns": [
+        "what if I lose unfairly",
+        "how to report an auction issue",
+        "dispute a bid",
+        "auction not fair",
+        "complain about auction",
+        "feels something off",
+        "something’s wrong",
+        "this ain’t right",
+        "not fair",
+        "something feels shady",
+        "how does auctionhub handle disputes over item condition after a sale?"
+      ],
+      "responses": [
+        "If something feels off, contact our support team via the 'Support' section to report issues. We’ll look into it to keep things fair—need help filing a complaint? 😊",
+        "Unhappy with an auction? Use ‘Support’ to raise a dispute, and we’ll review it quickly. Tell me more about the issue! 🚀",
+        "For auction concerns, submit a ticket in ‘Support’. I can guide you through the process—what happened? 🤝"
+      ]
+    },
+    {
+      "tag": "affirmation",
+      "patterns": [
+        "yes",
+        "yeah",
+        "yep",
+        "sure",
+        "ok",
+        "okay",
+        "cool",
+        "alright",
+        "yup",
+        "fine",
+        "i do",
+        "got it",
+        "sounds good",
+        "definitely",
+        "for sure"
+      ],
+      "responses": [
+        "Sweet! Want to check out some auctions or need help with something specific? 😎",
+        "Awesome, let’s keep rolling! Any category like watches or cars catching your eye? 🚀",
+        "Cool, what’s next? Ready to bid or explore your dashboard? 😄",
+        "Nice one! Should we dive into auctions or tweak your profile? 🎉",
+        "Alright, you’re in! What do you want to do—find a deal or learn about bidding? 😊"
+      ]
+    },
+    {
+      "tag": "casual_greeting",
+      "patterns": [
+        "wassup",
+        "what’s good",
+        "how’s it hangin",
+        "yo yo",
+        "what’s poppin",
+        "heya",
+        "what’s the vibe",
+        "sup dude",
+        "how’s it goin",
+        "hiya",
+        "what’s cooking",
+        "hey man",
+        "what’s the deal",
+        "how you doin",
+        "what’s up bro",
+        "hi ya",
+        "what’s the word",
+        "yo what’s good",
+        "how’s life",
+        "what’s new"
+      ],
+      "responses": [
+        "Yo, just chillin’ like a villain! What’s the vibe with you—ready to score some auction deals? 😎",
+        "Hey, what’s poppin’? AuctionHub’s got some sweet items—wanna check ‘em out? 🚀",
+        "Sup, friend? I’m just here vibin’—any auctions catching your eye today? 😄"
+      ]
+    },
+    {
+      "tag": "small_talk",
+      "patterns": [
+        "how’s it going",
+        "what’s up with you",
+        "how you holding up",
+        "what’s the dealio",
+        "how’s your day",
+        "what you up to",
+        "how’s everything",
+        "what’s good with you",
+        "how’s the weather",
+        "what’s the mood",
+        "how you feeling",
+        "what’s the plan",
+        "how’s your vibe",
+        "what’s happening",
+        "how’s things",
+        "what you doing",
+        "how’s the scene",
+        "what’s the scoop",
+        "how’s it all going",
+        "what’s the story"
+      ],
+      "responses": [
+        "I’m just kickin’ it, ready to help you snag some auction wins! How’s your day goin’? 😎",
+        "Yo, I’m good—how ‘bout you? Got any big plans or just here for the auctions? 🚀",
+        "All good here, friend! What’s the scoop with you—feeling like bidding on something cool? 😄"
+      ]
+    },
+    {
+      "tag": "emotion_positive",
+      "patterns": [
+        "i’m so excited",
+        "this is awesome",
+        "i’m pumped",
+        "feeling great",
+        "so stoked",
+        "i’m thrilled",
+        "this rocks",
+        "i’m hyped",
+        "super happy",
+        "i’m loving this",
+        "feeling on top",
+        "this is the best",
+        "i’m over the moon",
+        "so cool",
+        "i’m jazzed",
+        "this is amazing",
+        "feeling awesome",
+        "i’m all smiles",
+        "this is epic",
+        "so pumped"
+      ],
+      "responses": [
+        "Heck yeah, friend, I’m feeling the hype too! What’s got you so pumped—ready to bid big? 😎",
+        "Whoa, your vibe’s contagious! This is awesome—wanna dive into some epic auctions? 🚀",
+        "Love the energy! What’s making you so stoked—let’s find something amazing to bid on! 😄"
+      ]
+    },
+    {
+      "tag": "emotion_negative",
+      "patterns": [
+        "i’m bummed",
+        "feeling down",
+        "this sucks",
+        "i’m upset",
+        "not happy",
+        "i’m annoyed",
+        "this is frustrating",
+        "feeling off",
+        "i’m mad",
+        "something’s wrong",
+        "this ain’t cool",
+        "i’m pissed",
+        "not feeling it",
+        "this is lame",
+        "i’m sad",
+        "feeling crappy",
+        "something feels off",
+        "this is messed up",
+        "i’m not okay",
+        "this is annoying"
+      ],
+      "responses": [
+        "Aw, friend, sorry you’re feeling down! Wanna talk about what’s up? Maybe some cool auctions can cheer you up! 😊",
+        "Ugh, that’s rough. Let’s figure out what’s going on—anything I can help with, or wanna browse some watches to lift the mood? 🚀",
+        "I hear ya, that’s no fun. Tell me what’s bugging you, and let’s see if we can turn it around—maybe a quick auction peek? 😄"
+      ]
+    },
+    {
+      "tag": "humor",
+      "patterns": [
+        "tell me a joke",
+        "got any jokes",
+        "make me laugh",
+        "something funny",
+        "hit me with a joke",
+        "what’s a good joke",
+        "gimme a laugh",
+        "any funny stuff",
+        "tell a funny story",
+        "what’s hilarious",
+        "crack a joke",
+        "something to laugh at",
+        "got a funny one",
+        "make it funny",
+        "what’s a zinger",
+        "laugh time",
+        "joke me up",
+        "any good jokes",
+        "funny vibe",
+        "what’s a chuckle"
+      ],
+      "responses": [
+        "Alright, friend, here’s a quick one: Why did the scarecrow become an auctioneer? He was outstanding in his field! 😜 Wanna hear another or check out some auctions? 😎",
+        "Yo, try this: What do you call a dinosaur that bids too high? A Bid-Rex! 🦖 Want more laughs or ready to bid? 🚀",
+        "Heh, okay: Why don’t auctions ever sleep? They’re always up for grabs! 😄 Another joke or wanna hunt for deals? 😊"
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "thanks",
+        "thank you",
+        "appreciate it",
+        "thx",
+        "thanks a lot",
+        "thank ya",
+        "much appreciated",
+        "thanks bro",
+        "ty",
+        "thanks man",
+        "appreciate you",
+        "thanks heaps",
+        "thank you so much",
+        "gracias",
+        "thanks dude",
+        "big thanks",
+        "thank you kindly",
+        "thanks a ton",
+        "cheers",
+        "ta"
+      ],
+      "responses": [
+        "No prob, friend! Happy to help—what’s next, auctions or more chat? 😎",
+        "You’re welcome! Got your back—wanna dive into some bidding action? 🚀",
+        "Anytime, pal! What’s up now—ready to snag a deal? 😄"
+      ]
+    },
+    {
+      "tag": "confusion",
+      "patterns": [
+        "i’m confused",
+        "what’s that mean",
+        "i don’t get it",
+        "huh",
+        "what",
+        "i’m lost",
+        "that’s confusing",
+        "what’s going on",
+        "i don’t understand",
+        "what’s the deal",
+        "this makes no sense",
+        "i’m not following",
+        "what’s that about",
+        "i’m puzzled",
+        "that’s weird",
+        "what’s up with that",
+        "i’m all mixed up",
+        "this is odd",
+        "what’s the point",
+        "i’m not sure"
+      ],
+      "responses": [
+        "Whoops, let’s clear that up, friend! What’s got you puzzled—wanna break it down together? 😊",
+        "My bad if that was confusing! Tell me what’s tripping you up, and I’ll make it simple—auctions or something else? 🚀",
+        "No worries, I got you! What’s confusing—let’s sort it out and maybe check some cool auctions too? 😄"
+      ]
+    },
+    {
+      "tag": "apology",
+      "patterns": [
+        "sorry",
+        "my bad",
+        "i messed up",
+        "apologies",
+        "i’m sorry",
+        "oops my fault",
+        "sorry about that",
+        "my mistake",
+        "i screwed up",
+        "sorry man",
+        "my apologies",
+        "didn’t mean that",
+        "sorry dude",
+        "my fault",
+        "oops sorry",
+        "sorry for that",
+        "i goofed",
+        "sorry bro",
+        "my error",
+        "sorry pal"
+      ],
+      "responses": [
+        "Hey, no sweat, friend! We’re all good—wanna talk auctions or something else? 😎",
+        "All good, pal, happens to everyone! What’s next—ready to check out some deals? 🚀",
+        "No biggie! Let’s move on—any auctions or questions on your mind? 😄"
+      ]
+    },
+    {
+      "tag": "casual_farewell",
+      "patterns": [
+        "catch ya later",
+        "i’m off",
+        "gonna bounce",
+        "later dude",
+        "i’m outta here",
+        "see you around",
+        "peace",
+        "laters",
+        "i’m ghosting",
+        "bye for now",
+        "gonna jet",
+        "later man",
+        "i’m dipping",
+        "see you soon",
+        "time to roll",
+        "i’m gone",
+        "later bro",
+        "catch you soon",
+        "i’m peacing out",
+        "bye bye",
+        "goodbye bro",
+        "ok pal bye"
+      ],
+      "responses": [
+        "Aight, friend, catch ya later! Come back for some auction action soon! 😎",
+        "Peace out! I’ll be here when you’re ready to bid again—stay cool! 🚀",
+        "Later, pal! Hit me up anytime for more auction fun! 😄"
+      ]
+    },
+    {
+      "tag": "seer",
+      "patterns": [
+        "i think i understand it"
+      ],
+      "responses": [
+        "Awesome, you’re getting the hang of it! 😎 Wanna dive deeper into auctions or something else? 🚀",
+        "Nice, you’re on track! 😄 What’s next—ready to bid or explore more? 🎉",
+        "Glad it’s clicking! 🤝 Any questions left or want to check out some auctions? 😊"
+      ]
+    },
+    {
+      "tag": "auction_management",
+      "patterns": [
+        "how do i set a reserve price for my auction listing?",
+        "how can i extend the duration of my auction if it’s about to end?",
+        "what happens if no one meets the reserve price in a regular auction?",
+        "is there a limit to how many auctions i can list at once as a seller?",
+        "can i schedule an auction to start at a specific time and date?"
+      ],
+      "responses": [
+        "Managing your auctions is easy! Set reserve prices, extend durations, or schedule start times in the 'Sell' section. If no one meets the reserve, the auction closes without a sale. No strict listing limits, but check 'Sell' for guidelines. Need help with any step? 😊",
+        "Head to 'Sell' to set reserve prices or extend auctions if they’re close to ending. No bids meeting the reserve? The item doesn’t sell. You can schedule auctions too—want a walkthrough? 🚀",
+        "In 'Sell', you can set a reserve price, extend auction times, or schedule them. If the reserve isn’t met, no sale happens. Got a specific auction management question? 🤝"
+      ]
+    },
+    {
+      "tag": "preview",
+      "patterns": [
+        "is there a way to preview an auction before it goes live?"
+      ],
+      "responses": [
+        "Sellers can preview their auction listings in the 'Sell' section before they go live to ensure everything looks perfect. Want help setting one up? 😊",
+        "You can check your auction draft in 'Sell' before it’s live. Need a step-by-step for creating a listing? 🚀",
+        "Preview your auctions in the 'Sell' dashboard to tweak details before launch. Any questions about the process? 🤝"
+      ]
+    },
+    {
+      "tag": "dispute",
+      "patterns": [
+        "how does auctionhub handle disputes over item condition after a sale?"
+      ],
+      "responses": [
+        "Got an issue with an item’s condition? File a dispute via the 'Support' section, and we’ll review it to ensure fairness. Need help starting the process? 😊",
+        "Disputes over item condition? Head to 'Support' to submit a ticket, and we’ll investigate. Want guidance on next steps? 🚀",
+        "For item condition disputes, use the 'Support' tab to report it. I can walk you through it—what’s the issue? 🤝"
+      ]
+    },
+    {
+      "tag": "escrow",
+      "patterns": [
+        "does auctionhub offer escrow services for high-value items like luxury cars?"
+      ],
+      "responses": [
+        "For high-value items like luxury cars, AuctionHub offers escrow services to ensure secure transactions. Check the auction details or 'Support' for more info. Want help with a specific item? 😊",
+        "Yes, escrow is available for big-ticket items! See the listing or contact 'Support' for details. Curious about a luxury car auction? 🚀",
+        "Escrow services are provided for high-value items to keep things safe. Need help finding an auction with escrow? 🤝"
+      ]
+    },
+    {
+      "tag": "seller_fees",
+      "patterns": [
+        "what’s the fee for selling an item?",
+        "seller fees",
+        "cost to sell",
+        "fees for sellers",
+        "do sellers pay fees",
+        "how much to list an item",
+        "selling charges",
+        "seller commission",
+        "what’s the cost to sell"
+      ],
+      "responses": [
+        "Sellers pay a small commission on successful sales, detailed in the 'Sell' section. No upfront listing fees! Need specifics on a listing? 😊",
+        "Selling fees are a percentage of the final sale, shown in 'Sell'. Want help calculating costs for your item? 🚀",
+        "Check 'Sell' for seller commission details—no hidden fees! Got an item in mind to list? 🤝"
+      ]
+    },
+    {
+      "tag": "watchlist",
+      "patterns": [
+        "how do i add an item to my watchlist?",
+        "what is a watchlist",
+        "track auctions",
+        "save auctions",
+        "how to watch an auction",
+        "monitor auctions",
+        "add to watchlist",
+        "watchlist feature",
+        "how to follow an auction"
+      ],
+      "responses": [
+        "The watchlist lets you track auctions you’re interested in! Click ‘Add to Watchlist’ on any auction page to save it. Check your watchlist in your profile—want help finding it? 😊",
+        "Add items to your watchlist by hitting the ‘Watch’ button on an auction. It’s saved in your profile for easy tracking. Need a guide? 🚀",
+        "Use the watchlist to monitor auctions! Just click ‘Add to Watchlist’ on any listing. Got an auction you want to follow? 🤝"
+      ]
+    },
+    {
+      "tag": "feedback_rating",
+      "patterns": [
+        "how do i leave feedback?",
+        "rate a seller",
+        "leave a review",
+        "how to give feedback",
+        "seller rating",
+        "buyer feedback",
+        "post-transaction review",
+        "how to rate a transaction",
+        "give a seller a rating",
+        "feedback system"
+      ],
+      "responses": [
+        "After a transaction, leave feedback via the 'Feedback' section in your profile. Rate and review your experience to help others! Need help submitting one? 😊",
+        "You can rate sellers or buyers post-transaction in the 'Feedback' tab. It builds trust—want a step-by-step? 🚀",
+        "Leave feedback in your profile’s 'Feedback' section after a sale. Got a recent transaction to rate? 🤝"
+      ]
+    },
+    {
+      "tag": "messaging",
+      "patterns": [
+        "how to message a seller",
+        "contact a buyer",
+        "send a message",
+        "chat with users",
+        "how do i talk to a seller",
+        "messaging system",
+        "secure chat",
+        "how to communicate on auctionhub",
+        "message a bidder",
+        "talk to someone about an auction"
+      ],
+      "responses": [
+        "Use the secure messaging system in the auction listing or your profile to chat with buyers or sellers. Need help starting a conversation? 😊",
+        "Message sellers or buyers directly through the auction page’s chat feature. It’s secure—want to send one now? 🚀",
+        "Chat with users via the messaging tool in the auction or your profile. Got someone you need to reach? 🤝"
+      ]
+    },
+    {
+      "tag": "analytics",
+      "patterns": [
+        "how do i check my auction performance?",
+        "seller analytics",
+        "buyer spending history",
+        "track my sales",
+        "auction stats",
+        "performance metrics",
+        "how to see my bidding history",
+        "sales analytics",
+        "view my auction results",
+        "check my bidding success"
+      ],
+      "responses": [
+        "Sellers can track views, bids, and sales in the 'Analytics' section of the 'Sell' dashboard. Buyers, check your bidding history in your profile. Want help finding your stats? 😊",
+        "See your auction performance in 'Analytics' for sellers or bidding history in your profile for buyers. Need a guide to the numbers? 🚀",
+        "Check 'Analytics' in the 'Sell' tab for seller stats or your profile for bidding history. Got a specific metric you’re curious about? 🤝"
+      ]
+    },
+    {
+      "tag": "anti_sniping",
+      "patterns": [
+        "what is anti-sniping?",
+        "how does anti-sniping work",
+        "explain anti-sniping",
+        "last-second bids",
+        "auction extension rules",
+        "how to prevent sniping",
+        "what happens with last-minute bids",
+        "anti-sniping measures"
+      ],
+      "responses": [
+        "Anti-sniping extends an auction’s duration if bids come in at the last second, giving everyone a fair shot. Check the auction rules for details—want to know more? 😊",
+        "Our anti-sniping feature adds time to auctions if last-minute bids hit, ensuring fairness. Curious about how it works in a specific auction? 🚀",
+        "Anti-sniping stops last-second wins by extending the auction if bids are placed near the end. Need details on a listing? 🤝"
+      ]
+    },
+    {
+      "tag": "verification",
+      "patterns": [
+        "how to verify my identity",
+        "identity verification",
+        "verify my account for bidding",
+        "do i need id to bid",
+        "how does verification work",
+        "account verification process",
+        "submit id for auctions",
+        "why verify my account",
+        "verification requirements"
+      ],
+      "responses": [
+        "Verify your identity in the 'Profile' section with a government ID or address proof for secure bidding. Need help with the process? 😊",
+        "Identity verification in 'Profile' ensures safe auctions. Upload an ID or proof—want a step-by-step? 🚀",
+        "To bid securely, verify your account in 'Profile' with ID or address details. Got questions about verification? 🤝"
+      ]
+    },
+    {
+      "tag": "proxy_bidding",
+      "patterns": [
+        "what is proxy bidding",
+        "how does proxy bidding work",
+        "explain proxy bidding",
+        "automatic bidding",
+        "how to set up proxy bidding",
+        "proxy bid setup",
+        "auto-bidding process",
+        "what’s auto bidding"
+      ],
+      "responses": [
+        "Proxy bidding lets you set a maximum bid, and AuctionHub bids for you up to that limit. Set it on the auction page—want help trying it? 😊",
+        "With proxy bidding, you pick your max price, and we bid automatically to keep you in the lead. Easy—ready to set one up? 🚀",
+        "Proxy bidding’s your auto-bidder! Enter your max on an auction, and we’ll bid for you. Need a guide? 🤝"
+      ]
+    },
+    {
+      "tag": "emotion_excited",
+      "patterns": [
+        "i just won an auction",
+        "i got the item",
+        "i’m so thrilled",
+        "just scored a deal",
+        "i can’t believe i won",
+        "this is incredible",
+        "i’m overjoyed",
+        "what a win",
+        "i’m ecstatic",
+        "just nailed it"
+      ],
+      "responses": [
+        "Whoa, that’s awesome—congrats on the win! 🎉 What did you score? Ready to celebrate with another bid? 😎",
+        "Heck yeah, you nailed it! 😄 Tell me about that sweet deal—wanna hunt for more? 🚀",
+        "Overjoyed? I’m hyped for you! 🎊 What’s the item you won? Let’s find another gem! 😊"
+      ]
+    },
+    {
+      "tag": "emotion_frustrated",
+      "patterns": [
+        "i lost an auction",
+        "i didn’t win",
+        "this is so annoying",
+        "i’m so frustrated",
+        "why didn’t i win",
+        "i missed out",
+        "this is irritating",
+        "i’m upset about losing",
+        "kept getting outbid",
+        "i’m ticked off"
+      ],
+      "responses": [
+        "Aw, bummer you didn’t win this time! 😔 Wanna talk strategy for the next auction or browse new listings to bounce back? 🚀",
+        "Losing an auction stinks, I feel ya! 😢 Let’s find another awesome item to bid on—any categories you love? 😊",
+        "Ugh, that’s frustrating! 😣 Don’t worry, there’s tons more auctions—want tips to nail the next one? 🤝"
+      ]
+    },
+    {
+      "tag": "casual_checkin",
+      "patterns": [
+        "how’s it going over there",
+        "what’s up with auctionhub",
+        "how’s the auction scene",
+        "what’s the buzz",
+        "how’s the platform doing",
+        "what’s new on auctionhub",
+        "how’s the vibe at auctionhub",
+        "what’s the latest",
+        "how’s everything at auctionhub",
+        "what’s the auction mood"
+      ],
+      "responses": [
+        "Yo, AuctionHub’s buzzing with cool items! 😎 Wanna check out what’s hot in watches or cars? 🚀",
+        "The vibe’s electric over here! 😄 Auctions are poppin’—any category you’re curious about? 🎉",
+        "All good at AuctionHub, friend! 🥳 What’s the latest with you—ready to dive into some auctions? 😊"
+      ]
+    }
+  ]
+}

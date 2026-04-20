@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Invoice | AuctionHub Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5e35b1;
+            --primary-light: #7e57c2;
+            --primary-dark: #4527a0;
+            --primary-hover: #7e57c2; /* Added for button hover */
+            --secondary-color: #2196f3;
+            --success-color: #00c853;
+            --warning-color: #ffab00;
+            --danger-color: #f44336;
+            --dark-color: #121212;
+            --light-bg: #f5f7fa;
+            --muted-color: #78909c;
+            --border-radius: 12px;
+            --card-shadow: 0 8px 24px rgba(149, 157, 165, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--dark-color);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .layout-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: #ffffff;
+            min-height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-right: 1px solid #e0e0e0;
+            padding: 2rem 1.5rem;
+            z-index: 1000;
+            transition: var(--transition);
+            transform: translateX(0);
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-brand-icon {
+            background: var(--primary-color);
+            color: #fff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .sidebar-brand-icon i {
+            font-size: 1.5rem;
+        }
+
+        .sidebar-brand-text {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--dark-color);
+        }
+
+        .sidebar-brand-accent {
+            color: var(--primary-color);
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-header {
+            color: #9e9e9e;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.5rem 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar .nav-link {
+            color: #616161;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            margin: 4px 0;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar .nav-link:hover {
+            background: #f5f5f5;
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .sidebar .nav-link.active {
+            background: var(--primary-light);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .sidebar .nav-link i {
+            width: 20px;
+            margin-right: 12px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 0;
+            transition: margin-left 0.3s ease;
+            background-color: var(--light-bg);
+            position: relative;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2.5rem;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .page-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            margin: 0;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .content-wrapper {
+            padding: 2.5rem;
+        }
+
+        .dashboard-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            background: white;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 1.5rem 2rem;
+        }
+
+        .card-header h2 {
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin: 0;
+            color: var(--dark-color);
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid rgba(0,0,0,0.08);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(58, 134, 255, 0.15);
+        }
+
+        .form-control:hover, .form-select:hover {
+            border-color: rgba(0,0,0,0.2);
+        }
+
+        .form-control:read-only {
+            background-color: rgba(0,0,0,0.03);
+            cursor: not-allowed;
+        }
+
+        .form-check-input {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-top: 0.15rem;
+            cursor: pointer;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .form-check-label {
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn {
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(58, 134, 255, 0.2);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            border-color: #dee2e6;
+            color: var(--dark-color);
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+            border-color: #ced4da;
+            color: var(--dark-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .invoice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background-color: rgba(255, 190, 11, 0.15);
+            color: #e09b00;
+        }
+
+        .status-paid {
+            background-color: rgba(6, 214, 160, 0.15);
+            color: #05b184;
+        }
+
+        .status-overdue {
+            background-color: rgba(255, 0, 110, 0.15);
+            color: #d1005c;
+        }
+
+        .alert {
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background-color: rgba(6, 214, 160, 0.15);
+            border-color: rgba(6, 214, 160, 0.3);
+            color: #05b184;
+        }
+
+        .alert-danger {
+            background-color: rgba(255, 0, 110, 0.15);
+            border-color: rgba(255, 0, 110, 0.3);
+            color: #d1005c;
+        }
+
+        .toggle-sidebar {
+            display: none;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .toggle-sidebar:hover {
+            background: var(--primary-dark);
+        }
+
+        @media (max-width: 1200px) {
+            .invoice-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .toggle-sidebar {
+                display: flex;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .main-content.sidebar-open {
+                margin-left: var(--sidebar-width);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-bar, .content-wrapper {
+                padding: 1.25rem;
+            }
+
+            .card-header, .card-body {
+                padding: 1.25rem;
+            }
+        }
+
+        /* Animation effects */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        /* Unique neumorphic status indicator */
+        .status-indicator {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.05), -5px -5px 10px rgba(255,255,255,0.5);
+            margin-bottom: 1.5rem;
+        }
+
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-pending { background-color: var(--warning-color); }
+        .dot-paid { background-color: var(--success-color); }
+        .dot-overdue { background-color: var(--danger-color); }
+
+        /* Custom switch styling */
+        .form-switch .form-check-input {
+            width: 3rem;
+            height: 1.5rem;
+            border-radius: 1rem;
+            background-color: rgba(0,0,0,0.1);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e");
+        }
+
+        .form-switch .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e");
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon">
+                    <i class="fas fa-gavel fa-2x"></i>
+                </div>
+                <div class="sidebar-brand-text">
+                    Auction<span class="sidebar-brand-accent">Hub</span>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-header">Dashboard</div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'adash' %}">
+                            <i class="fas fa-home"></i>
+                            Overview
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-chart-line"></i>
+                            Analytics
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="nav-section">
+                <div class="nav-header">Management</div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'list_users' %}">
+                            <i class="fas fa-users"></i>
+                            Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin_auction_list' %}">
+                            <i class="fas fa-gavel"></i>
+                            Auctions
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'payment_details' %}">
+                            <i class="fas fa-credit-card"></i>
+                            Payments
+                        </a>
+                    </li>
+                       <li class="nav-item">
+        <a class="nav-link" href="{% url 'admin_feedback' %}">
+          <i class="fas fa-comment-dots"></i>
+          Enquiry
+        </a>
+      </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'invoice_list' %}">
+                            <i class="fas fa-file-invoice"></i>
+                            Invoices
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="nav-section">
+                <div class="nav-header">System</div>
+                <ul class="nav flex-column">
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <div class="top-bar">
+                <div class="d-flex align-items-center">
+                    <button class="toggle-sidebar" id="toggle-sidebar" aria-expanded="false" aria-label="Toggle sidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Edit Invoice</h1>
+                </div>
+                <div class="page-actions">
+                    <a href="{% url 'invoice_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                    </a>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} animate-fade-in">
+                            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="dashboard-card animate-fade-in">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2>Invoice #{{ invoice.id }}</h2>
+                        <div class="status-indicator">
+                            <div class="indicator-dot dot-{% if invoice.status == 'Pending' %}pending{% elif invoice.status == 'Paid' %}paid{% else %}overdue{% endif %}"></div>
+                            <span class="fw-semibold">Current Status: {{ invoice.status }}</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+
+                            <div class="invoice-grid mb-4">
+                                <div class="mb-3">
+                                    <label for="invoice_id" class="form-label">Invoice ID</label>
+                                    <input type="text" class="form-control" id="invoice_id" value="{{ invoice.id }}" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Status</label>
+                                    <select class="form-select" id="status" name="status" required aria-describedby="statusFeedback">
+                                        <option value="Pending" {% if invoice.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                        <option value="Paid" {% if invoice.status == 'Paid' %}selected{% endif %}>Paid</option>
+                                        <option value="Overdue" {% if invoice.status == 'Overdue' %}selected{% endif %}>Overdue</option>
+                                    </select>
+                                    <div id="statusFeedback" class="invalid-feedback">Please select a status.</div>
+                                </div>
+                            </div>
+
+                            <h5 class="mb-3 fw-bold">Auction Details</h5>
+                            <div class="invoice-grid mb-4">
+                                <div class="mb-3">
+                                    <label for="auction_id" class="form-label">Auction ID</label>
+                                    <input type="number" class="form-control" id="auction_id" name="auction_id" value="{{ invoice.auction_id }}"
+                                           min="1" step="1" required aria-describedby="auctionIdFeedback">
+                                    <div id="auctionIdFeedback" class="invalid-feedback">Please provide a valid Auction ID (positive integer).</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="amount_due" class="form-label">Amount Due</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" step="0.01" class="form-control" id="amount_due" name="amount_due"
+                                               value="{{ invoice.amount_due }}" min="0" required aria-describedby="amountDueFeedback">
+                                    </div>
+                                    <div id="amountDueFeedback" class="invalid-feedback">Please provide a valid amount (non-negative).</div>
+                                </div>
+                            </div>
+
+                            <h5 class="mb-3 fw-bold">Participants</h5>
+                            <div class="invoice-grid mb-4">
+                                <div class="mb-3">
+                                    <label for="buyer_id" class="form-label">Buyer ID</label>
+                                    <input type="number" class="form-control" id="buyer_id" name="buyer_id" value="{{ invoice.buyer_id }}"
+                                           min="1" step="1" required aria-describedby="buyerIdFeedback">
+                                    <div id="buyerIdFeedback" class="invalid-feedback">Please provide a valid Buyer ID (positive integer).</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="seller_id" class="form-label">Seller ID</label>
+                                    <input type="number" class="form-control" id="seller_id" name="seller_id" value="{{ invoice.seller_id }}"
+                                           min="1" step="1" required aria-describedby="sellerIdFeedback">
+                                    <div id="sellerIdFeedback" class="invalid-feedback">Please provide a valid Seller ID (positive integer).</div>
+                                </div>
+                            </div>
+
+                            <h5 class="mb-3 fw-bold">Dates & Fees</h5>
+                            <div class="invoice-grid mb-4">
+                                <div class="mb-3">
+                                    <label for="issue_date" class="form-label">Issue Date</label>
+                                    <input type="datetime-local" class="form-control" id="issue_date" name="issue_date"
+                                           value="{{ invoice.issue_date|date:'Y-m-d\\TH:i' }}" required aria-describedby="issueDateFeedback">
+                                    <div id="issueDateFeedback" class="invalid-feedback">Please provide a valid issue date.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="due_date" class="form-label">Due Date</label>
+                                    <input type="datetime-local" class="form-control" id="due_date" name="due_date"
+                                           value="{{ invoice.due_date|date:'Y-m-d\\TH:i' }}" required aria-describedby="dueDateFeedback">
+                                    <div id="dueDateFeedback" class="invalid-feedback">Please provide a valid due date (must be after issue date).</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="late_fee" class="form-label">Late Fee</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" step="0.01" class="form-control" id="late_fee" name="late_fee"
+                                               value="{{ invoice.late_fee }}" min="0" aria-describedby="lateFeeFeedback">
+                                    </div>
+                                    <div id="lateFeeFeedback" class="invalid-feedback">Please provide a valid late fee (non-negative).</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Communication</label>
+                                    <div class="form-check form-switch mt-2">
+                                        <input type="checkbox" class="form-check-input" id="reminder_sent" name="reminder_sent"
+                                               {% if invoice.reminder_sent %}checked{% endif %}>
+                                        <label class="form-check-label" for="reminder_sent">Reminder Sent to Customer</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Update Invoice
+                                </button>
+                                <a href="{% url 'invoice_list' %}" class="btn btn-secondary">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar toggle
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const toggleSidebarBtn = document.getElementById('toggle-sidebar');
+
+        toggleSidebarBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('show');
+            const isSidebarOpen = sidebar.classList.contains('show');
+            mainContent.classList.toggle('sidebar-open', isSidebarOpen);
+            toggleSidebarBtn.setAttribute('aria-expanded', isSidebarOpen);
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnToggleBtn = toggleSidebarBtn.contains(event.target);
+            if (!isClickInsideSidebar && !isClickOnToggleBtn && sidebar.classList.contains('show') && window.innerWidth <= 992) {
+                sidebar.classList.remove('show');
+                mainContent.classList.remove('sidebar-open');
+                toggleSidebarBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Advanced form validation
+        (function () {
+            'use strict';
+
+            const form = document.querySelector('.needs-validation');
+            const auctionIdInput = document.getElementById('auction_id');
+            const buyerIdInput = document.getElementById('buyer_id');
+            const sellerIdInput = document.getElementById('seller_id');
+            const amountDueInput = document.getElementById('amount_due');
+            const lateFeeInput = document.getElementById('late_fee');
+            const issueDateInput = document.getElementById('issue_date');
+            const dueDateInput = document.getElementById('due_date');
+
+            form.addEventListener('submit', function (event) {
+                let isValid = true;
+
+                // Reset validation states
+                form.querySelectorAll('.form-control, .form-select').forEach(input => {
+                    input.classList.remove('is-invalid');
+                });
+
+                // Validate Auction ID (positive integer)
+                const auctionId = parseInt(auctionIdInput.value);
+                if (isNaN(auctionId) || auctionId < 1) {
+                    auctionIdInput.classList.add('is-invalid');
+                    auctionIdInput.nextElementSibling.textContent = 'Please provide a valid Auction ID (positive integer).';
+                    isValid = false;
+                }
+
+                // Validate Buyer ID (positive integer)
+                const buyerId = parseInt(buyerIdInput.value);
+                if (isNaN(buyerId) || buyerId < 1) {
+                    buyerIdInput.classList.add('is-invalid');
+                    buyerIdInput.nextElementSibling.textContent = 'Please provide a valid Buyer ID (positive integer).';
+                    isValid = false;
+                }
+
+                // Validate Seller ID (positive integer)
+                const sellerId = parseInt(sellerIdInput.value);
+                if (isNaN(sellerId) || sellerId < 1) {
+                    sellerIdInput.classList.add('is-invalid');
+                    sellerIdInput.nextElementSibling.textContent = 'Please provide a valid Seller ID (positive integer).';
+                    isValid = false;
+                }
+
+                // Validate Amount Due (non-negative)
+                const amountDue = parseFloat(amountDueInput.value);
+                if (isNaN(amountDue) || amountDue < 0) {
+                    amountDueInput.classList.add('is-invalid');
+                    amountDueInput.parentElement.nextElementSibling.textContent = 'Please provide a valid amount (non-negative).';
+                    isValid = false;
+                }
+
+                // Validate Late Fee (non-negative, optional)
+                const lateFee = parseFloat(lateFeeInput.value);
+                if (lateFeeInput.value !== '' && (isNaN(lateFee) || lateFee < 0)) {
+                    lateFeeInput.classList.add('is-invalid');
+                    lateFeeInput.parentElement.nextElementSibling.textContent = 'Please provide a valid late fee (non-negative).';
+                    isValid = false;
+                }
+
+                // Validate Issue Date and Due Date
+                const issueDate = new Date(issueDateInput.value);
+                const dueDate = new Date(dueDateInput.value);
+                if (!issueDateInput.value) {
+                    issueDateInput.classList.add('is-invalid');
+                    issueDateInput.nextElementSibling.textContent = 'Please provide a valid issue date.';
+                    isValid = false;
+                }
+
+
+                // Basic HTML5 validation
+                if (!form.checkValidity()) {
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                form.classList.add('was-validated');
+            }, false);
+
+            // Real-time validation for dates
+            const validateDates = () => {
+                const issueDate = new Date(issueDateInput.value);
+                const dueDate = new Date(dueDateInput.value);
+                if (issueDateInput.value && dueDateInput.value && dueDate <= issueDate) {
+                    dueDateInput.classList.add('is-invalid');
+                    dueDateInput.nextElementSibling.textContent = 'Due date must be after the issue date.';
+                } else {
+                    dueDateInput.classList.remove('is-invalid');
+                }
+            };
+
+            issueDateInput.addEventListener('change', validateDates);
+            dueDateInput.addEventListener('change', validateDates);
+
+            // Real-time validation for numeric inputs
+            [auctionIdInput, buyerIdInput, sellerIdInput].forEach(input => {
+                input.addEventListener('input', function() {
+                    const value = parseInt(this.value);
+                    if (isNaN(value) || value < 1) {
+                        this.classList.add('is-invalid');
+                        this.nextElementSibling.textContent = `Please provide a valid ${this.name.replace('_', ' ')} (positive integer).`;
+                    } else {
+                        this.classList.remove('is-invalid');
+                    }
+                });
+            });
+
+            [amountDueInput, lateFeeInput].forEach(input => {
+                input.addEventListener('input', function() {
+                    const value = parseFloat(this.value);
+                    if (this === lateFeeInput && this.value === '') return; // Late fee is optional
+                    if (isNaN(value) || value < 0) {
+                        this.classList.add('is-invalid');
+                        this.parentElement.nextElementSibling.textContent = `Please provide a valid ${this.name.replace('_', ' ')} (non-negative).`;
+                    } else {
+                        this.classList.remove('is-invalid');
+                    }
+                });
+            });
+        })();
+
+        // Status color updates
+        const statusSelect = document.getElementById('status');
+        const statusIndicator = document.querySelector('.indicator-dot');
+
+        statusSelect.addEventListener('change', function() {
+            statusIndicator.classList.remove('dot-pending', 'dot-paid', 'dot-overdue');
+            if (this.value === 'Pending') {
+                statusIndicator.classList.add('dot-pending');
+            } else if (this.value === 'Paid') {
+                statusIndicator.classList.add('dot-paid');
+            } else {
+                statusIndicator.classList.add('dot-overdue');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuctionHub Admin | Feedback Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+  :root {
+            --primary-color: #5e35b1;
+            --primary-light: #7e57c2;
+            --primary-dark: #4527a0;
+            --secondary-color: #2196f3;
+            --success-color: #00c853;
+            --warning-color: #ffab00;
+            --danger-color: #f44336;
+            --dark-color: #121212;
+            --light-bg: #f5f7fa;
+            --muted-color: #78909c;
+            --border-radius: 12px;
+            --card-shadow: 0 8px 24px rgba(149, 157, 165, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9fafb;
+      color: var(--dark-color);
+      line-height: 1.6;
+    }
+
+    .sidebar {
+      background: #fff;
+      min-height: 100vh;
+      width: 260px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      border-right: 1px solid #e0e0e0;
+      padding: 1.5rem 1rem;
+      z-index: 1000;
+      transition: var(--transition);
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .sidebar-brand-icon {
+      background: var(--primary-color);
+      color: #fff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+    }
+
+    .sidebar-brand-icon i {
+      font-size: 1.2rem;
+    }
+
+    .sidebar-brand-text {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--dark-color);
+    }
+
+    .sidebar-brand-accent {
+      color: var(--secondary-color);
+    }
+
+    .nav-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .nav-header {
+      color: var(--muted-color);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0.5rem 0;
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar .nav-link {
+      color: #666;
+      padding: 0.75rem 1rem;
+      border-radius: var(--border-radius);
+      margin: 2px 0;
+      transition: var(--transition);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar .nav-link:hover {
+      background: #f8f9fa;
+      color: var(--primary-dark);
+    }
+
+    .sidebar .nav-link.active {
+      background: var(--primary-light);
+      color: #fff;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar .nav-link i {
+      width: 20px;
+      margin-right: 10px;
+      text-align: center;
+    }
+
+    .main-content {
+      margin-left: 260px;
+      padding: 2rem 3rem;
+      min-height: 100vh;
+    }
+
+    .header-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .header-section h2 {
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .feedback-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+    }
+
+    .feedback-card:hover {
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .feedback-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .feedback-title {
+      font-weight: 500;
+      color: var(--primary-color);
+    }
+
+    .feedback-meta {
+      font-size: 0.85rem;
+      color: var(--muted-color);
+    }
+
+    .message-content {
+      margin: 1rem 0;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-left: 4px solid var(--primary-light);
+      border-radius: 4px;
+      word-wrap: break-word;
+    }
+
+    .reply-section {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-left: 4px solid var(--success-color);
+      border-radius: 4px;
+    }
+
+    .reply-item {
+      margin-bottom: 0.75rem;
+      padding: 0.75rem;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+    }
+
+    .reply-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .reply-meta {
+      font-size: 0.75rem;
+      color: var(--muted-color);
+      margin-top: 0.25rem;
+    }
+
+    .file-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .file-chip {
+      display: inline-flex;
+      align-items: center;
+      background: #ecf0f1;
+      color: var(--dark-color);
+      padding: 0.5rem 0.75rem;
+      border-radius: 16px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: var(--transition);
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-chip:hover {
+      background: var(--secondary-color);
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    .file-chip i {
+      margin-right: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .file-chip .download-icon {
+      margin-left: 0.5rem;
+      font-size: 0.7rem;
+      opacity: 0.8;
+    }
+
+    .file-chip:hover .download-icon {
+      opacity: 1;
+    }
+
+    .no-files {
+      color: var(--muted-color);
+      font-style: italic;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      color: var(--muted-color);
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 1rem;
+    }
+
+    .action-btn:hover {
+      color: var(--primary-dark);
+    }
+
+    .delete-btn:hover {
+      color: var(--danger-color);
+    }
+
+    .reply-btn:hover {
+      color: var(--success-color);
+    }
+
+    .loading {
+      text-align: center;
+      color: var(--muted-color);
+      padding: 2rem;
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 260px;
+      }
+      .sidebar.show {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 1.5rem;
+      }
+      .toggle-sidebar {
+        display: block;
+      }
+    }
+
+    .toggle-sidebar {
+      display: none;
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1100;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+    }
+
+    .toggle-sidebar:hover {
+      background: var(--secondary-color);
+      transform: rotate(90deg);
+    }
+
+    .error-message {
+      color: var(--danger-color);
+      text-align: center;
+      margin: 1rem 0;
+      display: none;
+    }
+
+    .notification {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--success-color);
+      color: #fff;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      z-index: 1100;
+      animation: slideIn 0.5s ease, fadeOut 3s ease 2s forwards;
+    }
+
+    .notification.show {
+      display: block;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-icon">
+      <i class="fas fa-gavel"></i>
+    </div>
+    <div class="sidebar-brand-text">
+      Auction<span class="sidebar-brand-accent">Hub</span>
+    </div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-header">Dashboard</div>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'adash' %}">
+          <i class="fas fa-home"></i> Overview
+        </a>
+      </li>
+
+    </ul>
+  </div>
+  <div class="nav-section">
+    <div class="nav-header">Management</div>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'list_users' %}">
+          <i class="fas fa-users"></i> Users
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'admin_auction_list' %}">
+          <i class="fas fa-gavel"></i> Auctions
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'payment_details' %}">
+          <i class="fas fa-credit-card"></i> Payments
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="{% url 'admin_feedback' %}">
+          <i class="fas fa-comment-dots"></i> Enquiry
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'invoice_list' %}">
+          <i class="fas fa-file-invoice"></i> Invoices
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="nav-section">
+    <div class="nav-header">System</div>
+    <ul class="nav flex-column">
+
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'logout' %}">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- Toggle Sidebar Button (Mobile) -->
+<button class="toggle-sidebar" id="toggleSidebar">
+  <i class="fas fa-bars"></i>
+</button>
+
+<!-- Main Content -->
+<div class="main-content">
+  <div class="header-section">
+    <h2>Feedback Management</h2>
+    <div class="header-actions">
+      <span class="text-muted"><i class="fas fa-calendar-alt"></i> <span id="current-date"></span></span>
+
+    </div>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show" role="alert">
+        <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% else %}check-circle{% endif %}"></i> {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- Seller Feedback -->
+  <h3 class="mb-4">Seller/Buyer </h3>
+  <div class="row g-3" id="seller-feedback-container">
+    <div class="loading">Loading seller feedback...</div>
+  </div>
+
+  <!-- Buyer Feedback -->
+  <h3 class="mb-4 mt-5">Buyer </h3>
+  <div class="row g-3" id="buyer-feedback-container">
+    <div class="loading">Loading buyer feedback...</div>
+  </div>
+
+  <!-- Error Message Display -->
+  <div class="error-message" id="error-message"></div>
+</div>
+
+<!-- Reply Panel -->
+<div class="panel fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-2xl p-6 w-96 max-h-[80vh] overflow-y-auto z-50 hidden" id="replyPanel">
+  <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-4">
+    <h5 class="text-xl font-semibold text-gray-800">Reply to <span id="replyName" class="text-primary-600"></span></h5>
+    <button class="text-gray-500 hover:text-red-500 text-2xl" onclick="closePanel('replyPanel')">&times;</button>
+  </div>
+  <form id="replyForm" method="post" class="space-y-4">
+    {% csrf_token %}
+    <div class="mb-4">
+      <label for="replyText" class="block text-sm font-medium text-gray-700">Your Reply</label>
+      <textarea class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent mt-1 resize-y" id="replyText" name="reply_text" rows="4" placeholder="Type your response here..." required></textarea>
+    </div>
+    <div class="flex justify-end gap-3">
+      <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 ease-in-out transform hover:-translate-y-1">Send Reply</button>
+      <button type="button" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition duration-300 ease-in-out" onclick="closePanel('replyPanel')">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<!-- Delete Panel -->
+<div class="panel fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-2xl p-6 w-96 max-h-[80vh] overflow-y-auto z-50 hidden" id="deletePanel">
+  <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-4">
+    <h5 class="text-xl font-semibold text-gray-800">Delete Feedback from <span id="deleteName" class="text-primary-600"></span></h5>
+    <button class="text-gray-500 hover:text-red-500 text-2xl" onclick="closePanel('deletePanel')">&times;</button>
+  </div>
+  <form id="deleteForm" method="post" class="space-y-4">
+    {% csrf_token %}
+    <div class="mb-4">
+      <p class="text-gray-700">Are you sure you want to delete feedback ID <span id="deleteId" class="font-medium text-red-600"></span> from <span id="deleteNameRepeat" class="font-medium text-primary-600"></span>? This action cannot be undone.</p>
+    </div>
+    <div class="flex justify-end gap-3">
+      <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out transform hover:-translate-y-1">Delete</button>
+      <button type="button" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition duration-300 ease-in-out" onclick="closePanel('deletePanel')">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<!-- Notification -->
+<div class="notification fixed top-20 right-20 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 hidden" id="notification"></div>
+
+<!-- Overlay -->
+<div class="overlay fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-40 hidden" id="overlay"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Sidebar toggle
+  document.getElementById('toggleSidebar').addEventListener('click', function() {
+    document.getElementById('sidebar').classList.toggle('show');
+  });
+
+  // Set current date
+  document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  // Initialize tooltips
+  let tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+  // Panel Functions
+  function openPanel(panelId, name, type, feedbackId) {
+    const panel = document.getElementById(panelId);
+    const overlay = document.getElementById('overlay');
+    const form = panel.querySelector('form');
+    const feedbackIdNum = feedbackId.split('-')[0];
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+    if (type === 'reply') {
+      document.getElementById('replyName').textContent = name;
+      form.action = `/feedbacks/reply/${feedbackIdNum}/`;
+    } else if (type === 'delete') {
+      document.getElementById('deleteName').textContent = name;
+      document.getElementById('deleteNameRepeat').textContent = name;
+      document.getElementById('deleteId').textContent = feedbackIdNum;
+      form.action = `/feedbacks/delete/${feedbackIdNum}/`;
+    }
+
+    panel.classList.remove('hidden');
+    panel.classList.add('block');
+    overlay.classList.remove('hidden');
+    overlay.classList.add('block');
+
+    form.onsubmit = function(event) {
+      event.preventDefault();
+      const formData = new FormData(form);
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.text().then(text => {
+            throw new Error(`HTTP error! Status: ${response.status}, Response: ${text}`);
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          closePanel(panelId);
+          if (type === 'reply') {
+            const feedbackCard = document.querySelector(`[data-feedback-id="${data.feedback_id}"] .reply-section`);
+            if (feedbackCard) {
+              feedbackCard.innerHTML += `
+                <div class="reply-item">
+                  <strong>Admin Reply:</strong> ${data.new_reply}
+                  <div class="reply-meta">Replied on ${new Date(data.created_at).toLocaleString()}</div>
+                </div>
+              `;
+            } else {
+              const container = data.feedback_id.startsWith('seller') ? document.getElementById('seller-feedback-container') : document.getElementById('buyer-feedback-container');
+              const card = document.createElement('div');
+              card.className = 'col-12';
+              card.innerHTML = `
+                <div class="feedback-card" data-feedback-id="${data.feedback_id}">
+                  <div class="feedback-header">
+                    <div>
+                      <div class="feedback-title">Feedback ID: ${data.feedback_id}</div>
+                      <div class="feedback-meta">From: ${name} | ${name}@example.com | Submitted: ${new Date().toLocaleString()}</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button type="button" class="action-btn reply-btn" onclick="openPanel('replyPanel', '${name}', 'reply', '${data.feedback_id}')">
+                        <i class="fas fa-reply" data-bs-toggle="tooltip" title="Reply"></i>
+                      </button>
+                      <button type="button" class="action-btn delete-btn" onclick="openPanel('deletePanel', '${name}', 'delete', '${data.feedback_id}')">
+                        <i class="fas fa-trash-alt" data-bs-toggle="tooltip" title="Delete"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="message-content">Sample message</div>
+                  <div class="reply-section">
+                    <h6 class="mb-2"><i class="fas fa-comments"></i> Admin Replies</h6>
+                    <div class="reply-item">
+                      <strong>Admin Reply:</strong> ${data.new_reply}
+                      <div class="reply-meta">Replied on ${new Date(data.created_at).toLocaleString()}</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+              container.insertBefore(card, container.firstChild);
+            }
+            showNotification(`Replied to feedback ID ${data.feedback_id}`);
+          } else if (type === 'delete') {
+            document.querySelector(`[data-feedback-id="${feedbackIdNum}"]`).remove();
+            showNotification(`Feedback ID ${feedbackIdNum} deleted`);
+          }
+          fetchFeedback(); // Refresh with new data
+        } else {
+          document.getElementById('error-message').textContent = data.error || 'Unknown error occurred';
+          document.getElementById('error-message').style.display = 'block';
+          setTimeout(() => document.getElementById('error-message').style.display = 'none', 5000);
+        }
+      })
+      .catch(error => {
+        console.error('Fetch Error:', error);
+        document.getElementById('error-message').textContent = `Fetch error: ${error.message}`;
+        document.getElementById('error-message').style.display = 'block';
+        setTimeout(() => document.getElementById('error-message').style.display = 'none', 5000);
+      });
+    };
+  }
+
+  function closePanel(panelId) {
+    const panel = document.getElementById(panelId);
+    const overlay = document.getElementById('overlay');
+    panel.classList.remove('block');
+    panel.classList.add('hidden');
+    overlay.classList.remove('block');
+    overlay.classList.add('hidden');
+    if (panelId === 'replyPanel') {
+      document.getElementById('replyForm').reset();
+    }
+    document.getElementById('error-message').style.display = 'none';
+  }
+
+  document.getElementById('overlay').addEventListener('click', function() {
+    closePanel('replyPanel');
+    closePanel('deletePanel');
+  });
+
+  // Real-time feedback polling
+  let lastUpdated = null;
+
+  function fetchFeedback(initial = false) {
+    const url = '/feedbacks/' + (initial ? 'initial/' : 'api/') + (lastUpdated && !initial ? `?last_updated=${encodeURIComponent(lastUpdated)}` : '');
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+      }
+    })
+    .then(response => {
+      if (!response.ok) throw new Error(response.statusText);
+      return response.json();
+    })
+    .then(data => {
+      if (initial) {
+        document.getElementById('seller-feedback-container').innerHTML = '';
+        document.getElementById('buyer-feedback-container').innerHTML = '';
+        updateFeedback('seller', data.seller_feedback, true);
+        updateFeedback('buyer', data.buyer_feedback, true);
+      } else {
+        updateFeedback('seller', data.seller_feedback);
+        updateFeedback('buyer', data.buyer_feedback);
+      }
+      lastUpdated = data.last_updated;
+    })
+    .catch(error => console.error('Fetch Error:', error));
+  }
+
+  function updateFeedback(type, newFeedback, initial = false) {
+    const container = document.getElementById(`${type}-feedback-container`);
+    const existingIds = new Set([...container.querySelectorAll('.feedback-card')].map(card => card.getAttribute('data-feedback-id')));
+
+    newFeedback.forEach(feedback => {
+      if (!existingIds.has(feedback.id.toString()) || initial) {
+        const card = document.createElement('div');
+        card.className = 'col-12';
+        card.innerHTML = `
+          <div class="feedback-card" data-feedback-id="${feedback.id}" data-created-at="${feedback.created_at}">
+            <div class="feedback-header">
+              <div>
+                <div class="feedback-title">Feedback ID: ${feedback.id}</div>
+                <div class="feedback-meta">From: ${feedback.name} | ${feedback.email} | Submitted: ${new Date(feedback.created_at).toLocaleString()}</div>
+              </div>
+              <div class="d-flex gap-2">
+                <button type="button" class="action-btn reply-btn" onclick="openPanel('replyPanel', '${feedback.name}', 'reply', '${feedback.id}-${type}')">
+                  <i class="fas fa-reply" data-bs-toggle="tooltip" title="Reply"></i>
+                </button>
+                <button type="button" class="action-btn delete-btn" onclick="openPanel('deletePanel', '${feedback.name}', 'delete', '${feedback.id}-${type}')">
+                  <i class="fas fa-trash-alt" data-bs-toggle="tooltip" title="Delete"></i>
+                </button>
+              </div>
+            </div>
+            <div class="message-content">${feedback.message}</div>
+            ${feedback.file_paths.length ? `
+              <div class="file-list">
+                ${feedback.file_paths.map(file => {
+                  const ext = file.slice(-4).toLowerCase();
+                  return `<a href="${file}" target="_blank" class="file-chip" data-bs-toggle="tooltip" data-bs-placement="top" title="${file}">
+                    <i class="${ext === '.pdf' ? 'fas fa-file-pdf' : ext.match(/\.png|\.jpg|\.jpeg/) ? 'fas fa-file-image' : 'fas fa-file'}"></i>
+                    ${file.replace('/media/feedback/', '')}
+                    <i class="fas fa-download download-icon"></i>
+                  </a>`;
+                }).join('')}
+              </div>
+            ` : '<div class="no-files">No attachments</div>'}
+            ${feedback.replies.some(reply => reply.admin_id) ? `
+              <div class="reply-section">
+                <h6 class="mb-2"><i class="fas fa-comments"></i> Admin Replies</h6>
+                ${feedback.replies.filter(reply => reply.admin_id).map(reply => `
+                  <div class="reply-item">
+                    <strong>Admin Reply:</strong> ${reply.reply_text}
+                    <div class="reply-meta">Replied on ${new Date(reply.reply_created_at).toLocaleString()}</div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `;
+        if (initial) {
+          container.appendChild(card);
+        } else {
+          container.insertBefore(card, container.firstChild);
+        }
+        existingIds.add(feedback.id.toString());
+      }
+    });
+
+    // Reinitialize tooltips
+    tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+  }
+
+  // Poll every 10 seconds and initial fetch
+  setInterval(() => fetchFeedback(), 10000);
+  fetchFeedback(true);
+
+  // Notification function
+  function showNotification(message) {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.classList.remove('hidden');
+    notification.classList.add('block');
+    setTimeout(() => {
+      notification.classList.remove('block');
+      notification.classList.add('hidden');
+    }, 5000);
+  }
+
+  // Handle initial tooltip setup after dynamic content
+  document.addEventListener('DOMContentLoaded', () => {
+    tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+  });
+</script>
+</body>
+</html>

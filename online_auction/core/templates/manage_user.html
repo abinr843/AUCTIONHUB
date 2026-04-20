@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User Management Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --success-color: #4cc9f0;
+      --info-color: #4895ef;
+      --warning-color: #f72585;
+      --danger-color: #ff4d6d;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1400px;
+    }
+
+    .card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      background-color: #fff;
+      border-bottom: 1px solid #f0f0f0;
+      padding: 15px 20px;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .card-header h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .form-control, .form-select {
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      padding: 10px 15px;
+      font-size: 0.9rem;
+      transition: border-color 0.3s;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+    }
+
+    .input-group-text {
+      border-radius: 8px 0 0 8px;
+      background-color: #f8f9fa;
+      border-color: #e0e0e0;
+    }
+
+    .btn {
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+      border-color: var(--secondary-color);
+    }
+
+    .btn-danger {
+      background-color: var(--danger-color);
+      border-color: var(--danger-color);
+    }
+
+    .btn-danger:hover {
+      background-color: #e63950;
+      border-color: #e63950;
+    }
+
+    .btn-secondary {
+      background-color: #e9ecef;
+      border-color: #e9ecef;
+      color: #495057;
+    }
+
+    .btn-secondary:hover {
+      background-color: #dee2e6;
+      border-color: #dee2e6;
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 0.75rem;
+    }
+
+    .nav-tabs {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .nav-tabs .nav-link {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      margin-right: 5px;
+      color: #495057;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .nav-tabs .nav-link.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .nav-tabs .nav-link:hover:not(.active) {
+      background-color: #e9ecef;
+    }
+
+    .tab-content {
+      background-color: #fff;
+      border-radius: 0 0 10px 10px;
+    }
+
+    .table {
+      font-size: 0.9rem;
+    }
+
+    .table thead th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #495057;
+      border-bottom: none;
+      padding: 12px 15px;
+    }
+
+    .table tbody tr:hover {
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+
+    .table td {
+      padding: 12px 15px;
+      vertical-align: middle;
+    }
+
+    .badge {
+      font-size: 0.8rem;
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    .alert {
+      border-radius: 8px;
+      border: none;
+      padding: 12px 20px;
+      margin-bottom: 15px;
+      animation: fadeIn 0.5s forwards;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .stat-card .card-title {
+      margin: 0;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #6c757d;
+    }
+
+    .stat-card .card-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 5px 0 0;
+      color: #333;
+    }
+
+    .stat-card .icon {
+      font-size: 2rem;
+      opacity: 0.7;
+      color: var(--primary-color);
+    }
+
+    .bg-primary-gradient {
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
+    }
+
+    .bg-success-gradient {
+      background: linear-gradient(135deg, #4cc9f0, #4895ef);
+    }
+
+    .bg-info-gradient {
+      background: linear-gradient(135deg, #4895ef, #4361ee);
+    }
+
+    .bg-warning-gradient {
+      background: linear-gradient(135deg, #f72585, #b5179e);
+    }
+
+    .stat-card.bg-primary-gradient,
+    .stat-card.bg-success-gradient,
+    .stat-card.bg-info-gradient,
+    .stat-card.bg-warning-gradient {
+      color: white;
+    }
+
+    .stat-card.bg-primary-gradient .card-title,
+    .stat-card.bg-success-gradient .card-title,
+    .stat-card.bg-info-gradient .card-title,
+    .stat-card.bg-warning-gradient .card-title,
+    .stat-card.bg-primary-gradient .card-value,
+    .stat-card.bg-success-gradient .card-value,
+    .stat-card.bg-info-gradient .card-value,
+    .stat-card.bg-warning-gradient .card-value {
+      color: white;
+    }
+
+    .stat-card.bg-primary-gradient .icon,
+    .stat-card.bg-success-gradient .icon,
+    .stat-card.bg-info-gradient .icon,
+    .stat-card.bg-warning-gradient .icon {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-check-input:checked {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .form-switch .form-check-input {
+      width: 2.5em;
+      height: 1.25em;
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: #495057;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s forwards;
+    }
+
+    @media (max-width: 992px) {
+      .container {
+        padding: 0 15px;
+      }
+
+      .card {
+        margin-bottom: 15px;
+      }
+
+      .stat-card {
+        margin-bottom: 15px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .card-header h3 {
+        font-size: 1.1rem;
+      }
+
+      .stat-card .card-value {
+        font-size: 1.5rem;
+      }
+
+      .btn {
+        padding: 8px 15px;
+      }
+
+      .nav-tabs .nav-link {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a1a1a1;
+    }
+
+    .details-group {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .details-group:nth-child(even) {
+      background-color: #f5f7fa;
+    }
+
+    .details-group h4 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    .details-group p {
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+
+    .details-group .row {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .details-group .col-md-6 {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+
+    @media (max-width: 768px) {
+      .details-group .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+    }
+
+    .profile-pic {
+      transition: transform 0.3s ease;
+    }
+
+    .profile-pic:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <!-- Display any flash messages -->
+    {% if messages %}
+      <div class="mb-4" id="message-container">
+        {% for message in messages %}
+          <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% elif message.tags == 'warning' %}alert-warning{% else %}alert-info{% endif %} fade-in" role="alert">
+            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %} me-2"></i>
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="mb-4" id="message-container"></div>
+    {% endif %}
+
+    <div class="row g-4">
+      <!-- User Edit Section -->
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h3><i class="fas fa-user-cog me-2"></i>Manage User</h3>
+          </div>
+          <div class="card-body">
+            <form method="post" class="needs-validation" novalidate id="user-update-form">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                  <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
+                </div>
+                <div class="invalid-feedback">Please enter a username.</div>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                  <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                </div>
+                <div class="invalid-feedback">Please enter a valid email.</div>
+              </div>
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label for="role" class="form-label">User Role</label>
+                  <select class="form-select" id="role" name="role">
+                    <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
+                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="account_status" class="form-label">Account Status</label>
+                  <select class="form-select" id="account_status" name="account_status">
+                    <option value="pending" {% if user.account_status == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="verified" {% if user.account_status == 'verified' %}selected{% endif %}>Verified</option>
+                    <option value="rejected" {% if user.account_status == 'rejected' %}selected{% endif %}>Rejected</option>
+                    <option value="banned" {% if user.account_status == 'banned' %}selected{% endif %}>Banned</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <label class="form-label d-block">Bidding Restricted</label>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="bidding_restricted" name="bidding_restricted" {% if user.bidding_restricted %}checked{% endif %}>
+                    <label class="form-check-label" for="bidding_restricted">Restricted</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label d-block">Premium Status</label>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="premium" name="premium" {% if user.premium %}checked{% endif %}>
+                    <label class="form-check-label" for="premium">Premium</label>
+                  </div>
+                </div>
+              </div>
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save me-2"></i>Update
+                </button>
+                <a href="{% url 'list_users' %}" class="btn btn-secondary">
+                  <i class="fas fa-arrow-left me-2"></i>Back
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Enhanced User Details Section -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-info-circle me-2"></i>User Details</h3>
+          </div>
+          <div class="card-body">
+            <!-- Personal Information -->
+            <div class="details-group">
+              <h4>Personal Information</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <p id="user-id"><i class="fas fa-id-badge me-2"></i><strong>ID:</strong> {{ user.id }}</p>
+                  <p id="user-username"><i class="fas fa-user me-2"></i><strong>Username:</strong> {{ user.username }}</p>
+                  <p id="user-email"><i class="fas fa-envelope me-2"></i><strong>Email:</strong> {{ user.email }}</p>
+                </div>
+                <div class="col-md-6">
+                  <p id="user-phone"><i class="fas fa-phone me-2"></i><strong>Phone:</strong> {{ user.phone|default:"Not provided" }}</p>
+                  <p id="user-address"><i class="fas fa-map-marker-alt me-2"></i><strong>Address:</strong> {{ user.address|default:"Not provided" }}</p>
+                  <p id="user-pincode"><i class="fas fa-map-pin me-2"></i><strong>Pincode:</strong> {{ user.pincode|default:"Not provided" }}</p>
+                </div>
+              </div>
+              {% if user.profile_picture %}
+                <div class="mt-3 text-center">
+                  <strong>Profile Picture:</strong>
+                  <div class="d-inline-block">
+                    <img src="{{ user.profile_picture }}" alt="Profile Picture" class="profile-pic img-fluid rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover;">
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Account Settings -->
+            <div class="details-group">
+              <h4>Account Settings</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <p id="user-role"><i class="fas fa-user-tag me-2"></i><strong>Role:</strong> {{ user.role|capfirst }}</p>
+                  <p id="user-email-verified"><i class="fas fa-envelope-open-text me-2"></i><strong>Email Verified:</strong>
+                    {% if user.email_verified %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-danger">No</span>{% endif %}
+                  </p>
+                  <p id="user-is-authenticated"><i class="fas fa-user-check me-2"></i><strong>Active:</strong>
+                    {% if user.is_authenticated %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-danger">No</span>{% endif %}
+                  </p>
+                  <p id="user-membership-plan"><i class="fas fa-id-card me-2"></i><strong>Membership Plan ID:</strong>
+                    {% if user.membership_plan_id %}<span class="badge bg-info">{{ user.membership_plan_id }}</span>{% else %}<span class="badge bg-secondary">None</span>{% endif %}
+                  </p>
+                </div>
+                <div class="col-md-6">
+                  <p id="user-bidding-restricted"><i class="fas fa-gavel me-2"></i><strong>Bidding Restricted:</strong>
+                    {% if user.bidding_restricted %}<span class="badge bg-danger">Yes</span>{% else %}<span class="badge bg-success">No</span>{% endif %}
+                  </p>
+                  <p id="user-premium"><i class="fas fa-crown me-2"></i><strong>Premium:</strong>
+                    {% if user.premium %}<span class="badge bg-warning text-dark">Yes</span>{% else %}<span class="badge bg-secondary">No</span>{% endif %}
+                  </p>
+                  <p id="user-account-status"><i class="fas fa-user-shield me-2"></i><strong>Account Status:</strong>
+                    {% if user.account_status == 'verified' %}<span class="badge bg-success">Verified</span>
+                    {% elif user.account_status == 'rejected' %}<span class="badge bg-danger">Rejected</span>
+                    {% elif user.account_status == 'banned' %}<span class="badge bg-danger">Banned</span>
+                    {% else %}<span class="badge bg-warning text-dark">Pending</span>{% endif %}
+                  </p>
+                  <p id="user-created-at"><i class="fas fa-clock me-2"></i><strong>Created At:</strong> {{ user.created_at|date:"M d, Y H:i" }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notification Preferences -->
+            <div class="details-group">
+              <h4>Notification Preferences</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <p id="user-email-notifications"><i class="fas fa-envelope me-2"></i><strong>Email Notifications:</strong>
+                    {% if user.email_notifications %}<span class="badge bg-success">Enabled</span>{% else %}<span class="badge bg-secondary">Disabled</span>{% endif %}
+                  </p>
+                </div>
+                <div class="col-md-6">
+                  <p id="user-sms-notifications"><i class="fas fa-sms me-2"></i><strong>SMS Notifications:</strong>
+                    {% if user.sms_notifications %}<span class="badge bg-success">Enabled</span>{% else %}<span class="badge bg-secondary">Disabled</span>{% endif %}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div class="details-group">
+              <h4>Payment Information</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <p id="user-bank-account"><i class="fas fa-university me-2"></i><strong>Bank Account:</strong> {{ user.bank_account_number|default:"Not provided" }}</p>
+                </div>
+                <div class="col-md-6">
+                  <p id="user-paypal-email"><i class="fab fa-paypal me-2"></i><strong>PayPal Email:</strong> {{ user.paypal_email|default:"Not provided" }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Verification Documents -->
+            <div class="details-group">
+              <h4>Verification Documents</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <p id="user-id-proof"><i class="fas fa-id-card me-2"></i><strong>ID Proof:</strong>
+                    {% if user.id_proof_url %}
+                      {% if user.id_proof_path|lower|slice:-4 == '.pdf' %}
+                        <a href="{{ user.id_proof_url }}" target="_blank" class="text-primary"><i class="fas fa-file-pdf me-2"></i>View PDF</a>
+                      {% elif user.id_proof_path|lower|slice:-4 in '.jpg,.jpeg,.png' %}
+                        <a href="{{ user.id_proof_url }}" target="_blank"><img src="{{ user.id_proof_url }}" alt="ID Proof" class="rounded shadow" style="max-width: 100px; max-height: 100px;"></a>
+                      {% else %}
+                        <a href="{{ user.id_proof_url }}" target="_blank" class="text-primary"><i class="fas fa-file me-2"></i>View File</a>
+                      {% endif %}
+                    {% else %}
+                      <span class="badge bg-secondary">Not provided</span>
+                    {% endif %}
+                  </p>
+                </div>
+                <div class="col-md-6">
+                  <p id="user-selfie"><i class="fas fa-camera me-2"></i><strong>Selfie:</strong>
+                    {% if user.selfie_url %}
+                      <a href="{{ user.selfie_url }}" target="_blank"><img src="{{ user.selfie_url }}" alt="Selfie" class="rounded shadow" style="max-width: 100px; max-height: 100px;"></a>
+                    {% else %}
+                      <span class="badge bg-secondary">Not provided</span>
+                    {% endif %}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics Summary & Tabs -->
+      <div class="col-lg-8">
+        <div class="row g-4 mb-4">
+          <div class="col-md-3">
+            <div class="stat-card bg-primary-gradient shadow-sm">
+              <div class="card-content">
+                <p class="card-title">Created Auctions</p>
+                <h2 class="card-value">{{ created_auctions|length }}</h2>
+              </div>
+              <i class="fas fa-hammer icon"></i>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card bg-success-gradient shadow-sm">
+              <div class="card-content">
+                <p class="card-title">Won Auctions</p>
+                <h2 class="card-value">{{ won_auctions|length }}</h2>
+              </div>
+              <i class="fas fa-trophy icon"></i>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card bg-info-gradient shadow-sm">
+              <div class="card-content">
+                <p class="card-title">Bidded Auctions</p>
+                <h2 class="card-value">{{ bidded_auctions|length }}</h2>
+              </div>
+              <i class="fas fa-gavel icon"></i>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card bg-warning-gradient shadow-sm">
+              <div class="card-content">
+                <p class="card-title">Orders</p>
+                <h2 class="card-value">{{ buying_orders|length }}</h2>
+              </div>
+              <i class="fas fa-receipt icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabbed Navigation -->
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h3>User Activity</h3>
+          </div>
+          <div class="card-body p-0">
+            <ul class="nav nav-tabs nav-justified p-3" id="userTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="created-tab" data-bs-toggle="tab" data-bs-target="#created" type="button" role="tab">
+                  <i class="fas fa-plus-circle me-2"></i>Created
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="won-tab" data-bs-toggle="tab" data-bs-target="#won" type="button" role="tab">
+                  <i class="fas fa-trophy me-2"></i>Won
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="bidded-tab" data-bs-toggle="tab" data-bs-target="#bidded" type="button" role="tab">
+                  <i class="fas fa-gavel me-2"></i>Bidded
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab">
+                  <i class="fas fa-shopping-basket me-2"></i>Orders
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab">
+                  <i class="fas fa-flag me-2"></i>Reports ({{ reports|length }})
+                </button>
+              </li>
+            </ul>
+            <div class="tab-content">
+              <!-- Created Auctions Tab -->
+              <div class="tab-pane fade show active" id="created" role="tabpanel">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Current Bid</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for auction in created_auctions %}
+                      <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td class="fw-medium">{{ auction.title }}</td>
+                        <td><span class="badge bg-secondary">{{ auction.category|default:"N/A" }}</span></td>
+                        <td class="fw-medium">₹{{ auction.current_bid|floatformat:2 }}</td>
+                        <td>
+                          <span class="badge {% if auction.status|lower == 'active' %}bg-success{% elif auction.status|lower == 'closed' %}bg-danger{% else %}bg-warning{% endif %}">
+                            {{ auction.status|capfirst }}
+                          </span>
+                        </td>
+                        <td>
+                          <a href="{% url 'admin_auct_deta' auction.id %}" class="btn btn-sm btn-outline-primary" title="View Auction Details">
+                            <i class="fas fa-eye"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">
+                          <i class="fas fa-box-open fa-3x mb-3"></i>
+                          <p>No auctions created by this user.</p>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Won Auctions Tab -->
+              <div class="tab-pane fade" id="won" role="tabpanel">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Final Bid</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for auction in won_auctions %}
+                      <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td class="fw-medium">{{ auction.title }}</td>
+                        <td><span class="badge bg-secondary">{{ auction.category|default:"N/A" }}</span></td>
+                        <td class="fw-medium">₹{{ auction.current_bid|floatformat:2 }}</td>
+                        <td>
+                          <a href="{% url 'admin_auct_deta' auction.id %}?managed_user_id={{ user.id }}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">
+                          <i class="fas fa-trophy fa-3x mb-3 text-secondary"></i>
+                          <p>No auctions won by this user.</p>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Bidded Auctions Tab -->
+              <div class="tab-pane fade" id="bidded" role="tabpanel">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Current Bid</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for auction in bidded_auctions %}
+                      <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td class="fw-medium">{{ auction.title }}</td>
+                        <td><span class="badge bg-secondary">{{ auction.category|default:"N/A" }}</span></td>
+                        <td class="fw-medium">₹{{ auction.current_bid|floatformat:2 }}</td>
+                        <td>
+                          <span class="badge {% if auction.status|lower == 'active' %}bg-success{% elif auction.status|lower == 'closed' %}bg-danger{% else %}bg-warning{% endif %}">
+                            {{ auction.status|capfirst }}
+                          </span>
+                        </td>
+                        <td>
+                          <a href="{% url 'admin_auct_deta' auction.id %}?managed_user_id={{ user.id }}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">
+                          <i class="fas fa-gavel fa-3x mb-3 text-secondary"></i>
+                          <p>No auctions bidded on by this user.</p>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Orders Tab -->
+              <div class="tab-pane fade" id="orders" role="tabpanel">
+                <!-- Buying Orders Section -->
+                <h4 class="mt-4">Buying Orders</h4>
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Order ID</th>
+                        <th>Auction Title</th>
+                        <th>Order Date</th>
+                        <th>Payment</th>
+                        <th>Payment Status</th>
+                        <th>Order Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for order in buying_orders %}
+                      <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ order.order_id }}</td>
+                        <td class="fw-medium">{{ order.auction_title }}</td>
+                        <td>{{ order.order_date|date:"M d, Y" }}</td>
+                        <td class="fw-medium">₹{{ order.payment_amount|floatformat:2 }}</td>
+                        <td>
+                          <span class="badge {% if order.payment_status == 'Paid' %}bg-success{% elif order.payment_status == 'Pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                            {{ order.payment_status }}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="badge {% if order.order_status == 'Delivered' %}bg-success{% elif order.order_status == 'Processing' %}bg-info{% elif order.order_status == 'Shipped' %}bg-primary{% else %}bg-secondary{% endif %}">
+                            {{ order.order_status }}
+                          </span>
+                        </td>
+                        <td>
+                          <a href="{% url 'auction_orders' auction_id=order.auction_id %}?managed_user_id={{ user.id }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-shopping-basket"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">
+                          <i class="fas fa-shopping-cart fa-3x mb-3 text-secondary"></i>
+                          <p>No buying orders found for this user.</p>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Selling Orders Section -->
+                <h4 class="mt-5">Selling Orders</h4>
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Order ID</th>
+                        <th>Auction Title</th>
+                        <th>Order Date</th>
+                        <th>Payment</th>
+                        <th>Payment Status</th>
+                        <th>Order Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for order in selling_orders %}
+                      <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ order.order_id }}</td>
+                        <td class="fw-medium">{{ order.auction_title }}</td>
+                        <td>{{ order.order_date|date:"M d, Y" }}</td>
+                        <td class="fw-medium">₹{{ order.payment_amount|floatformat:2 }}</td>
+                        <td>
+                          <span class="badge {% if order.payment_status == 'Paid' %}bg-success{% elif order.payment_status == 'Pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                            {{ order.payment_status }}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="badge {% if order.order_status == 'Delivered' %}bg-success{% elif order.order_status == 'Processing' %}bg-info{% elif order.order_status == 'Shipped' %}bg-primary{% else %}bg-secondary{% endif %}">
+                            {{ order.order_status }}
+                          </span>
+                        </td>
+                        <td>
+                          <a href="{% url 'auction_orders' auction_id=order.auction_id %}?managed_user_id={{ user.id }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-shopping-basket"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">
+                          <i class="fas fa-shopping-cart fa-3x mb-3 text-secondary"></i>
+                          <p>No selling orders found for this user.</p>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Reports Tab -->
+              <div class="tab-pane fade" id="reports" role="tabpanel">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Reported By</th>
+                        <th>Reason</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for report in reports %}
+                      <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td class="fw-medium">
+                          <a href="{% url 'manage_user' report.reported_by %}" class="text-primary">
+                            {{ report.reporting_username }}
+                          </a>
+                        </td>
+                        <td>{{ report.reason }}</td>
+                        <td>{{ report.report_date|date:"M d, Y H:i" }}</td>
+                        <td>
+                          <span class="badge {% if report.status == 'pending' %}bg-warning text-dark{% elif report.status == 'resolved' %}bg-success{% else %}bg-danger{% endif %}">
+                            {{ report.status|capfirst }}
+                          </span>
+                        </td>
+                        <td>
+                          <a href="{% url 'manage_user' report.reported_by %}" class="btn btn-sm btn-outline-primary" title="View Reporting User">
+                            <i class="fas fa-user"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">
+                          <i class="fas fa-flag fa-3x mb-3 text-secondary"></i>
+                          <p>No reports filed against this user.</p>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  <script>
+    // Form validation script
+    (function () {
+      'use strict';
+      var forms = document.querySelectorAll('.needs-validation');
+      Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    })();
+
+    // AJAX form submission with real-time updates
+    document.getElementById('user-update-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      if (!this.checkValidity()) {
+        this.classList.add('was-validated');
+        return;
+      }
+
+      const formData = new FormData(this);
+      const url = window.location.pathname;
+
+      fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+        }
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
+        return response.json();
+      })
+      .then(data => {
+        const messageContainer = document.getElementById('message-container');
+        messageContainer.innerHTML = '';
+        const alertClass = data.status === 'success' ? 'alert-success' : 'alert-danger';
+        const alertIcon = data.status === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+        messageContainer.innerHTML = `
+          <div class="alert ${alertClass} fade-in" role="alert">
+            <i class="fas ${alertIcon} me-2"></i>
+            ${data.message}
+          </div>
+        `;
+
+        if (data.status === 'success') {
+          const updatedUser = data.updated_user;
+
+          // Update form fields
+          document.getElementById('username').value = updatedUser.username;
+          document.getElementById('email').value = updatedUser.email;
+          document.getElementById('role').value = updatedUser.role;
+          document.getElementById('account_status').value = updatedUser.account_status;
+          document.getElementById('bidding_restricted').checked = updatedUser.bidding_restricted;
+          document.getElementById('premium').checked = updatedUser.premium;
+
+          // Update User Details section
+          document.querySelector('#user-username').innerHTML = `<i class="fas fa-user me-2"></i><strong>Username:</strong> ${updatedUser.username}`;
+          document.querySelector('#user-email').innerHTML = `<i class="fas fa-envelope me-2"></i><strong>Email:</strong> ${updatedUser.email}`;
+          document.querySelector('#user-role').innerHTML = `<i class="fas fa-user-tag me-2"></i><strong>Role:</strong> ${updatedUser.role.charAt(0).toUpperCase() + updatedUser.role.slice(1)}`;
+          document.querySelector('#user-bidding-restricted').innerHTML = `<i class="fas fa-gavel me-2"></i><strong>Bidding Restricted:</strong> ${updatedUser.bidding_restricted ? '<span class="badge bg-danger">Yes</span>' : '<span class="badge bg-success">No</span>'}`;
+          document.querySelector('#user-premium').innerHTML = `<i class="fas fa-crown me-2"></i><strong>Premium:</strong> ${updatedUser.premium ? '<span class="badge bg-warning text-dark">Yes</span>' : '<span class="badge bg-secondary">No</span>'}`;
+          document.querySelector('#user-account-status').innerHTML = `<i class="fas fa-user-shield me-2"></i><strong>Account Status:</strong> ${updatedUser.account_status === 'verified' ? '<span class="badge bg-success">Verified</span>' : updatedUser.account_status === 'rejected' ? '<span class="badge bg-danger">Rejected</span>' : updatedUser.account_status === 'banned' ? '<span class="badge bg-danger">Banned</span>' : '<span class="badge bg-warning text-dark">Pending</span>'}`;
+
+          setTimeout(() => { messageContainer.innerHTML = ''; }, 3000);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('message-container').innerHTML = `
+          <div class="alert alert-danger fade-in" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            An error occurred: ${error.message}
+          </div>
+        `;
+      });
+    });
+
+    // Combined DOMContentLoaded listener
+    document.addEventListener('DOMContentLoaded', function() {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, index) => {
+        setTimeout(() => { card.style.opacity = '1'; }, 100 * index);
+      });
+
+      const activeTabId = localStorage.getItem('activeTab');
+      if (activeTabId) {
+        const tab = document.querySelector(`#${activeTabId}`);
+        if (tab) {
+          const tabInstance = new bootstrap.Tab(tab);
+          tabInstance.show();
+        }
+      }
+
+      document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(tab => {
+        tab.addEventListener('shown.bs.tab', function(e) {
+          localStorage.setItem('activeTab', e.target.id);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

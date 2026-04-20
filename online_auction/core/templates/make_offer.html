@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Binding Offer | {{ auction.title|default:"Premium Auction" }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a365d;
+      --secondary: #2d547d;
+      --accent: #c5a47e;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+    }
+    .offer-container {
+      max-width: 1280px;
+      background: linear-gradient(to bottom right, #ffffff 60%, #f8fafc 100%);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(241, 245, 249, 0.8);
+    }
+    .auction-preview {
+      background: linear-gradient(45deg, #1a365d 0%, #2d547d 100%);
+      color: white;
+      border-radius: 12px 0 0 12px;
+      padding: 2rem;
+    }
+    .auction-preview img {
+      width: 100%;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .offer-form-section {
+      background: white;
+      padding: 2rem;
+    }
+    .form-input {
+      transition: all 0.2s;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      padding: 0.75rem 1rem;
+      width: 100%;
+      border-radius: 0.375rem;
+    }
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26,54,93,0.1);
+      outline: none;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      text-align: center;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: var(--secondary);
+    }
+    .disabled {
+      pointer-events: none;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+     .btn-submit {
+    background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-submit:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="offer-container rounded-xl overflow-hidden flex flex-col lg:flex-row">
+    <!-- Auction Preview Section -->
+    <div class="auction-preview flex-1 flex flex-col justify-between">
+      <div>
+        <a href="{% url 'auct_deta' auction_id %}" class="flex items-center gap-2 text-accent hover:text-accent/90 mb-8">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          <span class="font-medium">Back to Auction</span>
+        </a>
+        <div class="mb-6">
+          <h1 class="text-3xl font-bold mb-2">Submit Binding Offer</h1>
+          <p class="text-lg text-accent font-medium">ID: {{ auction.id|default:"001" }}</p>
+        </div>
+        <!-- Auction Image -->
+        <div class="mb-6">
+          {% if auction.image_url %}
+            <img src="{{ auction.image_url }}" alt="{{ auction.title }}">
+          {% else %}
+            <img src="/static/images/default.jpg" alt="No image available">
+          {% endif %}
+        </div>
+        <!-- Auction Details -->
+        <div class="space-y-4">
+          <p><strong>Auction Title:</strong> {{ auction.title }}</p>
+          <p><strong>Description:</strong> {{ auction.description }}</p>
+          <p><strong>Condition:</strong> {{ auction.condition }} - {{ auction.condition_description }}</p>
+          <p><strong>Category:</strong> {{ auction.category }}</p>
+          <p><strong>Buy It Now Price:</strong> ₹{{ auction.buy_it_now_price }}</p>
+          <p><strong>Auction Status:</strong> {{ auction.status }}</p>
+          <p><strong>Start Date:</strong> {{ auction.start_date }}</p>
+          <p><strong>End Date:</strong> {{ auction.end_date }}</p>
+        </div>
+      </div>
+      <div class="mt-6">
+        <div class="timeline-bar">
+          <div class="timeline-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Offer Form Section (Shipping details removed) -->
+    <div class="offer-form-section flex-1 p-8">
+      <!-- Toast for messages -->
+      <div class="toast hidden bg-white p-4 rounded-lg shadow-xl border border-gray-100">
+        <div class="flex items-center gap-3">
+          <div class="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center">
+            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+          <span class="text-sm font-medium text-gray-700">Offer submitted successfully</span>
+        </div>
+      </div>
+
+      <form method="POST" class="space-y-8">
+        {% csrf_token %}
+        <!-- Offer Details -->
+        <div class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Offer Amount (₹)</label>
+            <div class="relative">
+              <input type="number" step="0.01" name="offer_price" id="offer_price"
+                     class="form-input" placeholder="Enter offer amount" required>
+              <span class="absolute right-4 top-4 text-gray-400">₹</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Offer Terms</label>
+            <textarea name="offer_message" id="offer_message" rows="4"
+                      class="form-input" placeholder="Describe any special terms or conditions"></textarea>
+          </div>
+        </div>
+
+        <!-- Legal Agreement -->
+        <div class="border-t border-gray-100 pt-6">
+          <div class="flex items-start gap-3">
+            <input type="checkbox" id="terms" required class="mt-1 w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+            <label for="terms" class="text-sm text-gray-600">
+              I confirm this binding offer complies with
+              <a href="#" class="text-primary hover:underline">auction regulations</a>
+              and understand it may be subject to a 2% commitment fee if withdrawn.
+            </label>
+          </div>
+        </div>
+
+        <button type="submit"
+        class="w-full btn-primary text-white py-4 rounded-lg font-medium hover:bg-secondary transition-colors flex items-center justify-center gap-2">
+  Submit Secure Offer
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+  </svg>
+</button>
+      </form>
+
+      <!-- Auction Details Footer -->
+      <div class="mt-12 pt-8 border-t border-gray-100">
+        <div class="grid grid-cols-2 gap-6 text-sm">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+              <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="font-medium text-gray-700">SSL Encrypted</p>
+              <p class="text-gray-500">256-bit security</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+              <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="font-medium text-gray-700">Verified Bids</p>
+              <p class="text-gray-500">Audit trail included</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toast Notification System
+    function showToast(message, type = 'success') {
+      const toast = document.querySelector('.toast');
+      toast.querySelector('span').textContent = message;
+      toast.classList.remove('bg-red-50', 'border-red-100', 'text-red-700');
+      if(type === 'error') {
+        toast.querySelector('svg').classList.add('text-red-600');
+        toast.querySelector('div').classList.add('bg-red-100');
+        toast.classList.add('bg-red-50', 'border-red-100', 'text-red-700');
+      }
+      toast.classList.remove('hidden');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, 5000);
+    }
+
+    // Handle form submission feedback
+    {% if messages %}
+      {% for message in messages %}
+        showToast("{{ message }}", "{% if message.tags == 'error' %}error{% else %}success{% endif %}");
+      {% endfor %}
+    {% endif %}
+
+    // Dynamic timeline progress (placeholder example)
+    function updateTimeline() {
+      const progress = document.querySelector('.timeline-progress');
+      const daysLeft = 2; // Replace with actual calculation
+      progress.style.width = `${100 - (daysLeft/7)*100}%`;
+    }
+    updateTimeline();
+  </script>
+</body>
+</html>

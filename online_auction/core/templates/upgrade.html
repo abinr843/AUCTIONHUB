@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Auction Membership | AuctionPro</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <style>
+    :root {
+      --primary-color: #6366f1;
+      --primary-hover: #5254f8;
+      --secondary-color: #4f46e5;
+      --accent-color: #f59e0b;
+      --text-dark: #1e293b;
+      --bg-light: #f8fafc;
+      --bg-lighter: #ffffff;
+      --border-light: #e2e8f0;
+      --transition-main: all 0.3s ease;
+      --badge-basic: #ff6b6b;
+      --badge-standard: #4ecdc4;
+      --badge-premium: #87ceeb;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--bg-light) 0%, #e9ecef 100%);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      color: var(--text-dark);
+    }
+
+    .navbar {
+      background-color: var(--bg-lighter);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .navbar .nav-links a {
+      color: var(--text-dark);
+      text-decoration: none;
+      margin-left: 1rem;
+      font-weight: 500;
+      transition: var(--transition-main);
+    }
+
+    .navbar .nav-links a:hover {
+      color: var(--primary-color);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .header-section h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .header-section p {
+      font-size: 1.1rem;
+      color: var(--text-dark);
+      opacity: 0.8;
+    }
+
+    .membership-details {
+      background: var(--bg-lighter);
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .membership-details h3 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    .membership-details p {
+      font-size: 1rem;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .timer-container {
+      background: rgba(99,102,241,0.1);
+      border: 2px solid var(--primary-color);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      display: inline-flex;
+      gap: 1rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+    .timer-container.promo {
+      background: rgba(245,158,11,0.1);
+      border-color: var(--accent-color);
+      margin-bottom: 2rem;
+      justify-content: center;
+      width: 100%;
+      max-width: 600px;
+    }
+    .timer-container span {
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    .timer-container.promo span {
+      color: var(--accent-color);
+    }
+    .timer-expired {
+      color: #dc3545;
+      font-weight: 600;
+    }
+
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    .pricing-card {
+      background: var(--bg-lighter);
+      border: 2px solid var(--border-light);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      text-align: center;
+      transition: var(--transition-main);
+      cursor: pointer;
+      position: relative;
+    }
+    .pricing-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .pricing-card.active {
+      border-color: var(--primary-color);
+      background: rgba(99,102,241,0.05);
+    }
+    .pricing-card h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .pricing-card p.duration {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+    }
+    .pricing-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      opacity: 0.8;
+    }
+    .pricing-card ul li {
+      margin-bottom: 0.5rem;
+    }
+    .premium-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--badge-basic);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .premium-badge i {
+      font-size: 1rem;
+    }
+    .premium-badge.basic { background: var(--badge-basic); }
+    .premium-badge.standard { background: var(--badge-standard); }
+    .premium-badge.premium { background: var(--badge-premium); }
+
+    .premium-benefits {
+      margin-bottom: 3rem;
+    }
+    .premium-benefits h4 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .benefit-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .benefit-item {
+      background: var(--bg-lighter);
+      padding: 1rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .benefit-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--primary-color);
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.25rem;
+    }
+    .benefit-item h6 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    .benefit-item p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: var(--text-dark);
+      opacity: 0.75;
+    }
+
+    .payment-form {
+      background: var(--bg-lighter);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      margin-bottom: 3rem;
+    }
+    .payment-form h3 {
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .btn-upgrade {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      width: 100%;
+      transition: var(--transition-main);
+    }
+    .btn-upgrade:disabled {
+      background: #d3d3d3;
+      cursor: not-allowed;
+    }
+    .btn-upgrade:hover:not(:disabled) {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(99,102,241,0.3);
+    }
+    .form-control.is-invalid {
+      border-color: #dc3545;
+    }
+    .invalid-feedback {
+      display: none;
+      color: #dc3545;
+      font-size: 0.875rem;
+    }
+    .form-control.is-invalid ~ .invalid-feedback {
+      display: block;
+    }
+    .success-message {
+      display: none;
+      background: rgba(99,102,241,0.1);
+      border: 2px solid var(--primary-color);
+      border-radius: 1rem;
+      padding: 2rem;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .success-message h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    .success-message p {
+      font-size: 1.1rem;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+    }
+    .success-message .btn {
+      margin-top: 1rem;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: var(--transition-main);
+    }
+    .success-message .btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="{% url 'udash' %}" class="logo"><i class="fas fa-gavel me-2"></i>AuctionPro</a>
+    <div class="nav-links">
+      <a href="{% url 'auct_list' %}">Auctions</a>
+      <a href="{% url 'upgrade' %}">Premium</a>
+      <a href="{% url 'logout' %}">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header-section text-center">
+      <h1>{% if premium %}Your Premium Membership{% else %}Upgrade to Premium Membership{% endif %}</h1>
+      <p class="text-muted">
+        {% if premium %}
+          Manage your premium membership details.
+        {% else %}
+          Unlock exclusive auction features and boost your bidding power.
+        {% endif %}
+      </p>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+      <h3>Congratulations!</h3>
+      <p id="successText"></p>
+      <p id="successDates"></p>
+      <a href="{% url 'udash' %}" class="btn">Go to Dashboard</a>
+    </div>
+
+    <!-- Current Membership Details (for Premium Users) -->
+    {% if premium %}
+      <div class="membership-details">
+        <h3>Your {{ plan_type|capfirst }} Membership</h3>
+        <p><strong>Start Date:</strong> {{ start_date|date:"F d, Y H:i:s" }}</p>
+        <p><strong>End Date:</strong> {{ expiration_date|date:"F d, Y H:i:s" }}</p>
+        <div class="timer-container" id="membershipTimer" data-expiration="{{ expiration_date|date:'c' }}">
+          <span id="days">0</span> Days
+          <span id="hours">0</span> Hours
+          <span id="minutes">0</span> Minutes
+          <span id="seconds">0</span> Seconds
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Pricing Cards and Payment Form -->
+    {% if not premium or plan_type != 'premium' %}
+      <!-- Promotional Timer for Non-Premium Users -->
+      {% if not premium %}
+        <div class="timer-container promo text-center" id="promoTimer">
+          <p>Special Offer Ends in:
+            <span id="promoDays">0</span> Days
+            <span id="promoHours">0</span> Hours
+            <span id="promoMinutes">0</span> Minutes
+            <span id="promoSeconds">0</span> Seconds
+          </p>
+        </div>
+      {% endif %}
+
+      <div class="pricing-cards" id="pricingSection">
+        {% if not premium or plan_type == 'basic' %}
+          <!-- Basic Plan (shown only for non-premium or Basic users) -->
+          {% if not premium %}
+            <div class="pricing-card" data-plan="basic" data-price="999">
+              <div class="premium-badge basic"><i class="fas fa-check-circle"></i> Basic</div>
+              <h3>₹999</h3>
+              <p class="duration">2 Months Membership</p>
+              <ul>
+                <li>6 Regular Auctions/month</li>
+                <li>3 Sealed Bid Auctions/month</li>
+                <li>Priority Listing (Basic)</li>
+                <li>Wallet Credit: ₹100</li>
+              </ul>
+            </div>
+          {% endif %}
+          <!-- Standard Plan (shown for non-premium or Basic users) -->
+          <div class="pricing-card" data-plan="standard" data-price="2999">
+            <div class="premium-badge standard"><i class="fas fa-check-circle"></i> Standard</div>
+            <h3>₹2999</h3>
+            <p class="duration">6 Months Membership</p>
+            <ul>
+              <li>18 Regular Auctions/month</li>
+              <li>9 Sealed Bid Auctions/month</li>
+              <li>Proxy Bidding (All Auctions)</li>
+              <li>Priority Listing (Standard)</li>
+              <li>Number of Views Boost</li>
+              <li>Wallet Credit: ₹500</li>
+            </ul>
+          </div>
+        {% endif %}
+        <!-- Premium Plan (shown for non-premium, Basic, or Standard users) -->
+        {% if not premium or plan_type == 'basic' or plan_type == 'standard' %}
+          <div class="pricing-card" data-plan="premium" data-price="5999">
+            <div class="premium-badge premium"><i class="fas fa-check-circle"></i> Premium</div>
+            <h3>₹5999</h3>
+            <p class="duration">1 Year Membership</p>
+            <ul>
+              <li>Unlimited Regular Auctions</li>
+              <li>24 Sealed Bid Auctions/month</li>
+              <li>Proxy Bidding (All Auctions)</li>
+              <li>Priority Listing (Premium)</li>
+              <li>Number of Views Boost</li>
+              <li>Premium Badge</li>
+              <li>Wallet Credit: ₹1000</li>
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Premium Benefits Section -->
+      <div class="premium-benefits">
+        <h4>Exclusive Premium Features</h4>
+        <div class="benefit-list">
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fas fa-lock"></i></div>
+            <div>
+              <h6>Sealed Bid Auctions</h6>
+              <p>Run confidential auctions with hidden bids.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fas fa-star"></i></div>
+            <div>
+              <h6>Priority Placement</h6>
+              <p>Your auctions appear first in search results.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fas fa-chart-line"></i></div>
+            <div>
+              <h6>Advanced Analytics</h6>
+              <p>Gain insights into bidder behavior and trends.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fas fa-shield-alt"></i></div>
+            <div>
+              <h6>Fraud Protection</h6>
+              <p>Enhanced security for secure bidding.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fas fa-bullhorn"></i></div>
+            <div>
+              <h6>Promoted Listings</h6>
+              <p>Boost your auction's visibility across platforms.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fas fa-calendar-alt"></i></div>
+            <div>
+              <h6>Scheduled Auctions</h6>
+              <p>Automate your auction start and end times.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fas fa-gavel"></i></div>
+            <div>
+              <h6>Proxy Bidding</h6>
+              <p>Automate your bids for a competitive edge.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fas fa-eye"></i></div>
+            <div>
+              <h6>Number of Views</h6>
+              <p>Increase visibility with boosted views.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fas fa-crown"></i></div>
+            <div>
+              <h6>Premium Badge</h6>
+              <p>Showcase your premium status with pride.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Form (Hidden until a plan is selected) -->
+      <div class="payment-form" id="paymentForm" style="display: none;">
+        <h3 class="mb-4">Complete Your Payment</h3>
+        <form id="upgrade_form" method="POST" action="{% url 'upgrade' %}">
+          {% csrf_token %}
+          <div id="error_message" class="text-danger mb-3"></div>
+          <div class="mb-3">
+            <label for="user_id" class="form-label">User ID</label>
+            <input type="number" class="form-control" id="user_id" name="user_id" value="{{ user_id }}" required readonly>
+          </div>
+          <div class="mb-3">
+            <label for="premium_type" class="form-label">Selected Plan</label>
+            <input type="text" class="form-control" id="premium_type" name="premium_type" required readonly>
+          </div>
+          <div class="mb-3">
+            <label for="payment_method" class="form-label">Payment Method</label>
+            <select class="form-select" id="payment_method" name="payment_method">
+              <option value="">Select Payment Method</option>
+              <option value="debit">Debit Card</option>
+              <option value="credit">Credit Card</option>
+              <option value="paypal">PayPal</option>
+              <option value="bank_transfer">Bank Transfer</option>
+            </select>
+            <div class="invalid-feedback">Please select a payment method.</div>
+          </div>
+          <!-- Payment method fields -->
+          <div id="debit_fields" class="payment-method-section" style="display: none;">
+            <div class="mb-3">
+              <label for="debit_card_number" class="form-label">Card Number</label>
+              <input type="text" class="form-control card-number-input" id="debit_card_number" name="debit_card_number" maxlength="19">
+              <div class="invalid-feedback">Card number must be 16 digits.</div>
+            </div>
+            <div class="mb-3">
+              <label for="debit_card_expiry" class="form-label">Expiry (MM/YY)</label>
+              <input type="text" class="form-control" id="debit_card_expiry" name="debit_card_expiry" placeholder="MM/YY" maxlength="5">
+              <div class="invalid-feedback">Expiry date must be in MM/YY format and not expired.</div>
+            </div>
+            <div class="mb-3">
+              <label for="debit_card_cvc" class="form-label">CVC</label>
+              <input type="text" class="form-control" id="debit_card_cvc" name="debit_card_cvc" maxlength="4">
+              <div class="invalid-feedback">CVC must be 3 or 4 digits.</div>
+            </div>
+          </div>
+          <div id="credit_fields" class="payment-method-section" style="display: none;">
+            <div class="mb-3">
+              <label for="credit_card_number" class="form-label">Card Number</label>
+              <input type="text" class="form-control card-number-input" id="credit_card_number" name="credit_card_number" maxlength="19">
+              <div class="invalid-feedback">Card number must be 16 digits.</div>
+            </div>
+            <div class="mb-3">
+              <label for="credit_card_expiry" class="form-label">Expiry (MM/YY)</label>
+              <input type="text" class="form-control" id="credit_card_expiry" name="credit_card_expiry" placeholder="MM/YY" maxlength="5">
+              <div class="invalid-feedback">Expiry date must be in MM/YY format and not expired.</div>
+            </div>
+            <div class="mb-3">
+              <label for="credit_card_cvc" class="form-label">CVC</label>
+              <input type="text" class="form-control" id="credit_card_cvc" name="credit_card_cvc" maxlength="4">
+              <div class="invalid-feedback">CVC must be 3 or 4 digits.</div>
+            </div>
+          </div>
+          <div id="paypal_fields" class="payment-method-section" style="display: none;">
+            <div class="mb-3">
+              <label for="paypal_email" class="form-label">PayPal Email</label>
+              <input type="email" class="form-control" id="paypal_email" name="paypal_email">
+              <div class="invalid-feedback">Please enter a valid PayPal email.</div>
+            </div>
+          </div>
+          <div id="bank_transfer_fields" class="payment-method-section" style="display: none;">
+            <div class="mb-3">
+              <label for="bank_account_number" class="form-label">Account Number</label>
+              <input type="text" class="form-control" id="bank_account_number" name="bank_account_number">
+              <div class="invalid-feedback">Account number must be numeric.</div>
+            </div>
+            <div class="mb-3">
+              <label for="bank_routing_number" class="form-label">Routing Number</label>
+              <input type="text" class="form-control" id="bank_routing_number" name="bank_routing_number">
+              <div class="invalid-feedback">Routing number must be 9 digits.</div>
+            </div>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn-upgrade" id="submitButton" disabled>Complete Payment</button>
+          </div>
+        </form>
+      </div>
+    {% endif %}
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Processing your payment, please wait...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Timer Logic for Premium Users
+      const membershipTimer = document.getElementById('membershipTimer');
+      if (membershipTimer) {
+        const expirationDate = new Date(membershipTimer.dataset.expiration);
+        const daysSpan = document.getElementById('days');
+        const hoursSpan = document.getElementById('hours');
+        const minutesSpan = document.getElementById('minutes');
+        const secondsSpan = document.getElementById('seconds');
+
+        function updateMembershipTimer() {
+          const now = new Date();
+          const timeDiff = expirationDate - now;
+
+          if (timeDiff <= 0) {
+            membershipTimer.innerHTML = '<span class="timer-expired">Your membership has expired!</span>';
+            clearInterval(membershipTimerInterval);
+            return;
+          }
+
+          const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+          daysSpan.textContent = days;
+          hoursSpan.textContent = hours;
+          minutesSpan.textContent = minutes;
+          secondsSpan.textContent = seconds;
+        }
+
+        updateMembershipTimer();
+        const membershipTimerInterval = setInterval(updateMembershipTimer, 1000);
+      }
+
+      // Timer Logic for Non-Premium Users (Promotional Offer)
+      const promoTimer = document.getElementById('promoTimer');
+      if (promoTimer) {
+        // Set promotional end date (e.g., 7 days from now)
+        const now = new Date();
+        const promoEndDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const promoDaysSpan = document.getElementById('promoDays');
+        const promoHoursSpan = document.getElementById('promoHours');
+        const promoMinutesSpan = document.getElementById('promoMinutes');
+        const promoSecondsSpan = document.getElementById('promoSeconds');
+
+        function updatePromoTimer() {
+          const now = new Date();
+          const timeDiff = promoEndDate - now;
+
+          if (timeDiff <= 0) {
+            promoTimer.innerHTML = '<span class="timer-expired">Special offer has ended!</span>';
+            clearInterval(promoTimerInterval);
+            return;
+          }
+
+          const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+          promoDaysSpan.textContent = days;
+          promoHoursSpan.textContent = hours;
+          promoMinutesSpan.textContent = minutes;
+          promoSecondsSpan.textContent = seconds;
+        }
+
+        updatePromoTimer();
+        const promoTimerInterval = setInterval(updatePromoTimer, 1000);
+      }
+
+      // Existing Form and Validation Logic
+      const pricingCards = document.querySelectorAll('.pricing-card');
+      const paymentForm = document.getElementById('paymentForm');
+      const premiumTypeInput = document.getElementById('premium_type');
+      const upgradeForm = document.getElementById("upgrade_form");
+      const errorElement = document.getElementById("error_message");
+      const paymentMethodSelect = document.getElementById("payment_method");
+      const submitButton = document.getElementById("submitButton");
+      const successMessage = document.getElementById("successMessage");
+      const successText = document.getElementById("successText");
+      const successDates = document.getElementById("successDates");
+      const pricingSection = document.getElementById("pricingSection");
+      const loadingModal = new bootstrap.Modal(document.getElementById("loadingModal"), { backdrop: 'static', keyboard: false });
+
+      // Object to track validation states
+      const validationStates = {
+        payment_method: false,
+        debit: { card_number: false, expiry: false, cvc: false },
+        credit: { card_number: false, expiry: false, cvc: false },
+        paypal: { email: false },
+        bank_transfer: { account_number: false, routing_number: false }
+      };
+
+      // Function to update submit button state
+      function updateSubmitButton() {
+        const selectedMethod = paymentMethodSelect ? paymentMethodSelect.value : '';
+        let isValid = paymentMethodSelect ? validationStates.payment_method : false;
+
+        if (selectedMethod === "debit" || selectedMethod === "credit") {
+          isValid = isValid &&
+            validationStates[selectedMethod].card_number &&
+            validationStates[selectedMethod].expiry &&
+            validationStates[selectedMethod].cvc;
+        } else if (selectedMethod === "paypal") {
+          isValid = isValid && validationStates.paypal.email;
+        } else if (selectedMethod === "bank_transfer") {
+          isValid = isValid &&
+            validationStates.bank_transfer.account_number &&
+            validationStates.bank_transfer.routing_number;
+        }
+
+        if (submitButton) {
+          submitButton.disabled = !isValid;
+        }
+      }
+
+      // Plan Selection
+      pricingCards.forEach(card => {
+        card.addEventListener('click', () => {
+          pricingCards.forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          paymentForm.style.display = 'block';
+          successMessage.style.display = 'none';
+          const plan = card.getAttribute('data-plan');
+          premiumTypeInput.value = plan;
+          errorElement.textContent = "";
+        });
+      });
+
+      // Payment Method Toggle
+      if (paymentMethodSelect) {
+        paymentMethodSelect.addEventListener("change", function () {
+          document.querySelectorAll(".payment-method-section").forEach(section => {
+            section.style.display = "none";
+          });
+          const selectedMethod = this.value;
+          validationStates.payment_method = !!selectedMethod;
+          this.classList.toggle("is-invalid", !validationStates.payment_method);
+          if (selectedMethod) {
+            document.getElementById(`${selectedMethod}_fields`).style.display = 'block';
+          }
+          updateSubmitButton();
+        });
+      }
+
+      // Real-time Card Number Validation
+      document.querySelectorAll(".card-number-input").forEach(input => {
+        input.addEventListener("input", function () {
+          let value = this.value.replace(/\D/g, '');
+          value = value.replace(/(\d{4})/g, '$1 ').trim();
+          this.value = value;
+          const isValid = /^\d{16}$/.test(value.replace(/\s/g, ''));
+          this.classList.toggle("is-invalid", !isValid);
+          const method = this.id.includes("debit") ? "debit" : "credit";
+          validationStates[method].card_number = isValid;
+          updateSubmitButton();
+        });
+      });
+
+      // Real-time Expiry Date Validation
+      document.querySelectorAll("[id$='_card_expiry']").forEach(input => {
+        input.addEventListener("input", function () {
+          let value = this.value.replace(/\D/g, '');
+          if (value.length > 2) {
+            value = value.replace(/^(\d{2})(\d{0,2})/, '$1/$2');
+          }
+          this.value = value;
+          const isValidFormat = /^(0[1-9]|1[0-2])\/\d{2}$/.test(value);
+          let isValid = isValidFormat;
+          if (isValidFormat) {
+            const [expMonth, expYear] = value.split('/').map(Number);
+            const currentYear = new Date().getFullYear() % 100;
+            const currentMonth = new Date().getMonth() + 1;
+            isValid = expYear > currentYear || (expYear == currentYear && expMonth >= currentMonth);
+          }
+          this.classList.toggle("is-invalid", !isValid);
+          const method = this.id.includes("debit") ? "debit" : "credit";
+          validationStates[method].expiry = isValid;
+          updateSubmitButton();
+        });
+      });
+
+      // Real-time CVC Validation
+      document.querySelectorAll("[id$='_card_cvc']").forEach(input => {
+        input.addEventListener("input", function () {
+          const value = this.value.trim();
+          const isValid = /^\d{3,4}$/.test(value);
+          this.classList.toggle("is-invalid", !isValid);
+          const method = this.id.includes("debit") ? "debit" : "credit";
+          validationStates[method].cvc = isValid;
+          updateSubmitButton();
+        });
+      });
+
+      // Real-time PayPal Email Validation
+      const paypalEmailInput = document.getElementById("paypal_email");
+      if (paypalEmailInput) {
+        paypalEmailInput.addEventListener("input", function () {
+          const value = this.value.trim();
+          const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+          this.classList.toggle("is-invalid", !isValid);
+          validationStates.paypal.email = isValid;
+          updateSubmitButton();
+        });
+      }
+
+      // Real-time Bank Account and Routing Number Validation
+      const bankAccountInput = document.getElementById("bank_account_number");
+      if (bankAccountInput) {
+        bankAccountInput.addEventListener("input", function () {
+          const value = this.value.trim();
+          const isValid = /^\d+$/.test(value);
+          this.classList.toggle("is-invalid", !isValid);
+          validationStates.bank_transfer.account_number = isValid;
+          updateSubmitButton();
+        });
+      }
+
+      const bankRoutingInput = document.getElementById("bank_routing_number");
+      if (bankRoutingInput) {
+        bankRoutingInput.addEventListener("input", function () {
+          const value = this.value.trim();
+          const isValid = /^\d{9}$/.test(value);
+          this.classList.toggle("is-invalid", !isValid);
+          validationStates.bank_transfer.routing_number = isValid;
+          updateSubmitButton();
+        });
+      }
+
+      // Form Submission
+      if (upgradeForm) {
+        upgradeForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          errorElement.textContent = "";
+
+          const formData = new FormData(this);
+          const selectedPlan = formData.get('premium_type');
+
+          if (!selectedPlan) {
+            errorElement.textContent = "Please select a subscription plan.";
+            return;
+          }
+
+          if (!validationStates.payment_method) {
+            errorElement.textContent = "Please select a payment method.";
+            paymentMethodSelect.classList.add("is-invalid");
+            return;
+          }
+
+          // Show loading modal
+          loadingModal.show();
+
+          // Submit Form via AJAX
+          fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            // Hide loading modal
+            loadingModal.hide();
+
+            if (data.success) {
+              Swal.fire({
+                title: "Subscription Activated!",
+                text: data.message,
+                icon: "success",
+                confirmButtonText: "OK"
+              }).then(() => {
+                // Hide payment form and pricing section
+                paymentForm.style.display = 'none';
+                pricingSection.style.display = 'none';
+                // Show success message
+                successText.textContent = `Your ${data.plan_name} Plan is now active!`;
+                successDates.textContent = `Active from ${data.start_date} to ${data.end_date}.`;
+                successMessage.style.display = 'block';
+                // Reset form and validation states
+                upgradeForm.reset();
+                pricingCards.forEach(c => c.classList.remove('active'));
+                Object.keys(validationStates).forEach(key => {
+                  if (typeof validationStates[key] === 'object') {
+                    Object.keys(validationStates[key]).forEach(subKey => {
+                      validationStates[key][subKey] = false;
+                    });
+                  } else {
+                    validationStates[key] = false;
+                  }
+                });
+                updateSubmitButton();
+              });
+            } else {
+              Swal.fire({ icon: "error", title: data.error || "Payment failed. Please try again." });
+            }
+          })
+          .catch(error => {
+            // Hide loading modal
+            loadingModal.hide();
+            console.error('Error:', error);
+            Swal.fire({ icon: "error", title: "Network error. Please try again." });
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

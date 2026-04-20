@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit Feedback | AuctionHub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #1a365d;
+      --secondary-color: #2b6cb0;
+      --accent-color: #c53030;
+      --light-bg: #f7fafc;
+      --dark-text: #2d3748;
+      --success-color: #38a169;
+    }
+
+    body {
+      background: var(--light-bg);
+      color: var(--dark-text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feedback-container {
+      max-width: 800px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.05);
+      padding: 2.5rem;
+      margin: 3rem auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feedback-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+      padding-bottom: 1.5rem;
+    }
+
+    .feedback-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+      border-radius: 2px;
+    }
+
+    .page-title {
+      font-weight: 700;
+      color: var(--primary-color);
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+      transition: transform 0.2s ease;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .form-control, .form-select {
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.875rem 1.25rem;
+      transition: all 0.2s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.15);
+    }
+
+    .input-group button {
+      border-radius: 0 8px 8px 0;
+      border-left: 0;
+      background: var(--light-bg);
+      transition: all 0.2s ease;
+    }
+
+    .input-group button:hover {
+      background: var(--secondary-color);
+      color: white;
+    }
+
+    .file-upload {
+      border: 2px dashed #cbd5e0;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .file-upload.dragover {
+      border-color: var(--secondary-color);
+      background: rgba(43, 108, 176, 0.03);
+    }
+
+    .file-upload.has-files {
+      border-color: var(--success-color);
+      background: rgba(56, 161, 105, 0.03);
+    }
+
+    .file-upload .remove-files {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 1.5rem;
+      height: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .file-upload.has-files .remove-files {
+      opacity: 1;
+    }
+
+    .file-upload .remove-files:hover {
+      background: #9b2c2c;
+    }
+
+    .btn-primary {
+      background: var(--secondary-color);
+      border: none;
+      padding: 1rem 2.5rem;
+      font-weight: 600;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(43, 108, 176, 0.25);
+    }
+
+    .loading-dots {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .loading-dots span {
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-6px); }
+    }
+
+    .subject-card {
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .subject-card:hover {
+      border-color: var(--secondary-color);
+      transform: translateX(4px);
+    }
+
+    .subject-card.selected {
+      border-color: var(--secondary-color);
+      background: rgba(43, 108, 176, 0.05);
+    }
+
+    .alert {
+      border-radius: 8px;
+      border-left: 4px solid;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--secondary-color);
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: width 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      .feedback-container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+
+      .page-title {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container feedback-container">
+  <div class="progress-bar" style="width: 60%"></div>
+
+  <div class="feedback-header">
+    <h1 class="page-title">Share Your Feedback</h1>
+    <p class="text-muted">Help us improve your AuctionHub experience</p>
+  </div>
+
+  {% if error %}
+  <div class="alert alert-danger mb-4">
+    <i class="fas fa-exclamation-circle me-2"></i>
+    {{ error }}
+  </div>
+  {% endif %}
+
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-success mb-4">
+    <i class="fas fa-check-circle me-2"></i>
+    {{ message }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <form method="post" action="{% url 'submit_feedback' %}" class="needs-validation" novalidate enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-section">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">
+            <i class="fas fa-user-tag"></i>
+            Your Name
+          </label>
+          <input type="text" class="form-control bg-light"
+                 name="name" id="name"
+                 value="{{ name|default_if_none:'' }}"
+                 required readonly aria-label="Your name">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">
+            <i class="fas fa-envelope"></i>
+            Email Address
+          </label>
+          <input type="email" class="form-control bg-light"
+                 name="email" id="email"
+                 value="{{ email|default_if_none:'' }}"
+                 required readonly aria-label="Your email">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <label class="form-label">
+        <i class="fas fa-comment-dots"></i>
+        Feedback Category
+      </label>
+      <div class="input-group">
+        <input type="text" class="form-control" name="subject" id="subjectInput"
+               value="{{ subject|default_if_none:'' }}" required
+               placeholder="Select feedback category" aria-describedby="subjectHelp">
+        <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#categoryModal">
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+      <div id="subjectHelp" class="form-text mt-2">
+        Choose the most relevant category for your feedback
+      </div>
+      <div class="invalid-feedback">
+        Please select a feedback category.
+      </div>
+    </div>
+
+    <div class="form-section">
+      <label class="form-label">
+        <i class="fas fa-edit"></i>
+        Detailed Feedback
+      </label>
+      <textarea class="form-control" name="message" id="message"
+                rows="5" required
+                placeholder="Describe your experience in detail..."
+                aria-describedby="messageHelp">{{ message|default_if_none:'' }}</textarea>
+      <div id="messageHelp" class="form-text mt-2">
+        Provide as much detail as possible to assist us
+      </div>
+      <div class="invalid-feedback">
+        Please provide your feedback details.
+      </div>
+    </div>
+
+    <div class="form-section">
+      <label class="form-label">
+        <i class="fas fa-paperclip"></i>
+        Attachments (Optional)
+      </label>
+      <div class="file-upload" role="button" tabindex="0" aria-label="Upload files or drag and drop, max 5 files (10MB each), PNG, JPG, PDF">
+        <input type="file" class="d-none" name="files" id="fileInput" multiple
+               accept=".jpg,.jpeg,.png,.pdf" aria-hidden="true">
+        <div class="text-muted mb-2" id="fileUploadIcon">
+          <i class="fas fa-cloud-upload-alt fa-2x"></i>
+        </div>
+        <p class="mb-1" id="fileUploadText">Drag & drop files or <span class="text-primary">browse</span></p>
+        <small class="text-muted" id="fileUploadHint">Max 5 files (10MB each) - PNG, JPG, PDF</small>
+        <button type="button" class="remove-files" aria-label="Remove selected files">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div id="fileError" class="text-danger mt-2" style="display: none;"></div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-5">
+      <a href="{% url 'udash' %}" class="text-decoration-none text-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Return to Dashboard
+      </a>
+      <button type="submit" class="btn btn-primary px-4 py-2" id="submitBtn">
+        <span id="submitText">Submit Feedback</span>
+        <div class="loading-dots" style="display: none;">
+          <span></span><span></span><span></span>
+        </div>
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Category Modal -->
+<div class="modal fade" id="categoryModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Select Category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="subject-card" data-subject="Technical Issues">
+          <div class="fw-bold mb-1">Technical Issues</div>
+          <div class="text-muted small">Payment problems, website errors, etc.</div>
+        </div>
+        <div class="subject-card" data-subject="Product Feedback">
+          <div class="fw-bold mb-1">Product Feedback</div>
+          <div class="text-muted small">Item descriptions, shipping, quality</div>
+        </div>
+        <div class="subject-card" data-subject="Account Management">
+          <div class="fw-bold mb-1">Account Management</div>
+          <div class="text-muted small">Login issues, profile settings</div>
+        </div>
+        <div class="subject-card" data-subject="Suggestions">
+          <div class="fw-bold mb-1">Suggestions</div>
+          <div class="text-muted small">New features, improvements</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('form');
+  const submitBtn = document.getElementById('submitBtn');
+  const fileUpload = document.querySelector('.file-upload');
+  const fileInput = document.getElementById('fileInput');
+  const fileUploadIcon = document.getElementById('fileUploadIcon');
+  const fileUploadText = document.getElementById('fileUploadText');
+  const fileUploadHint = document.getElementById('fileUploadHint');
+  const fileError = document.getElementById('fileError');
+  const removeFilesBtn = fileUpload.querySelector('.remove-files');
+  const subjectInput = document.getElementById('subjectInput');
+
+  // File upload handling
+  fileUpload.addEventListener('click', () => fileInput.click());
+  fileUpload.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    fileUpload.classList.add('dragover');
+  });
+  fileUpload.addEventListener('dragleave', () => fileUpload.classList.remove('dragover'));
+  fileUpload.addEventListener('drop', (e) => {
+    e.preventDefault();
+    fileUpload.classList.remove('dragover');
+    fileInput.files = e.dataTransfer.files;
+    updateFileUploadDisplay();
+  });
+
+  fileInput.addEventListener('change', () => updateFileUploadDisplay());
+
+  removeFilesBtn.addEventListener('click', () => {
+    fileInput.value = '';
+    updateFileUploadDisplay();
+  });
+
+  function updateFileUploadDisplay() {
+    const files = fileInput.files;
+    if (files.length > 0) {
+      fileUpload.classList.add('has-files');
+      fileUploadIcon.innerHTML = '<i class="fas fa-check-circle fa-2x"></i>';
+      fileUploadText.textContent = `${files.length} file${files.length > 1 ? 's' : ''} selected`;
+      fileUploadHint.textContent = 'Ready to upload';
+    } else {
+      fileUpload.classList.remove('has-files', 'dragover');
+      fileUploadIcon.innerHTML = '<i class="fas fa-cloud-upload-alt fa-2x"></i>';
+      fileUploadText.textContent = 'Drag & drop files or ';
+      fileUploadHint.textContent = 'Max 5 files (10MB each) - PNG, JPG, PDF';
+    }
+    validateFiles();
+  }
+
+  function validateFiles() {
+    const files = fileInput.files;
+    let isValid = true;
+    fileError.style.display = 'none';
+
+    if (files.length > 5) {
+      fileError.textContent = 'Maximum 5 files allowed.';
+      isValid = false;
+    } else {
+      for (let file of files) {
+        if (file.size > 10 * 1024 * 1024) {
+          fileError.textContent = `File ${file.name} exceeds 10MB limit.`;
+          isValid = false;
+          break;
+        }
+        const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+        if (!validTypes.includes(file.type)) {
+          fileError.textContent = `Invalid file type for ${file.name}. Use PNG, JPG, or PDF.`;
+          isValid = false;
+          break;
+        }
+      }
+    }
+
+    if (!isValid) {
+      fileError.style.display = 'block';
+      submitBtn.disabled = true;
+    } else {
+      submitBtn.disabled = false;
+    }
+  }
+
+  // Category selection
+  document.querySelectorAll('.subject-card').forEach(card => {
+    card.addEventListener('click', function() {
+      document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
+      this.classList.add('selected');
+      subjectInput.value = this.getAttribute('data-subject');
+      bootstrap.Modal.getInstance(document.getElementById('categoryModal')).hide();
+    });
+  });
+
+  // Form submission handling
+  form.addEventListener('submit', (e) => {
+    if (!form.checkValidity() || (fileInput.files.length > 0 && !validateFiles())) {
+      e.preventDefault();
+      e.stopPropagation();
+    } else {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      document.getElementById('submitText').style.display = 'none';
+      document.querySelector('.loading-dots').style.display = 'inline-flex';
+      form.submit(); // Submit after showing loading state
+    }
+    form.classList.add('was-validated');
+  });
+
+  // Pre-fill subject if available
+  if (subjectInput.value) {
+    const selectedCard = Array.from(document.querySelectorAll('.subject-card'))
+      .find(card => card.getAttribute('data-subject') === subjectInput.value);
+    if (selectedCard) selectedCard.classList.add('selected');
+  }
+});
+</script>
+</body>
+</html>

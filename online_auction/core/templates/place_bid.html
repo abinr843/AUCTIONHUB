@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Bid for {{ auction.title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --error: #ef4444;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 8px 30px rgba(0,0,0,0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--light-bg);
+            color: var(--text);
+            font-size: 16px;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 2rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -30px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 2.5rem;
+        }
+
+        .auction-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            transition: var(--transition);
+        }
+
+        .detail-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+        }
+
+        .detail-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-label i {
+            color: var(--primary);
+        }
+
+        .detail-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .current-bid .detail-value {
+            color: var(--accent);
+            font-size: 1.75rem;
+        }
+
+        .auction-timer {
+            background: linear-gradient(135deg, var(--accent) 0%, #fbbf24 100%);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .form-section {
+            background: var(--light-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .form-heading {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .form-heading::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 80%;
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .input-hint {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+
+        .wallet-error, .reserve-wallet-error {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--error);
+            display: none;
+        }
+
+        .wallet-error.show, .reserve-wallet-error.show {
+            display: block;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .checkbox-input {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 5px;
+            appearance: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .checkbox-input:checked {
+            background: var(--primary);
+            border-color: var(--primary);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' clip-rule='evenodd'/%3E%3C/svg%3E");
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .checkbox-input:disabled {
+            background: #d1d5db;
+            border-color: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .checkbox-label {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .locked-label {
+            color: var(--text-light);
+            pointer-events: none;
+        }
+
+        .lock-icon {
+            color: var(--error);
+            font-size: 1.2rem;
+            margin-left: 0.5rem;
+        }
+
+        .premium-message {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
+        .premium-message a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .premium-message a:hover {
+            text-decoration: underline;
+        }
+
+        .proxy-group {
+            background: rgba(99, 102, 241, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .proxy-group.locked {
+            background: rgba(239, 68, 68, 0.05);
+            border-left-color: var(--error);
+            pointer-events: none;
+        }
+
+        .proxy-group.locked .input-field {
+            background: #f3f3f3;
+            border-color: #d1d5db;
+            color: var(--text-light);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            margin-top: 1.5rem;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        /* Loading Modal Styles */
+        .loading-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Tooltip Styles */
+        .info-icon {
+            color: var(--primary);
+            font-size: 1rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            position: relative;
+            top: 2px;
+        }
+
+        .tooltip {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--text);
+            color: var(--white);
+            text-align: center;
+            border-radius: 6px;
+            padding: 0.5rem;
+            position: absolute;
+            z-index: 1;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+
+        .info-icon:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 16px;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            .header {
+                padding: 1.5rem;
+            }
+
+            .detail-value {
+                font-size: 1.25rem;
+            }
+
+            .tooltip {
+                width: 150px;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{ auction.title }}</h1>
+            <p>Place your bid before time runs out</p>
+        </div>
+
+        <div class="content">
+            <div class="auction-details">
+                <div class="detail-card">
+                    <div class="detail-label">
+                        <i class="fas fa-tag"></i>
+                        Starting Price
+                    </div>
+                    <div class="detail-value">₹{{ auction.starting_price|floatformat:2 }}</div>
+                </div>
+
+                <div class="detail-card current-bid">
+                    <div class="detail-label">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        Current Bid
+                    </div>
+                    <div class="detail-value" id="current-bid-value">
+                        ₹{{ current_bid|default:auction.starting_price|floatformat:2 }}
+                    </div>
+                    <div class="auction-timer">
+                        <i class="fas fa-bolt"></i>
+                        <span id="countdown">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <div class="detail-label">
+                        <i class="fas fa-clock"></i>
+                        Auction Ends
+                    </div>
+                    <div class="detail-value">{{ auction.end_date }}</div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                {% if success %}
+                    <div class="message success-message">{{ success }}</div>
+                {% endif %}
+                {% if error %}
+                    <div class="message error-message">{{ error }}</div>
+                {% endif %}
+
+                <h2 class="form-heading">Bid Information</h2>
+
+                <form method="POST" action="{% url 'place_bid' auction_id=auction.id %}">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label class="input-label">One-time Bid Amount</label>
+                            <input type="number" name="bid_amount" class="input-field"
+                                   placeholder="Enter amount" step="0.01">
+                        </div>
+
+                        <div class="input-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="enable_auto_bid" name="enable_auto_bid" class="checkbox-input"
+                                       {% if not is_premium_proxy_eligible %}disabled{% endif %}>
+                                <label class="checkbox-label {% if not is_premium_proxy_eligible %}locked-label{% endif %}">
+                                    Enable Auto-Bidding
+                                    {% if not is_premium_proxy_eligible %}
+                                        <i class="fas fa-lock lock-icon"></i>
+                                    {% endif %}
+                                </label>
+                            </div>
+                            {% if not is_premium_proxy_eligible %}
+                                <div class="premium-message">
+                                    Auto-bidding is available for Standard and Premium members only.
+                                    <a href="{% url 'upgrade' %}">Go Premium</a> to unlock this feature.
+                                </div>
+                            {% endif %}
+                            <div class="proxy-group {% if not is_premium_proxy_eligible %}locked{% endif %}" id="proxy_bid_group">
+                                <label class="input-label">
+                                    Maximum Proxy Bid
+                                    <i class="fas fa-info-circle info-icon">
+                                        <span class="tooltip">You have to add the entered amount to your wallet.</span>
+                                    </i>
+                                </label>
+                                <input type="number" name="proxy_bid" class="input-field"
+                                       placeholder="Enter maximum amount" step="0.01"
+                                       {% if not is_premium_proxy_eligible %}disabled{% endif %}>
+                                <div class="wallet-error {% if show_wallet_error %}show{% endif %}">
+                                    The entered amount must be added to your wallet first.
+                                    <a href="{% url 'wallet' %}">Add Funds</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reserve-wallet-error {% if show_reserve_wallet_error %}show{% endif %}">
+                        {{ error }} <a href="{% url 'wallet' %}">Add Funds</a>
+                    </div>
+
+                    <button type="submit" class="submit-btn" {% if disable_bid %}disabled{% endif %}>
+                        <i class="fas fa-gavel"></i>
+                        Place Bid
+                    </button>
+                </form>
+
+                <a href="{% url 'auct_deta' auction_id=auction.id %}" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    Return to Auction
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="loading-modal" id="loading-modal">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        // Auto-bid toggle
+        const autoBidCheckbox = document.getElementById('enable_auto_bid');
+        const proxyGroup = document.getElementById('proxy_bid_group');
+        autoBidCheckbox.addEventListener('change', () => {
+            if (autoBidCheckbox.checked && !autoBidCheckbox.disabled) {
+                proxyGroup.style.display = 'block';
+            } else {
+                proxyGroup.style.display = 'none';
+            }
+        });
+
+        // Real-time countdown timer
+        function updateTimer() {
+            const endDate = new Date("{{ auction.end_date|date:'c' }}");
+            const now = new Date();
+            const diff = endDate - now;
+
+            if (diff <= 0) {
+                document.getElementById('countdown').textContent = 'Auction Ended';
+                document.querySelector('.submit-btn').disabled = true;
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown').textContent =
+                `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // Form submission with AJAX and loading modal
+        document.querySelector('form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const bidAmountInput = document.querySelector('[name="bid_amount"]');
+            const proxyBidInput = document.querySelector('[name="proxy_bid"]');
+            const bidAmount = parseFloat(bidAmountInput.value);
+            const proxyBid = parseFloat(proxyBidInput.value) || 0;
+            const loadingModal = document.getElementById('loading-modal');
+
+            // Basic client-side validation
+            if (autoBidCheckbox.checked && !autoBidCheckbox.disabled) {
+                if (!proxyBid || proxyBid <= 0) {
+                    alert("Please enter a valid maximum proxy bid.");
+                    proxyBidInput.focus();
+                    return;
+                }
+            } else if (!bidAmount || bidAmount <= 0) {
+                alert("Please enter a valid bid amount.");
+                bidAmountInput.focus();
+                return;
+            }
+
+            // Show loading modal
+            loadingModal.style.display = 'flex';
+
+            const form = e.target;
+            const formData = new FormData(form);
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (response.ok) {
+                    const html = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+
+                    // Update current bid
+                    const newCurrentBid = doc.querySelector('#current-bid-value').textContent;
+                    document.getElementById('current-bid-value').textContent = newCurrentBid;
+
+                    // Update success/error messages
+                    const successMsg = doc.querySelector('.success-message');
+                    const errorMsg = doc.querySelector('.error-message');
+                    const formSection = document.querySelector('.form-section');
+                    formSection.querySelectorAll('.message').forEach(msg => msg.remove());
+                    if (successMsg) {
+                        formSection.insertBefore(successMsg, formSection.querySelector('h2'));
+                    }
+                    if (errorMsg) {
+                        formSection.insertBefore(errorMsg, formSection.querySelector('h2'));
+                        if (errorMsg.textContent.includes("consecutive bids") || errorMsg.textContent.includes("ended")) {
+                            document.querySelector('.submit-btn').disabled = true;
+                        }
+                    }
+
+                    // Update wallet error visibility
+                    const walletError = doc.querySelector('.wallet-error');
+                    const existingWalletError = formSection.querySelector('.wallet-error');
+                    if (walletError && walletError.classList.contains('show')) {
+                        existingWalletError.classList.add('show');
+                    } else {
+                        existingWalletError.classList.remove('show');
+                    }
+
+                    // Update reserve wallet error visibility
+                    const reserveWalletError = doc.querySelector('.reserve-wallet-error');
+                    const existingReserveWalletError = formSection.querySelector('.reserve-wallet-error');
+                    if (reserveWalletError && reserveWalletError.classList.contains('show')) {
+                        existingReserveWalletError.classList.add('show');
+                        existingReserveWalletError.innerHTML = reserveWalletError.innerHTML;
+                    } else {
+                        existingReserveWalletError.classList.remove('show');
+                    }
+
+                    // Clear input fields
+                    bidAmountInput.value = '';
+                    proxyBidInput.value = '';
+                    autoBidCheckbox.checked = false;
+                    proxyGroup.style.display = 'none';
+                } else {
+                    alert('An error occurred while placing your bid.');
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                alert('Failed to submit bid. Please try again.');
+            } finally {
+                // Hide loading modal
+                loadingModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order Management Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    .highlight {
+      border: 2px solid #007bff;
+      background-color: #f8f9fa;
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+    }
+
+    :root {
+      --primary-color: #6366f1;
+      --success-color: #22c55e;
+      --danger-color: #ef4444;
+      --warning-color: #f59e0b;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --surface-color: #ffffff;
+      --background-color: #f8fafc;
+    }
+
+    body {
+      background-color: var(--background-color);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .dashboard-header {
+      background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+      padding: 3rem 0;
+      margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .order-nav .nav-link {
+      color: var(--text-light);
+      font-weight: 500;
+      border: none;
+      padding: 1rem 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .order-nav .nav-link.active {
+      color: var(--primary-color);
+      background: rgba(99, 102, 241, 0.1);
+      border-radius: 0.75rem;
+    }
+
+    .order-card {
+      background: var(--surface-color);
+      border-radius: 1rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-bottom: 1.5rem;
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+    }
+
+    .order-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-thumbnail {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 0.75rem;
+      border: 2px solid #e2e8f0;
+      transition: transform 0.3s ease;
+    }
+
+    .product-thumbnail:hover {
+      transform: scale(1.05);
+    }
+
+    .auction-images img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      margin-right: 8px;
+      border-radius: 8px;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .auction-images img:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .cancel-modal-header {
+      background: #fff0f0;
+      border-bottom: none;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .cancel-modal-header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--danger-color) 0%, #fee2e2 100%);
+    }
+
+    .reason-card {
+      border: 2px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: var(--surface-color);
+    }
+
+    .reason-card:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .reason-card.selected {
+      border-color: var(--primary-color);
+      background: rgba(99, 102, 241, 0.05);
+    }
+
+    .reason-card input[type="radio"] {
+      display: none;
+    }
+
+    .reason-card label {
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .custom-reason {
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .custom-reason textarea {
+      resize: none;
+    }
+
+    .custom-reason.active {
+      display: block;
+    }
+
+    .progress-container {
+      margin: 2rem 0;
+      position: relative;
+    }
+
+    .progress-bar-container {
+      height: 12px;
+      background: rgba(226, 232, 240, 0.4);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+      backdrop-filter: blur(4px);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg,
+          var(--primary-color) 0%,
+          rgba(99, 102, 241, 0.8) 100%);
+      width: 0;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, U);
+      position: relative;
+      border-radius: 8px;
+    }
+
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg,
+          rgba(255, 255, 255, 0.2) 0%,
+          rgba(255, 255, 255, 0) 100%);
+      border-radius: 8px;
+    }
+
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+      position: relative;
+    }
+
+    .progress-step {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-light);
+      position: relative;
+      flex: 1;
+      transition: color 0.3s ease;
+    }
+
+    .progress-step.active {
+      color: var(--text-dark);
+      font-weight: 600;
+    }
+
+    .progress-step::before {
+      content: '';
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border: 3px solid #e2e8f0;
+      border-radius: 50%;
+      position: absolute;
+      top: -32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-step.active::before {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      transform: translateX(-50%) scale(1.1);
+    }
+
+    .progress-step.completed::before {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      content: '\2713';
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .progress-step.completed::after {
+      content: '';
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      width: 120%;
+      height: 4px;
+      background: var(--primary-color);
+      z-index: 1;
+    }
+
+    .progress-label {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary-color);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    }
+
+    .progress-step:hover .progress-label {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(-5px);
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+    }
+
+    .progress-step.active:not(.completed)::before {
+      animation: pulse 2s infinite;
+    }
+
+    .star-rating .star-label {
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .star-rating .star-label:hover {
+      transform: scale(1.2);
+    }
+
+    .star-rating .bi-star-fill {
+      color: #ffd700;
+      position: absolute;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .star-rating input:checked ~ .star-label .bi-star-fill,
+    .star-rating input:hover ~ .star-label .bi-star-fill {
+      opacity: 1;
+    }
+
+    .card-hover {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+    }
+
+    .slide-down {
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, opacity 0.3s ease;
+      max-height: 0;
+      opacity: 0;
+    }
+
+    .slide-down.active {
+      max-height: 150px;
+      opacity: 1;
+    }
+
+    .bg-gradient-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .needs-validation .form-control:invalid,
+    .needs-validation .form-control:invalid:focus {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 0.25rem rgba(220,53,69,0.25);
+    }
+
+    .modal-content {
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+      opacity: 0.8;
+      transform: scale(0.85) translateY(-1.5rem) translateX(0.5rem);
+    }
+
+    .input-group-text {
+      transition: all 0.3s ease;
+    }
+
+    .form-control {
+      transition: all 0.3s ease;
+      border: 1px solid #dee2e6;
+    }
+
+    .form-control:focus {
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
+      border-color: #667eea;
+    }
+
+    .invalid-feedback {
+      display: none;
+      margin-top: 0.5rem;
+      font-size: 0.875em;
+    }
+
+    .was-validated .form-control:invalid ~ .invalid-feedback {
+      display: block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .bg-gradient-primary-to-secondary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .floating-label-group {
+      position: relative;
+    }
+
+    .floating-label-group label {
+      position: absolute;
+      top: 1rem;
+      left: 3.5rem;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .floating-label-group input:focus ~ label,
+    .floating-label-group input:not(:placeholder-shown) ~ label,
+    .floating-label-group select:valid ~ label {
+      top: -0.8rem;
+      left: 1.5rem;
+      font-size: 0.8rem;
+      opacity: 1;
+      background: white;
+      padding: 0 0.5rem;
+    }
+
+    .border-primary-hover {
+      border: 1px solid #dee2e6;
+      transition: border-color 0.3s ease;
+    }
+
+    .border-primary-hover:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .steps-progress {
+      height: 4px;
+      background: #e9ecef;
+      border-radius: 2px;
+      position: relative;
+      margin: 2rem 0;
+    }
+
+    .step-progress-bar {
+      position: absolute;
+      height: 100%;
+      background: #667eea;
+      transition: width 0.3s ease;
+    }
+
+    .step {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border: 3px solid #e9ecef;
+      border-radius: 50%;
+      top: -8px;
+      transform: translateX(-50%);
+    }
+
+    .step.active {
+      border-color: #667eea;
+    }
+
+    .step:nth-child(2) { left: 33%; }
+    .step:nth-child(3) { left: 66%; }
+    .step:nth-child(4) { left: 100%; }
+  </style>
+</head>
+<body>
+  <header class="dashboard-header">
+    <div class="container">
+      <h1 class="mb-3 fw-bold">Order Management</h1>
+      <p class="lead mb-0 opacity-90">Manage your purchases and sales efficiently</p>
+    </div>
+  </header>
+
+  <!-- Go Back Button -->
+  <div class="container mb-4">
+    <a href="{% url 'udash' %}" class="btn btn-outline-primary">
+      <i class="bi bi-arrow-left me-2"></i>Go Back to Dashboard
+    </a>
+  </div>
+
+  <div class="container">
+    <ul class="nav order-nav mb-4">
+      <li class="nav-item">
+        <a class="nav-link {% if not selected_order_id %}active{% endif %}" data-bs-toggle="tab" href="#seller-orders">
+          <i class="bi bi-box-seam me-2"></i>Your Selling Orders
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {% if selected_order_id %}active{% endif %}" data-bs-toggle="tab" href="#buyer-orders">
+          <i class="bi bi-cart-check me-2"></i>Your Orders
+        </a>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <!-- Seller Orders Tab -->
+      <div class="tab-pane fade {% if not selected_order_id %}show active{% endif %}" id="seller-orders">
+        {% if seller_orders %}
+          <div class="row g-4">
+            {% for order in seller_orders %}
+              <div class="col-12">
+                <div class="order-card p-4 {% if selected_order_id and order.order_id|stringformat:'s' == selected_order_id %}highlight{% endif %}">
+                  <!-- Progress Bar for Seller -->
+                  <div class="progress-container">
+                    <div class="progress-bar-container">
+                      <div class="progress-bar" style="width: {{ order.progress }}%;"></div>
+                    </div>
+                    <div class="progress-steps">
+                      <div class="progress-step {% if order.progress >= 0 %}active{% endif %}">Order Placed</div>
+                      <div class="progress-step {% if order.progress >= 25 %}active{% endif %}">Processing</div>
+                      <div class="progress-step {% if order.progress >= 50 %}active{% endif %}">Picked Up</div>
+                      <div class="progress-step {% if order.progress >= 60 %}active{% endif %}">Shipped</div>
+                      <div class="progress-step {% if order.progress >= 75 %}active{% endif %}">Out for Delivery</div>
+                      <div class="progress-step {% if order.progress >= 100 %}active{% endif %}">Delivered</div>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="order-status bg-primary text-white">Order #{{ order.order_id }}</span>
+                      <span class="status-badge text-muted">
+                        <i class="bi bi-calendar-event"></i>
+                        {{ order.order_date }}
+                      </span>
+                    </div>
+                    <div class="d-flex gap-2 action-buttons">
+                      {% if order.order_status != "Confirmed" %}
+                        <form method="POST" action="{% url 'seller_confirm_order' %}" class="d-inline">
+                          {% csrf_token %}
+                          <input type="hidden" name="order_id" value="{{ order.order_id }}">
+                          <button type="submit" class="btn btn-success btn-sm">
+                            <i class="bi bi-check-circle"></i> Confirm
+                          </button>
+                        </form>
+                      {% endif %}
+                      {% if order.shipping_status|lower == "pending" or order.shipping_status|lower == "processing" %}
+                        <button type="button" class="btn btn-outline-danger btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#cancelOrderModal"
+                                data-order-id="{{ order.order_id }}">
+                          <i class="bi bi-x-circle"></i> Cancel
+                        </button>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <h6 class="text-muted mb-2">Product Details</h6>
+                      <div class="d-flex align-items-center gap-3">
+                        <div>
+                          <h5 class="mb-1">{{ order.title }}</h5>
+                          <p class="text-muted mb-0">Auction ID: {{ order.auction_id }}</p>
+                          {% if order.images %}
+                            <div class="auction-images mt-2">
+                              {% for image in order.images %}
+                                <img src="{{ image }}" alt="Auction Image">
+                              {% endfor %}
+                            </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <h6 class="text-muted mb-2">Payment & Order Details</h6>
+                      <p class="mb-0"><strong>Payment:</strong> {{ order.payment_status }}</p>
+                      <p class="mb-0"><strong>Order Status:</strong> {{ order.order_status }}</p>
+                      <p class="mb-0"><strong>Shipping:</strong> {{ order.shipping_status }}</p>
+                      <p class="mb-0"><strong>Delivery Date:</strong> {{ order.delivery_date }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <h6 class="text-muted mb-2">Shipping Information</h6>
+                      <p class="mb-0">{{ order.shipping_address }}</p>
+                      <small class="text-muted">Tracking: {{ order.tracking_number }}</small>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-md-6">
+                      <h6 class="text-muted mb-2">Buyer Details</h6>
+                      <p class="mb-0"><strong>Name:</strong> {{ order.buyer_name }}</p>
+                      <p class="mb-0"><strong>Email:</strong> {{ order.buyer_email }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-info">No seller orders found.</div>
+        {% endif %}
+      </div>
+
+      <!-- Buyer Orders Tab -->
+      <div class="tab-pane fade {% if selected_order_id %}show active{% endif %}" id="buyer-orders">
+        {% if buyer_orders %}
+          <div class="row g-4">
+            {% for order in buyer_orders %}
+              <div class="col-12">
+                <div class="order-card p-4 {% if selected_order_id and order.order_id|stringformat:'s' == selected_order_id %}highlight{% endif %}">
+                  <!-- Progress Bar for Buyer -->
+                  <div class="progress-container">
+                    <div class="progress-bar-container">
+                      <div class="progress-bar" style="width: {{ order.progress }}%;"></div>
+                    </div>
+                    <div class="progress-steps">
+                      <div class="progress-step {% if order.progress >= 0 %}active{% endif %}">Order Placed</div>
+                      <div class="progress-step {% if order.progress >= 25 %}active{% endif %}">Processing</div>
+                      <div class="progress-step {% if order.progress >= 50 %}active{% endif %}">Picked Up</div>
+                      <div class="progress-step {% if order.progress >= 60 %}active{% endif %}">Shipped</div>
+                      <div class="progress-step {% if order.progress >= 75 %}active{% endif %}">Out for Delivery</div>
+                      <div class="progress-step {% if order.progress >= 100 %}active{% endif %}">Delivered</div>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="order-status bg-primary text-white">Order #{{ order.order_id }}</span>
+                      <span class="status-badge text-muted">
+                        <i class="bi bi-calendar-event"></i>
+                        {{ order.order_date }}
+                      </span>
+                    </div>
+                    <div class="d-flex gap-2 action-buttons">
+                      {% if order.shipping_status|lower == "processing" or order.shipping_status|lower == "pending" and order.shipping_address|lower == "n/a" %}
+                        <button class="btn btn-primary btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#shippingModal"
+                                data-order-id="{{ order.order_id }}"
+                                data-invoice-id="{{ order.invoice_id|default_if_none:'' }}">
+                          <i class="bi bi-truck"></i> Add Shipping Info
+                        </button>
+                      {% elif order.shipping_address|lower != "n/a" and order.shipping_status|lower == "processing" %}
+                        <button class="btn btn-warning btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#shippingModal"
+                                data-order-id="{{ order.order_id }}"
+                                data-shipping="{{ order.shipping_address }}"
+                                data-invoice-id="{{ order.invoice_id|default_if_none:'' }}">
+                          <i class="bi bi-pencil-square"></i> Edit Shipping Info
+                        </button>
+                      {% endif %}
+                      {% if order.shipping_status|lower == "delivered" %}
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#reviewModal" data-order-id="{{ order.order_id }}">
+                          <i class="bi bi-star"></i> Add Review
+                        </button>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <h6 class="text-muted mb-2">Product Details</h6>
+                      <div class="d-flex align-items-center gap-3">
+                        <div>
+                          <h5 class="mb-1">{{ order.title }}</h5>
+                          <p class="text-muted mb-0">Auction ID: {{ order.auction_id }}</p>
+                          {% if order.images %}
+                            <div class="auction-images mt-2">
+                              {% for image in order.images %}
+                                <img src="{{ image }}" alt="Auction Image">
+                              {% endfor %}
+                            </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <h6 class="text-muted mb-2">Order Details</h6>
+                      <p class="mb-0"><strong>Payment:</strong> {{ order.payment_status }}</p>
+                      <p class="mb-0"><strong>Order Status:</strong> {{ order.order_status }}</p>
+                      <p class="mb-0"><strong>Shipping:</strong> {{ order.shipping_status }}</p>
+                      <p class="mb-0"><strong>Delivery Date:</strong> {{ order.delivery_date }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <h6 class="text-muted mb-2">Shipping Information</h6>
+                      {% if order.shipping_address|lower != "n/a" %}
+                        <p class="mb-0">{{ order.shipping_address }}</p>
+                        <small class="text-muted">Tracking: {{ order.tracking_number }}</small>
+                      {% else %}
+                        <span class="text-danger">Pending Address</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-info">No buyer orders found.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced Cancel Order Modal with Predefined Reasons -->
+  <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="cancel-modal-header">
+          <div class="text-center w-100">
+            <div class="icon-danger mb-3">
+              <i class="bi bi-x-octagon-fill fs-1 text-danger"></i>
+            </div>
+            <h3 class="modal-title fs-5 fw-bold text-dark">Confirm Order Cancellation</h3>
+          </div>
+        </div>
+        <div class="modal-body px-4 py-3">
+          <form method="POST" action="{% url 'seller_cancel_order' %}">
+            {% csrf_token %}
+            <input type="hidden" name="order_id" id="cancel_order_id" value="">
+
+            <div class="alert alert-danger" role="alert">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              This action cannot be undone. Cancellation may affect your seller rating.
+            </div>
+
+            <!-- Predefined Reasons Section -->
+            <div class="mb-4">
+              <h6 class="fw-semibold mb-3">Select a reason for cancellation:</h6>
+              <div class="reasons-grid">
+                <div class="reason-card" onclick="selectReason('out_of_stock')">
+                  <input type="radio" name="cancel_reason" id="reason_out_of_stock" value="Product is out of stock">
+                  <label for="reason_out_of_stock">
+                    <i class="bi bi-box-seam me-2"></i>Product is out of stock
+                  </label>
+                </div>
+                <div class="reason-card" onclick="selectReason('buyer_request')">
+                  <input type="radio" name="cancel_reason" id="reason_buyer_request" value="Buyer requested cancellation">
+                  <label for="reason_buyer_request">
+                    <i class="bi bi-person me-2"></i>Buyer requested cancellation
+                  </label>
+                </div>
+                <div class="reason-card" onclick="selectReason('shipping_issue')">
+                  <input type="radio" name="cancel_reason" id="reason_shipping_issue" value="Shipping issue">
+                  <label for="reason_shipping_issue">
+                    <i class="bi bi-truck me-2"></i>Shipping issue
+                  </label>
+                </div>
+                <div class="reason-card" onclick="selectReason('other')">
+                  <input type="radio" name="cancel_reason" id="reason_other" value="Other">
+                  <label for="reason_other">
+                    <i class="bi bi-question-circle me-2"></i>Other
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Custom Reason Textarea -->
+            <div class="custom-reason" id="customReason">
+              <label for="custom_reason_text" class="form-label fw-semibold">
+                Please specify the reason <span class="text-danger">*</span>
+              </label>
+              <textarea name="custom_reason_text" id="custom_reason_text" class="form-control" rows="3" placeholder="Enter your reason here..."></textarea>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end pt-3">
+              <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                Close
+              </button>
+              <button type="submit" class="btn btn-danger px-4">
+                <i class="bi bi-x-circle me-2"></i>Confirm Cancellation
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shipping Info Modal -->
+  <div class="modal fade" id="shippingModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-gradient-primary text-white border-0 rounded-top">
+          <h5 class="modal-title fs-4 fw-semibold">Shipping Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body py-4">
+          <!-- Error Display -->
+          <div id="shippingError" class="alert alert-danger d-none" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span id="shippingErrorMessage"></span>
+          </div>
+          <form method="POST" action="{% url 'update_shipping_details' %}" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="order_id" id="order_id" value="">
+
+            <!-- Address Section -->
+            <div class="mb-4">
+              <label class="form-label fw-bold text-dark mb-3">Address Details</label>
+              <div class="form-floating mb-3">
+                <input type="text" name="full_name" class="form-control shadow-sm"
+                       placeholder="Full Name" id="fullNameInput" required>
+                <label for="fullNameInput" class="text-muted">
+                  <i class="bi bi-person me-2"></i>Full Name
+                </label>
+                <div class="invalid-feedback">
+                  Please enter your full name
+                </div>
+              </div>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-geo-alt-fill text-primary"></i>
+                </span>
+                <textarea name="full_address" class="form-control shadow-sm ps-3"
+                          rows="3" placeholder="Enter complete address"
+                          style="resize: none;" required></textarea>
+              </div>
+              <div class="invalid-feedback">
+                Please provide a valid shipping address
+              </div>
+            </div>
+
+            <!-- Location Details -->
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="text" name="city" class="form-control shadow-sm"
+                         placeholder="City" id="cityInput" required>
+                  <label for="cityInput" class="text-muted">
+                    <i class="bi bi-building me-2"></i>City
+                  </label>
+                  <div class="invalid-feedback">
+                    Please enter your city
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="text" name="state" class="form-control shadow-sm"
+                         placeholder="State" id="stateInput" required>
+                  <label for="stateInput" class="text-muted">
+                    <i class="bi bi-map me-2"></i>State/Province
+                  </label>
+                  <div class="invalid-feedback">
+                    Please enter your state/province
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="text" name="zip_code" class="form-control shadow-sm"
+                         placeholder="ZIP Code" pattern="\d{5,7}" id="zipInput" required>
+                  <label for="zipInput" class="text-muted">
+                    <i class="bi bi-mailbox me-2"></i>ZIP/Postal Code
+                  </label>
+                  <div class="invalid-feedback">
+                    Please provide a valid ZIP/Postal code
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="text" name="country" class="form-control shadow-sm"
+                         placeholder="Country" id="countryInput" required>
+                  <label for="countryInput" class="text-muted">
+                    <i class="bi bi-globe me-2"></i>Country
+                  </label>
+                  <div class="invalid-feedback">
+                    Please enter your country
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact Numbers Section -->
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="text" name="contact_number_primary" class="form-control shadow-sm"
+                         placeholder="Primary Contact Number" id="primaryContact" required>
+                  <label for="primaryContact" class="text-muted">
+                    <i class="bi bi-telephone me-2"></i>Primary Contact Number
+                  </label>
+                  <div class="invalid-feedback">
+                    Please enter your primary contact number
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="text" name="contact_number_secondary" class="form-control shadow-sm"
+                         placeholder="Secondary Contact Number" id="secondaryContact">
+                  <label for="secondaryContact" class="text-muted">
+                    <i class="bi bi-telephone me-2"></i>Secondary Contact Number
+                  </label>
+                  <div class="invalid-feedback">
+                    Please enter a valid secondary contact number (if available)
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-lg btn-primary w-100 py-3" id="shippingSubmitButton">
+              <span class="fw-semibold">Save Shipping Details</span>
+              <i class="bi bi-check-circle-fill ms-2"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Modal -->
+  <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-gradient-primary text-white">
+          <h5 class="modal-title fs-4" id="reviewModalLabel">Share Your Experience</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST" action="{% url 'add_review' %}" class="needs-validation" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="order_id" id="review_order_id" value="">
+          <div class="modal-body py-4">
+            <!-- Star Rating -->
+            <div class="mb-4">
+              <label class="form-label fw-bold text-dark mb-3">Overall Rating</label>
+              <div class="star-rating d-flex justify-content-center">
+                {% for i in "54321" %}
+                  <input type="radio" id="star{{i}}" name="rating" value="{{i}}" class="visually-hidden">
+                  <label for="star{{i}}" class="star-label mx-1">
+                    <i class="bi bi-star-fill fs-1"></i>
+                    <i class="bi bi-star fs-1 text-muted"></i>
+                  </label>
+                {% endfor %}
+              </div>
+              <div class="text-center mt-2">
+                <small class="rating-text text-muted">Select your rating</small>
+              </div>
+            </div>
+
+            <!-- Predefined Reasons -->
+            <div class="mb-4">
+              <label class="form-label fw-bold text-dark mb-3">What stood out?</label>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-check card card-hover">
+                    <input class="form-check-input" type="checkbox" name="reason" value="Product quality" id="reasonQuality">
+                    <label class="form-check-label card-body" for="reasonQuality">
+                      <span class="d-block h6 mb-0">Product Quality</span>
+                      <small class="text-muted">Material, durability, craftsmanship</small>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check card card-hover">
+                    <input class="form-check-input" type="checkbox" name="reason" value="Delivery speed" id="reasonDelivery">
+                    <label class="form-check-label card-body" for="reasonDelivery">
+                      <span class="d-block h6 mb-0">Delivery Speed</span>
+                      <small class="text-muted">Shipping time, tracking updates</small>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check card card-hover">
+                    <input class="form-check-input" type="checkbox" name="reason" value="Packaging" id="reasonPackaging">
+                    <label class="form-check-label card-body" for="reasonPackaging">
+                      <span class="d-block h6 mb-0">Packaging</span>
+                      <small class="text-muted">Protection, presentation, unboxing</small>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check card card-hover">
+                    <input class="form-check-input" type="checkbox" name="reason" value="Customer Service" id="reasonService">
+                    <label class="form-check-label card-body" for="reasonService">
+                      <span class="d-block h6 mb-0">Customer Service</span>
+                      <small class="text-muted">Responsiveness, helpfulness</small>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-check card card-hover">
+                    <input class="form-check-input" type="checkbox" name="reason" value="Other" id="reasonOther" onclick="toggleCustomReason(this)">
+                    <label class="form-check-label card-body" for="reasonOther">
+                      <span class="d-block h6 mb-0">Other Reason</span>
+                    </label>
+                  </div>
+                  <div class="mt-3 slide-down" id="customReasonContainer" style="display: none;">
+                    <textarea class="form-control shadow-sm" name="custom_reason" rows="3"
+                              placeholder="Please specify your reason..."
+                              style="resize: none;"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Additional Comments -->
+            <div class="mb-3">
+              <label class="form-label fw-bold text-dark mb-3">Detailed Feedback</label>
+              <textarea class="form-control shadow-sm" name="comments" rows="4"
+                        placeholder="Tell us more about your experience..."
+                        style="resize: none;"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-lg btn-link text-muted" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-lg btn-primary px-4">
+              <span class="submit-text">Submit Review</span>
+              <i class="bi bi-send-check ms-2"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Preview Modal -->
+  <div class="modal fade" id="imagePreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-body text-center p-0">
+          <img id="previewImage" src="" alt="Preview" class="img-fluid" style="max-height: 80vh;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Include Bootstrap JS Bundle (with Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Include Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Image Preview Enhancement
+    document.querySelectorAll('.product-thumbnail, .auction-images img').forEach(img => {
+      img.addEventListener('click', function() {
+        const modal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
+        const modalImg = document.getElementById('previewImage');
+        modalImg.src = this.src;
+        modal.show();
+      });
+    });
+
+    // Function to handle reason selection
+    function selectReason(reason) {
+      var reasonMap = {
+        out_of_stock: "Product is out of stock",
+        buyer_request: "Buyer requested cancellation",
+        shipping_issue: "Shipping issue",
+        other: "Other"
+      };
+      var expectedValue = reasonMap[reason];
+
+      var reasonCards = document.querySelectorAll('.reason-card');
+      reasonCards.forEach(function(card) {
+        card.classList.remove('selected');
+        var radio = card.querySelector('input[type="radio"]');
+        if (radio) {
+          radio.checked = false;
+        }
+      });
+
+      var selectedCard = null;
+      reasonCards.forEach(function(card) {
+        var radio = card.querySelector('input[type="radio"]');
+        if (radio && radio.value === expectedValue) {
+          selectedCard = card;
+        }
+      });
+      if (selectedCard) {
+        selectedCard.classList.add('selected');
+        var radio = selectedCard.querySelector('input[type="radio"]');
+        if (radio) {
+          radio.checked = true;
+        }
+      }
+
+      var customReason = document.getElementById('customReason');
+      if (reason === 'other') {
+        customReason.classList.add('active');
+      } else {
+        customReason.classList.remove('active');
+      }
+    }
+
+    // Cancel Order Modal Handler
+    var cancelOrderModal = document.getElementById('cancelOrderModal');
+    cancelOrderModal.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget;
+      var orderId = button.getAttribute('data-order-id');
+      document.getElementById('cancel_order_id').value = orderId;
+
+      const reasonCards = document.querySelectorAll('.reason-card');
+      reasonCards.forEach(card => card.classList.remove('selected'));
+      document.getElementById('customReason').classList.remove('active');
+      document.getElementById('custom_reason_text').value = '';
+    });
+
+    // Form Submission Handler for Cancel Modal
+    document.querySelector('#cancelOrderModal form').addEventListener('submit', function (e) {
+      const selectedReason = document.querySelector('input[name="cancel_reason"]:checked');
+      const customReason = document.getElementById('custom_reason_text').value;
+
+      if (!selectedReason) {
+        e.preventDefault();
+        alert('Please select a reason for cancellation.');
+        return;
+      }
+
+      if (selectedReason.value === 'Other' && !customReason.trim()) {
+        e.preventDefault();
+        alert('Please specify the reason for cancellation.');
+        return;
+      }
+    });
+
+    // Shipping Modal Handler
+    var shippingModal = document.getElementById('shippingModal');
+    shippingModal.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget;
+      var orderId = button.getAttribute('data-order-id');
+      var shippingAddress = button.getAttribute('data-shipping');
+      var invoiceId = button.getAttribute('data-invoice-id');
+      document.getElementById('order_id').value = orderId;
+
+      // Reset error display
+      var errorDiv = document.getElementById('shippingError');
+      var errorMessage = document.getElementById('shippingErrorMessage');
+      errorDiv.classList.add('d-none');
+      errorMessage.textContent = '';
+
+      // Enable/disable submit button based on invoice_id
+      var submitButton = document.getElementById('shippingSubmitButton');
+      if (!invoiceId || invoiceId === '' || invoiceId === 'null' || invoiceId === 'None') {
+        submitButton.disabled = true;
+        errorDiv.classList.remove('d-none');
+        errorMessage.textContent = 'Order does not have an associated invoice. Please complete the payment process.';
+      } else {
+        submitButton.disabled = false;
+      }
+
+      // Populate form fields
+      if (shippingAddress) {
+        const parts = shippingAddress.split(',');
+        shippingModal.querySelector('input[name="full_name"]').value = "";
+        shippingModal.querySelector('textarea[name="full_address"]').value = parts[0] ? parts[0].trim() : "";
+        shippingModal.querySelector('input[name="city"]').value = parts[1] ? parts[1].trim() : "";
+        shippingModal.querySelector('input[name="state"]').value = parts[2] ? parts[2].trim() : "";
+        shippingModal.querySelector('input[name="zip_code"]').value = parts[3] ? parts[3].trim() : "";
+        shippingModal.querySelector('input[name="country"]').value = parts[4] ? parts[4].trim() : "";
+      } else {
+        // Clear all fields for new shipping info
+        shippingModal.querySelector('input[name="full_name"]').value = "";
+        shippingModal.querySelector('textarea[name="full_address"]').value = "";
+        shippingModal.querySelector('input[name="city"]').value = "";
+        shippingModal.querySelector('input[name="state"]').value = "";
+        shippingModal.querySelector('input[name="zip_code"]').value = "";
+        shippingModal.querySelector('input[name="country"]').value = "";
+        shippingModal.querySelector('input[name="contact_number_primary"]').value = "";
+        shippingModal.querySelector('input[name="contact_number_secondary"]').value = "";
+      }
+    });
+
+    // Display Django messages in the modal
+    document.addEventListener('DOMContentLoaded', function () {
+      var messages = document.querySelectorAll('#messages .alert');
+      if (messages.length > 0) {
+        var shippingModal = bootstrap.Modal.getInstance(document.getElementById('shippingModal')) ||
+                           new bootstrap.Modal(document.getElementById('shippingModal'));
+        var errorDiv = document.getElementById('shippingError');
+        var errorMessage = document.getElementById('shippingErrorMessage');
+
+        messages.forEach(function(msg) {
+          errorMessage.textContent = msg.textContent.trim();
+          errorDiv.classList.remove('d-none');
+        });
+
+        shippingModal.show();
+      }
+    });
+
+    // Animate progress bars on page load
+    document.addEventListener('DOMContentLoaded', function () {
+      const progressBars = document.querySelectorAll('.progress-bar');
+      progressBars.forEach(bar => {
+        const targetWidth = bar.style.width;
+        bar.style.width = '0';
+        setTimeout(() => {
+          bar.style.width = targetWidth;
+        }, 100);
+      });
+    });
+
+    // Review Modal Handler
+    var reviewModal = document.getElementById('reviewModal');
+    reviewModal.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget;
+      var orderId = button.getAttribute('data-order-id');
+      document.getElementById('review_order_id').value = orderId;
+    });
+
+    // Toggle the custom reason textarea based on checkbox selection
+    function toggleCustomReason(checkbox) {
+      var customContainer = document.getElementById('customReasonContainer');
+      if (checkbox.checked) {
+        customContainer.style.display = 'block';
+      } else {
+        customContainer.style.display = 'none';
+      }
+    }
+
+    // Star rating interaction
+    document.querySelectorAll('.star-rating input').forEach(radio => {
+      radio.addEventListener('change', function() {
+        const ratingText = document.querySelector('.rating-text');
+        const messages = [
+          'Needs Improvement',
+          'Below Average',
+          'Average',
+          'Good',
+          'Excellent'
+        ];
+        ratingText.textContent = messages[this.value - 1];
+        ratingText.classList.add('text-primary', 'fw-bold');
+      });
+    });
+
+    // Form validation
+    (() => {
+      'use strict'
+      const forms = document.querySelectorAll('.needs-validation')
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+          form.classList.add('was-validated')
+        }, false)
+      })
+    })();
+
+    // Auto-resize textarea
+    document.querySelectorAll('.autosize').forEach(el => {
+      el.style.height = el.setAttribute('style', 'height: ' + el.scrollHeight + 'px');
+      el.addEventListener('input', e => {
+        el.style.height = 'auto';
+        el.style.height = (el.scrollHeight) + 'px';
+      });
+    });
+  </script>
+</body>
+</html>

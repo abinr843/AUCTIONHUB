@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction Portal - Auth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .left-section {
+            flex: 1;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            color: white;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .welcome-message {
+            position: relative;
+            z-index: 2;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .left-section h1 {
+            font-size: 2.75rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.6s ease;
+        }
+
+        .left-section p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 400px;
+            margin: 0 auto;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.6s ease 0.1s;
+        }
+
+        .right-section {
+            flex: 1;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #ffffff;
+            position: relative;
+        }
+
+        .mobile-header {
+            display: none;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .mobile-header h2 {
+            font-size: 1.75rem;
+            color: #1f2937;
+            font-weight: 700;
+        }
+
+        .form-toggle {
+            display: flex;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .toggle-btn.active {
+            color: #1f2937;
+        }
+
+        .toggle-indicator {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: #6366f1;
+            border-radius: 4px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .auth-form {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .form-screen {
+            width: 100%;
+            opacity: 0;
+            transform: translateX(30px);
+            pointer-events: none;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .form-screen.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+            position: relative;
+        }
+
+        .form-group {
+            margin-bottom: 1.75rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: #374151;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #ffffff;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc2626;
+            background: #fff5f5;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .error-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-back {
+            width: 100%;
+            padding: 1rem;
+            background: #e5e7eb;
+            color: #374151;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 1rem;
+        }
+
+        .btn-back:hover {
+            background: #d1d5db;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .suggest-password-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            background: #f3f4f6;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .suggest-password-btn.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .suggest-password-btn:hover {
+            background: #e5e7eb;
+            border-color: #6366f1;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.2);
+        }
+
+        .suggest-password-btn ion-icon {
+            font-size: 1.25rem;
+        }
+
+        .additional-links {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .additional-links a {
+            color: #4b5563;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .additional-links a:hover {
+            color: #6366f1;
+        }
+
+        .divider {
+            margin: 2rem 0;
+            display: flex;
+            align-items: center;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+            margin: 0 1rem;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .social-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            border-color: #6366f1;
+            transform: translateY(-2px);
+        }
+
+        /* Animated Alert Messages */
+        .alert {
+            padding: 1rem 2rem 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: alertSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid;
+        }
+
+        @keyframes alertSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert.hide {
+            animation: alertSlideOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes alertSlideOut {
+            from {
+                max-height: 100px;
+                opacity: 1;
+            }
+            to {
+                max-height: 0;
+                opacity: 0;
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        .alert-danger {
+            background: linear-gradient(90deg, #fff5f5 0%, #fff1f2 100%);
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        .alert-success {
+            background: linear-gradient(90deg, #f0fdf4 0%, #ecfdf5 100%);
+            border-color: #a7f3d0;
+            color: #059669;
+        }
+
+        .alert-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .alert-close {
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            padding: 0.25rem;
+            border-radius: 50%;
+        }
+
+        .alert-close:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .alert-content {
+            flex-grow: 1;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .alert-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: currentColor;
+            opacity: 0.2;
+            animation: progressBar 5s linear forwards;
+        }
+
+        @keyframes progressBar {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        /* Animation Classes */
+        .animate-in {
+            transform: translateY(0) !important;
+            opacity: 1 !important;
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                flex-direction: column;
+                max-width: 500px;
+            }
+
+            .left-section {
+                padding: 3rem 2rem;
+                display: none;
+            }
+
+            .right-section {
+                padding: 3rem 2rem;
+            }
+
+            .mobile-header {
+                display: block;
+            }
+
+            .left-section h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .right-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .mobile-header h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="left-section">
+            <div class="welcome-message">
+                <h1 id="welcome-title">Welcome Back!</h1>
+                <p id="welcome-text">Sign in to continue your journey with our exclusive auction community.</p>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <div class="mobile-header">
+                <h2>AuctionHub</h2>
+            </div>
+
+            <div class="form-toggle">
+                <button type="button" class="toggle-btn active" data-form="login">Login</button>
+                <button type="button" class="toggle-btn" data-form="signup">Sign Up</button>
+                <div class="toggle-indicator" id="indicator"></div>
+            </div>
+
+            <!-- Messages Container -->
+            <div class="messages-container">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% endif %}"
+                             role="alert"
+                             data-auto-dismiss="5000">
+                            <ion-icon class="alert-icon"
+                                      name="{% if message.tags == 'error' %}alert-circle{% else %}checkmark-circle{% endif %}">
+                            </ion-icon>
+                            <div class="alert-content">
+                                {{ message }}
+                            </div>
+                            <div class="alert-progress"></div>
+                            <button class="alert-close">
+                                <ion-icon name="close"></ion-icon>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="auth-form">
+                <!-- Login Form -->
+                <form class="form-screen active" id="loginForm" method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email"
+                               class="form-control"
+                               id="login-email"
+                               name="email"
+                               required
+                               aria-describedby="login-email-error">
+                        <div class="error-message" id="login-email-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password"
+                               class="form-control"
+                               id="login-password"
+                               name="password"
+                               required
+                               aria-describedby="login-password-error">
+                        <div class="error-message" id="login-password-error"></div>
+                    </div>
+                    <button type="submit" class="btn-primary" id="login-submit" disabled>Login</button>
+                    <div class="additional-links">
+                        <a href="{% url 'fopass' %}">Forgot Password?</a>
+                    </div>
+                </form>
+
+                <!-- Signup Form -->
+                <form class="form-screen" id="signupForm" method="POST" action="{% url 'signup' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="signup-username">Full Name</label>
+                        <input type="text"
+                               class="form-control"
+                               id="signup-username"
+                               name="username"
+                               required
+                               aria-describedby="signup-username-error">
+                        <div class="error-message" id="signup-username-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email</label>
+                        <input type="email"
+                               class="form-control"
+                               id="signup-email"
+                               name="email"
+                               required
+                               aria-describedby="signup-email-error">
+                        <div class="error-message" id="signup-email-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password"
+                               class="form-control"
+                               id="signup-password"
+                               name="password"
+                               required
+                               aria-describedby="signup-password-error">
+                        <div class="error-message" id="signup-password-error"></div>
+                        <button type="button" class="suggest-password-btn">
+                            <ion-icon name="sparkles-outline"></ion-icon> Suggest Strong Password
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-confirm-password">Confirm Password</label>
+                        <input type="password"
+                               class="form-control"
+                               id="signup-confirm-password"
+                               name="confirm_password"
+                               required
+                               aria-describedby="signup-confirm-password-error">
+                        <div class="error-message" id="signup-confirm-password-error"></div>
+                    </div>
+                    <button type="submit" class="btn-primary" id="signup-submit" disabled>Create Account</button>
+                </form>
+            </div>
+
+            <a href="{% url 'home' %}" class="btn-back">Go Back to Home</a>
+
+            <div class="divider">OR</div>
+            <div class="social-login">
+                <button class="social-btn" aria-label="Login with Google">
+                    <ion-icon name="logo-google"></ion-icon> Google
+                </button>
+                <button class="social-btn" aria-label="Login with Facebook">
+                    <ion-icon name="logo-facebook"></ion-icon> Facebook
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password Suggestion
+        function suggestPassword() {
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const digits = '0123456789';
+            const special = '@$!%*?&';
+            const allChars = lowercase + uppercase + digits + special;
+
+            // Ensure at least one character from each required set
+            const getRandomChar = (str) => str[Math.floor(Math.random() * str.length)];
+            let password = [
+                getRandomChar(lowercase),
+                getRandomChar(uppercase),
+                getRandomChar(digits),
+                getRandomChar(special)
+            ];
+
+            // Fill the rest to reach 12 characters
+            for (let i = 4; i < 12; i++) {
+                password.push(getRandomChar(allChars));
+            }
+
+            // Shuffle the password
+            for (let i = password.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [password[i], password[j]] = [password[j], password[i]];
+            }
+
+            return password.join('');
+        }
+
+        // Form Toggle
+        function showForm(formType) {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const toggleBtns = document.querySelectorAll('.toggle-btn');
+            const indicator = document.getElementById('indicator');
+            const welcomeTitle = document.getElementById('welcome-title');
+            const welcomeText = document.getElementById('welcome-text');
+
+            // Update toggle buttons and indicator
+            toggleBtns.forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector(`.toggle-btn[data-form="${formType}"]`);
+            activeBtn.classList.add('active');
+
+            const btnWidth = activeBtn.offsetWidth;
+            const btnLeft = activeBtn.offsetLeft;
+            indicator.style.width = `${btnWidth}px`;
+            indicator.style.transform = `translateX(${btnLeft}px)`; // Fixed: Use transform instead of left
+
+            // Update welcome message
+            if (formType === 'login') {
+                welcomeTitle.textContent = 'Welcome Back!';
+                welcomeText.textContent = 'Sign in to continue your journey with our exclusive auction community.';
+            } else {
+                welcomeTitle.textContent = 'Welcome Aboard!';
+                welcomeText.textContent = 'Join our community to access exclusive auctions and premium features.';
+            }
+
+            // Animate welcome message
+            const animateElements = document.querySelectorAll('.left-section h1, .left-section p');
+            animateElements.forEach(el => {
+                el.classList.remove('animate-in');
+                setTimeout(() => el.classList.add('animate-in'), 50);
+            });
+
+            // Animate suggest password button
+            if (formType === 'signup') {
+                const suggestBtn = document.querySelector('.suggest-password-btn');
+                if (suggestBtn) {
+                    suggestBtn.classList.remove('animate-in');
+                    setTimeout(() => suggestBtn.classList.add('animate-in'), 50);
+                }
+            }
+
+            // Switch forms
+            loginForm.classList.toggle('active', formType === 'login');
+            signupForm.classList.toggle('active', formType === 'signup');
+
+            // Reset validation
+            const form = formType === 'login' ? loginForm : signupForm;
+            form.querySelectorAll('.form-control').forEach(input => {
+                input.classList.remove('is-invalid');
+                const errorEl = document.getElementById(`${input.id}-error`);
+                errorEl.textContent = '';
+                errorEl.classList.remove('show');
+            });
+            form.querySelector('.btn-primary').disabled = true;
+        }
+
+        // Validation Functions
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validateUsername(username) {
+            return username.length >= 3 && /^[a-zA-Z\s]*$/.test(username);
+        }
+
+        function validatePassword(password) {
+            const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            return re.test(password);
+        }
+
+        function showError(input, message) {
+            const errorEl = document.getElementById(`${input.id}-error`);
+            input.classList.add('is-invalid');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        function clearError(input) {
+            const errorEl = document.getElementById(`${input.id}-error`);
+            input.classList.remove('is-invalid');
+            errorEl.textContent = '';
+            errorEl.classList.remove('show');
+        }
+
+        function validateForm(form) {
+            const inputs = form.querySelectorAll('.form-control');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                const value = input.value.trim();
+                const id = input.id;
+
+                if (id.includes('email')) {
+                    if (!value) {
+                        showError(input, 'Email is required');
+                        isValid = false;
+                    } else if (!validateEmail(value)) {
+                        showError(input, 'Please enter a valid email');
+                        isValid = false;
+                    } else {
+                        clearError(input);
+                    }
+                } else if (id.includes('username')) {
+                    if (!value) {
+                        showError(input, 'Full name is required');
+                        isValid = false;
+                    } else if (!validateUsername(value)) {
+                        showError(input, 'Full name must be at least 3 characters and contain only letters or spaces');
+                        isValid = false;
+                    } else {
+                        clearError(input);
+                    }
+                } else if (id.includes('password') && !id.includes('confirm')) {
+                    if (!value) {
+                        showError(input, 'Password is required');
+                        isValid = false;
+                    } else if (!validatePassword(value)) {
+                        showError(input, 'Password must be at least 8 characters, with uppercase, lowercase, number, and special character');
+                        isValid = false;
+                    } else {
+                        clearError(input);
+                    }
+                } else if (id.includes('confirm-password')) {
+                    const password = form.querySelector('#signup-password').value;
+                    if (!value) {
+                        showError(input, 'Please confirm your password');
+                        isValid = false;
+                    } else if (value !== password) {
+                        showError(input, 'Passwords do not match');
+                        isValid = false;
+                    } else {
+                        clearError(input);
+                    }
+                }
+            });
+
+            form.querySelector('.btn-primary').disabled = !isValid;
+            return isValid;
+        }
+
+        // Event Listeners
+        window.addEventListener('DOMContentLoaded', () => {
+            // Initial animation
+            document.querySelectorAll('.left-section h1, .left-section p').forEach(el => {
+                el.classList.add('animate-in');
+            });
+
+            const firstBtn = document.querySelector('.toggle-btn.active');
+            const indicator = document.getElementById('indicator');
+            indicator.style.width = `${firstBtn.offsetWidth}px`;
+            indicator.style.transform = `translateX(${firstBtn.offsetLeft}px)`; // Fixed: Use transform instead of left
+
+            // Toggle buttons
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.addEventListener('click', () => showForm(btn.dataset.form));
+            });
+
+            // Form validation
+            const forms = [document.getElementById('loginForm'), document.getElementById('signupForm')];
+            forms.forEach(form => {
+                const inputs = form.querySelectorAll('.form-control');
+                inputs.forEach(input => {
+                    input.addEventListener('input', () => validateForm(form));
+                    input.addEventListener('blur', () => validateForm(form));
+                });
+
+                form.addEventListener('submit', (e) => {
+                    if (!validateForm(form)) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Password suggestion
+            const suggestBtn = document.querySelector('.suggest-password-btn');
+            if (suggestBtn) {
+                suggestBtn.addEventListener('click', () => {
+                    const signupForm = document.getElementById('signupForm');
+                    const passwordInput = document.getElementById('signup-password');
+                    const confirmPasswordInput = document.getElementById('signup-confirm-password');
+                    const newPassword = suggestPassword();
+                    passwordInput.value = newPassword;
+                    confirmPasswordInput.value = newPassword;
+                    validateForm(signupForm);
+                });
+            }
+
+            // Auto-dismiss alerts
+            document.querySelectorAll('.alert[data-auto-dismiss]').forEach(alert => {
+                const timeout = parseInt(alert.dataset.autoDismiss);
+                setTimeout(() => {
+                    alert.classList.add('hide');
+                    setTimeout(() => alert.remove(), 400);
+                }, timeout);
+            });
+
+            // Manual dismiss
+            document.querySelectorAll('.alert-close').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const alert = btn.closest('.alert');
+                    alert.classList.add('hide');
+                    setTimeout(() => alert.remove(), 400);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

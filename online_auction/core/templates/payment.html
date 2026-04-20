@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Payment Gateway</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #3563E9;
+      --primary-dark: #2045B5;
+      --primary-light: #D0DCFF;
+      --secondary-color: #f8fafc;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --text-color: #1e293b;
+      --text-light: #64748b;
+      --border-color: #e2e8f0;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --transition: all 0.2s ease;
+      --modal-gradient-start: #ffffff;
+      --modal-gradient-end: #f1f5f9;
+      --stepper-gradient: linear-gradient(90deg, #3563E9, #60a5fa);
+      --stepper-inactive: #d1d5db;
+      --stepper-line: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text-color);
+      background-color: #f1f5f9;
+      line-height: 1.6;
+      font-size: 0.9375rem;
+    }
+
+    h1, h2, h3, h4 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+      color: var(--text-color);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .section-title {
+      color: var(--text-color);
+      font-size: 1.25rem;
+      margin-bottom: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title::before {
+      content: "";
+      display: block;
+      width: 4px;
+      height: 20px;
+      background-color: var(--primary-color);
+      border-radius: 2px;
+    }
+
+    .invoice-section {
+      background-color: var(--white);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: var(--transition);
+    }
+
+    .invoice-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .invoice-card {
+      background-color: var(--white);
+      border-radius: 10px;
+      padding: 1.25rem;
+      border-left: 4px solid transparent;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      border: 1px solid var(--border-color);
+    }
+
+    .invoice-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+      border-color: var(--primary-light);
+    }
+
+    .invoice-card.selected {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary-color);
+    }
+
+    .invoice-card.paid {
+      border-left: 4px solid var(--success-color);
+      background-color: rgba(16, 185, 129, 0.05);
+      cursor: default;
+    }
+
+    .invoice-card.overdue {
+      border-left: 4px solid var(--danger-color);
+      background-color: rgba(239, 68, 68, 0.05);
+    }
+
+    .invoice-card.expired {
+      border-left: 4px solid var(--danger-color);
+      background-color: rgba(239, 68, 68, 0.05);
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .invoice-card.expired:hover {
+      transform: none;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .invoice-card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+      color: var(--text-color);
+      font-weight: 600;
+    }
+
+    .invoice-card p {
+      margin: 0.4rem 0;
+      color: var(--text-light);
+      font-size: 0.875rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .invoice-card strong {
+      color: var(--text-color);
+      font-weight: 500;
+    }
+
+    .status-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    .paid-badge {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+    }
+
+    .overdue-badge {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--danger-color);
+    }
+
+    .expired-badge {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--danger-color);
+    }
+
+    .late-fee {
+      color: var(--danger-color);
+    }
+
+    .total-amount {
+      margin-top: 0.5rem;
+      font-weight: 500;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 0.5rem;
+    }
+
+    .no-invoices {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--text-light);
+      padding: 2rem 0;
+      background-color: var(--secondary-color);
+      border-radius: 8px;
+      border: 1px dashed var(--border-color);
+    }
+
+    .payment-section {
+      background-color: var(--white);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .payment-methods {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .payment-method {
+      flex: 1;
+      min-width: 120px;
+      background-color: var(--white);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+
+    .payment-method:hover {
+      border-color: var(--primary-color);
+      background-color: var(--secondary-color);
+    }
+
+    .payment-method.active {
+      border-color: var(--primary-color);
+      background-color: var(--primary-light);
+    }
+
+    .payment-icon {
+      display: block;
+      width: 32px;
+      height: 32px;
+      margin: 0 auto 0.5rem;
+    }
+
+    .payment-method span {
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    .payment-details {
+      margin-bottom: 2rem;
+    }
+
+    .card-details-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .input-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      background-color: var(--secondary-color);
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(53, 99, 233, 0.15);
+      background-color: var(--white);
+    }
+
+    .input-field.error {
+      border-color: var(--danger-color);
+      background-color: rgba(239, 68, 68, 0.05);
+    }
+
+    .error-message {
+      color: var(--danger-color);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      min-height: 1.2rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .error-message.visible {
+      opacity: 1;
+    }
+
+    .status-success, .status-error {
+      display: flex;
+      align-items: center;
+      margin-top: 0.5rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .status-success {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+    }
+
+    .status-error {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--danger-color);
+    }
+
+    .status-success.visible, .status-error.visible {
+      opacity: 1;
+    }
+
+    .status-icon {
+      margin-right: 0.5rem;
+    }
+
+    .pay-button {
+      background-color: var(--primary-color);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: var(--transition);
+    }
+
+    .pay-button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: var(--white);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      margin-top: 1rem;
+      transition: var(--transition);
+    }
+
+    .back-button:hover {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(15, 23, 42, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+      backdrop-filter: blur(6px);
+    }
+
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, var(--modal-gradient-start), var(--modal-gradient-end));
+      border-radius: 20px;
+      padding: 2.5rem;
+      text-align: center;
+      box-shadow: var(--shadow-lg), 0 0 20px rgba(0, 0, 0, 0.1);
+      max-width: 480px;
+      width: 90%;
+      position: relative;
+      transform: translateY(50px);
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .modal.active .modal-content {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .modal-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-header h2 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-color);
+      background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .progress-stepper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: var(--stepper-inactive);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: background 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.5);
+    }
+
+    .step.active .step-circle {
+      background: var(--stepper-gradient);
+      transform: scale(1.15);
+      box-shadow: 0 0 12px rgba(53, 99, 233, 0.5);
+    }
+
+    .step.completed .step-circle {
+      background: var(--success-color);
+      transform: scale(1);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+    }
+
+    .step-label {
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      font-weight: 500;
+      transition: color 0.4s ease;
+    }
+
+    .step.active .step-label, .step.completed .step-label {
+      color: var(--text-color);
+    }
+
+    .progress-line {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      right: 18px;
+      height: 4px;
+      background-color: var(--stepper-line);
+      border-radius: 2px;
+      z-index: 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--stepper-gradient);
+      width: 0;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+      box-shadow: 0 0 8px rgba(53, 99, 233, 0.3);
+    }
+
+    .modal-body {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-icon {
+      display: inline-block;
+      margin-bottom: 1rem;
+      animation: bounceIn 0.6s ease;
+    }
+
+    .modal-icon svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-message {
+      font-size: 1.1rem;
+      color: var(--text-color);
+      font-weight: 500;
+      animation: slideIn 0.4s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .spinner {
+      border: 4px solid rgba(53, 99, 233, 0.2);
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      animation: spin 1.2s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .confirmation-icon {
+      animation: scaleIn 0.4s ease;
+    }
+
+    @media (max-width: 768px) {
+      .card-details-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .payment-methods {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .payment-method {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        text-align: left;
+        padding: 0.75rem 1rem;
+      }
+
+      .payment-icon {
+        margin: 0 1rem 0 0;
+      }
+
+      .modal-content {
+        padding: 1.75rem;
+        max-width: 95%;
+      }
+
+      .modal-header h2 {
+        font-size: 1.5rem;
+      }
+
+      .progress-stepper {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .step {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 1rem;
+      }
+
+      .step-label {
+        margin-top: 0;
+        font-size: 0.85rem;
+      }
+
+      .progress-line {
+        display: none;
+      }
+
+      .modal-message {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="invoice-section">
+      <h2 class="section-title">Pending Invoices</h2>
+      <div class="invoice-list">
+        {% for invoice in pending_invoices %}
+          <div class="invoice-card" onclick="selectInvoice('{{ invoice.id }}', {{ invoice.amount_due|add:invoice.late_fee|floatformat:2 }})">
+            <h3>Invoice #{{ invoice.id }}</h3>
+            <p>Auction ID: <strong>{{ invoice.auction_id }}</strong></p>
+            <p>Amount Due: <strong>₹{{ invoice.amount_due|floatformat:2 }}</strong></p>
+            <p>Due Date: {{ invoice.due_date }}</p>
+          </div>
+        {% empty %}
+          <p class="no-invoices">No pending invoices found</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="invoice-section">
+      <h2 class="section-title">Paid Invoices</h2>
+      <div class="invoice-list">
+        {% for invoice in paid_invoices %}
+          <div class="invoice-card paid">
+            <h3>Invoice #{{ invoice.id }}</h3>
+            <p>Auction ID: <strong>{{ invoice.auction_id }}</strong></p>
+            <p>Amount Paid: <strong>₹{{ invoice.amount_due|floatformat:2 }}</strong></p>
+            <span class="status-badge paid-badge">Paid</span>
+          </div>
+        {% empty %}
+          <p class="no-invoices">No paid invoices found</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="invoice-section">
+      <h2 class="section-title">Overdue Invoices</h2>
+      <div class="invoice-list">
+        {% for invoice in overdue_invoices %}
+          {% with total_due=invoice.amount_due|add:invoice.late_fee %}
+            <div class="invoice-card overdue{% if not invoice.can_pay %} expired{% endif %}"
+                 {% if invoice.can_pay %}onclick="selectInvoice('{{ invoice.id }}', {{ total_due|floatformat:2 }})"{% endif %}>
+              <h3>Invoice #{{ invoice.id }}</h3>
+              <p>Auction ID: <strong>{{ invoice.auction_id }}</strong></p>
+              <p>Original Amount: <strong>₹{{ invoice.amount_due|floatformat:2 }}</strong></p>
+              <p>Late Fee: <strong class="late-fee">₹{{ invoice.late_fee|floatformat:2 }}</strong></p>
+              <p class="total-amount">Total Due: <strong>₹{{ total_due|floatformat:2 }}</strong></p>
+              <span class="status-badge {% if invoice.can_pay %}overdue-badge{% else %}expired-badge{% endif %}">
+                {% if invoice.can_pay %}Overdue{% else %}Expired{% endif %}
+              </span>
+            </div>
+          {% endwith %}
+        {% empty %}
+          <p class="no-invoices">No overdue invoices found</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="payment-section">
+      <h2 class="section-title">Payment Details</h2>
+      <form id="paymentForm" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="invoice_id" id="selected_invoice_id" value="{{ pending_invoices.0.id|default_if_none:'' }}">
+        <input type="hidden" name="payment_method" id="selected_payment_method" value="credit_card">
+
+        <div class="payment-methods">
+          <div class="payment-method active" data-method="credit_card" onclick="selectPaymentMethod('credit_card')">
+            <img src="https://img.icons8.com/color/48/000000/visa.png" class="payment-icon">
+            <span>Credit Card</span>
+          </div>
+          <div class="payment-method" data-method="paypal" onclick="selectPaymentMethod('paypal')">
+            <img src="https://img.icons8.com/color/48/000000/paypal.png" class="payment-icon">
+            <span>PayPal</span>
+          </div>
+          <div class="payment-method" data-method="bank_transfer" onclick="selectPaymentMethod('bank_transfer')">
+            <img src="https://img.icons8.com/fluency/48/000000/bank-building.png" class="payment-icon">
+            <span>Bank Transfer</span>
+          </div>
+          <div class="payment-method" data-method="crypto" onclick="selectPaymentMethod('crypto')">
+            <img src="https://img.icons8.com/color/48/000000/bitcoin--v1.png" class="payment-icon">
+            <span>Crypto</span>
+          </div>
+        </div>
+
+        <div class="payment-details" id="credit_card_details">
+          <div class="input-group">
+            <label class="input-label" for="bank_name_credit">Bank Name</label>
+            <input type="text" class="input-field" name="bank_name" id="bank_name_credit" placeholder="HDFC Bank">
+            <div class="error-message" id="bank_name_credit_error"></div>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="card_number">Card Number</label>
+            <input type="text" class="input-field" name="card_number" id="card_number" placeholder="4242 4242 4242 4242" maxlength="19">
+            <div class="error-message" id="card_number_error"></div>
+          </div>
+          <div class="card-details-grid">
+            <div class="input-group">
+              <label class="input-label" for="card_holder">Card Holder</label>
+              <input type="text" class="input-field" name="card_holder" id="card_holder" placeholder="John Doe">
+              <div class="error-message" id="card_holder_error"></div>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="card_expiry">Expiry Date</label>
+              <input type="text" class="input-field" name="card_expiry" id="card_expiry" placeholder="MM/YY" maxlength="5">
+              <div class="error-message" id="card_expiry_error"></div>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="card_cvc">CVC</label>
+              <input type="text" class="input-field" name="card_cvc" id="card_cvc" placeholder="123" maxlength="3">
+              <div class="error-message" id="card_cvc_error"></div>
+            </div>
+          </div>
+          <div id="bank_card_status"><span class="status-icon"></span><span class="status-text"></span></div>
+        </div>
+
+        <div class="payment-details" id="paypal_details" style="display: none;">
+          <div class="input-group">
+            <label class="input-label" for="paypal_email">PayPal Email</label>
+            <input type="email" class="input-field" name="paypal_email" id="paypal_email" placeholder="example@paypal.com">
+            <div class="error-message" id="paypal_email_error"></div>
+          </div>
+          <div id="paypal_status"><span class="status-icon"></span><span class="status-text"></span></div>
+        </div>
+
+        <div class="payment-details" id="bank_transfer_details" style="display: none;">
+          <div class="input-group">
+            <label class="input-label" for="bank_name_transfer">Bank Name</label>
+            <input type="text" class="input-field" name="bank_name" id="bank_name_transfer" placeholder="Deutsche Bank">
+            <div class="error-message" id="bank_name_transfer_error"></div>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="iban">IBAN Number</label>
+            <input type="text" class="input-field" name="iban" id="iban" placeholder="DE91 1000 0000 0123 4567 89">
+            <div class="error-message" id="iban_error"></div>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="bic">BIC/SWIFT Code</label>
+            <input type="text" class="input-field" name="bic" id="bic" placeholder="BELADEBEXXX">
+            <div class="error-message" id="bic_error"></div>
+          </div>
+          <div id="bank_transfer_status"><span class="status-icon"></span><span class="status-text"></span></div>
+        </div>
+
+        <div class="payment-details" id="crypto_details" style="display: none;">
+          <div class="input-group">
+            <label class="input-label" for="wallet_address">Wallet Address</label>
+            <input type="text" class="input-field" name="wallet_address" id="wallet_address" placeholder="0x71C7656EC7ab88b098defB751B7401B5f6d8976F">
+            <div class="error-message" id="wallet_address_error"></div>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="crypto_type">Cryptocurrency</label>
+            <select class="input-field" name="crypto_type" id="crypto_type">
+              <option value="btc">Bitcoin (BTC)</option>
+              <option value="eth">Ethereum (ETH)</option>
+              <option value="usdt">Tether (USDT)</option>
+            </select>
+          </div>
+          <div id="crypto_status"><span class="status-icon"></span><span class="status-text"></span></div>
+        </div>
+
+        <button type="submit" class="pay-button" id="pay-button">
+          Confirm Payment - ₹{{ pending_invoices.0.amount_due|default_if_none:'0.00'|floatformat:2 }}
+        </button>
+      </form>
+      <a href="{% url 'udash' %}" class="back-button">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back to Dashboard
+      </a>
+    </section>
+  </div>
+
+  <div class="modal" id="modalLoader">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Payment Processing</h2>
+      </div>
+      <div class="progress-stepper">
+        <div class="progress-line">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="step" data-step="validation">
+          <div class="step-circle">1</div>
+          <div class="step-label">Validation</div>
+        </div>
+        <div class="step" data-step="processing">
+          <div class="step-circle">2</div>
+          <div class="step-label">Processing</div>
+        </div>
+        <div class="step" data-step="confirmation">
+          <div class="step-circle">3</div>
+          <div class="step-label">Confirmation</div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div id="modal-icon" class="modal-icon"></div>
+        <p id="modal-message">Validating payment details...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function luhnCheck(val) {
+      let sum = 0;
+      let shouldDouble = false;
+      val = val.replace(/\s+/g, '');
+      for (let i = val.length - 1; i >= 0; i--) {
+        let digit = parseInt(val.charAt(i));
+        if (shouldDouble) {
+          digit *= 2;
+          if (digit > 9) digit -= 9;
+        }
+        sum += digit;
+        shouldDouble = !shouldDouble;
+      }
+      return (sum % 10) === 0;
+    }
+
+    function showError(elemId, message) {
+      const elem = document.getElementById(elemId);
+      const input = document.getElementById(elemId.replace('_error', ''));
+      if (message) {
+        elem.textContent = message;
+        elem.classList.add("visible");
+        input.classList.add("error");
+      } else {
+        elem.textContent = "";
+        elem.classList.remove("visible");
+        input.classList.remove("error");
+      }
+    }
+
+    function showStatus(elemId, message, isSuccess) {
+      const statusElem = document.getElementById(elemId);
+      const icon = statusElem.querySelector('.status-icon');
+      const text = statusElem.querySelector('.status-text');
+      statusElem.classList.remove('status-success', 'status-error');
+      if (message) {
+        statusElem.classList.add(isSuccess ? 'status-success' : 'status-error');
+        icon.textContent = isSuccess ? '✔️' : '❌';
+        text.textContent = message;
+        statusElem.classList.add('visible');
+      } else {
+        statusElem.classList.remove('visible');
+      }
+    }
+
+    const patterns = {
+      card_number: /^\d{16}$/,
+      card_holder: /^[A-Za-z\s]{2,}$/,
+      card_expiry: /^(0[1-9]|1[0-2])\/\d{2}$/,
+      card_cvc: /^\d{3,4}$/,
+      bank_name: /^[A-Za-z\s]{2,}$/,
+      paypal_email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      iban: /^[A-Z]{2}\d{2}[A-Z0-9]{11,30}$/,
+      bic: /^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/,
+      wallet_address: /^(0x)?[0-9a-fA-F]{40}$/
+    };
+
+    let validationTimeouts = {};
+
+    function validateAsync(method, data, endpoint, statusId) {
+      clearTimeout(validationTimeouts[method]);
+      validationTimeouts[method] = setTimeout(() => {
+        const errors = Object.keys(data).some(key => document.getElementById(`${key}_error`)?.textContent);
+        if (!errors && Object.values(data).every(val => val)) {
+          fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': document.querySelector('[name="csrfmiddlewaretoken"]').value
+            },
+            body: JSON.stringify(data)
+          })
+          .then(response => response.json().then(json => ({status: response.status, body: json})))
+          .then(result => {
+            showStatus(statusId,
+              result.status === 200 && result.body.status === "validated" ? result.body.message : (result.body.errors ? result.body.errors.join(", ") : "Validation failed"),
+              result.status === 200 && result.body.status === "validated");
+          })
+          .catch(error => {
+            console.error(`${method} validation error:`, error);
+            showStatus(statusId, "Validation error", false);
+          });
+        }
+      }, 500);
+    }
+
+    document.getElementById('bank_name_credit').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/[^A-Za-z\s]/g, '').trim();
+      e.target.value = value;
+      if (!value) {
+        showError('bank_name_credit_error', "Bank name is required.");
+      } else if (!patterns.bank_name.test(value)) {
+        showError('bank_name_credit_error', "Bank name must be at least 2 letters (no numbers).");
+      } else {
+        showError('bank_name_credit_error', "");
+        validateAsync('credit_card', {
+          bank_name: value,
+          card_number: document.getElementById('card_number').value.replace(/\s+/g, ''),
+          card_holder: document.getElementById('card_holder').value,
+          card_expiry: document.getElementById('card_expiry').value,
+          card_cvc: document.getElementById('card_cvc').value
+        }, '/validate-card-data/', 'bank_card_status');
+      }
+    });
+
+    document.getElementById('card_number').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '').substring(0, 16);
+      value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+      e.target.value = value;
+      const normalized = value.replace(/\s+/g, '');
+      if (!normalized) {
+        showError('card_number_error', "Card number is required.");
+      } else if (!patterns.card_number.test(normalized) || !luhnCheck(normalized)) {
+        showError('card_number_error', "Invalid card number (must be 16 digits).");
+      } else {
+        showError('card_number_error', "");
+        validateAsync('credit_card', {
+          bank_name: document.getElementById('bank_name_credit').value,
+          card_number: normalized,
+          card_holder: document.getElementById('card_holder').value,
+          card_expiry: document.getElementById('card_expiry').value,
+          card_cvc: document.getElementById('card_cvc').value
+        }, '/validate-card-data/', 'bank_card_status');
+      }
+    });
+
+    document.getElementById('card_holder').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/[^A-Za-z\s]/g, '').trim();
+      e.target.value = value;
+      if (!value) {
+        showError('card_holder_error', "Cardholder name is required.");
+      } else if (!patterns.card_holder.test(value)) {
+        showError('card_holder_error', "Name must be at least 2 letters (no numbers).");
+      } else {
+        showError('card_holder_error', "");
+        validateAsync('credit_card', {
+          bank_name: document.getElementById('bank_name_credit').value,
+          card_number: document.getElementById('card_number').value.replace(/\s+/g, ''),
+          card_holder: value,
+          card_expiry: document.getElementById('card_expiry').value,
+          card_cvc: document.getElementById('card_cvc').value
+        }, '/validate-card-data/', 'bank_card_status');
+      }
+    });
+
+    document.getElementById('card_expiry').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length > 2) value = value.substring(0, 2) + '/' + value.substring(2, 4);
+      e.target.value = value;
+      if (!value) {
+        showError('card_expiry_error', "Expiry date is required.");
+      } else if (!patterns.card_expiry.test(value)) {
+        showError('card_expiry_error', "Must be MM/YY format.");
+      } else {
+        const [month, year] = value.split('/');
+        const expiryDate = new Date(2000 + parseInt(year), parseInt(month) - 1);
+        if (expiryDate <= new Date()) {
+          showError('card_expiry_error', "Card is expired.");
+        } else {
+          showError('card_expiry_error', "");
+          validateAsync('credit_card', {
+            bank_name: document.getElementById('bank_name_credit').value,
+            card_number: document.getElementById('card_number').value.replace(/\s+/g, ''),
+            card_holder: value,
+            card_expiry: value,
+            card_cvc: document.getElementById('card_cvc').value
+          }, '/validate-card-data/', 'bank_card_status');
+        }
+      }
+    });
+
+    document.getElementById('card_cvc').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '').substring(0, 4);
+      e.target.value = value;
+      if (!value) {
+        showError('card_cvc_error', "CVC is required.");
+      } else if (!patterns.card_cvc.test(value)) {
+        showError('card_cvc_error', "Must be 3-4 digits.");
+      } else {
+        showError('card_cvc_error', "");
+        validateAsync('credit_card', {
+          bank_name: document.getElementById('bank_name_credit').value,
+          card_number: document.getElementById('card_number').value.replace(/\s+/g, ''),
+          card_holder: document.getElementById('card_holder').value,
+          card_expiry: document.getElementById('card_expiry').value,
+          card_cvc: value
+        }, '/validate-card-data/', 'bank_card_status');
+      }
+    });
+
+    document.getElementById('paypal_email').addEventListener('input', function(e) {
+      let value = e.target.value.trim();
+      if (!value) {
+        showError('paypal_email_error', "PayPal email is required.");
+      } else if (!patterns.paypal_email.test(value)) {
+        showError('paypal_email_error', "Invalid email format.");
+      } else {
+        showError('paypal_email_error', "");
+        validateAsync('paypal', { paypal_email: value }, '/validate-paypal/', 'paypal_status');
+      }
+    });
+
+    document.getElementById('bank_name_transfer').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/[^A-Za-z\s]/g, '').trim();
+      e.target.value = value;
+      if (!value) {
+        showError('bank_name_transfer_error', "Bank name is required.");
+      } else if (!patterns.bank_name.test(value)) {
+        showError('bank_name_transfer_error', "Bank name must be at least 2 letters (no numbers).");
+      } else {
+        showError('bank_name_transfer_error', "");
+        validateAsync('bank_transfer', {
+          bank_name: value,
+          iban: document.getElementById('iban').value.replace(/\s+/g, ''),
+          bic: document.getElementById('bic').value
+        }, '/validate-bank-transfer/', 'bank_transfer_status');
+      }
+    });
+
+    document.getElementById('iban').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/[^A-Z0-9\s]/g, '').trim();
+      e.target.value = value;
+      if (!value) {
+        showError('iban_error', "IBAN is required.");
+      } else if (!patterns.iban.test(value.replace(/\s+/g, ''))) {
+        showError('iban_error', "Invalid IBAN format (e.g., DE89370400440532013000).");
+      } else {
+        showError('iban_error', "");
+        validateAsync('bank_transfer', {
+          bank_name: document.getElementById('bank_name_transfer').value,
+          iban: value.replace(/\s+/g, ''),
+          bic: document.getElementById('bic').value
+        }, '/validate-bank-transfer/', 'bank_transfer_status');
+      }
+    });
+
+    document.getElementById('bic').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/[^A-Z0-9]/g, '').trim();
+      e.target.value = value;
+      if (!value) {
+        showError('bic_error', "BIC/SWIFT code is required.");
+      } else if (!patterns.bic.test(value)) {
+        showError('bic_error', "Invalid BIC/SWIFT (8-11 alphanumeric).");
+      } else {
+        showError('bic_error', "");
+        validateAsync('bank_transfer', {
+          bank_name: document.getElementById('bank_name_transfer').value,
+          iban: document.getElementById('iban').value.replace(/\s+/g, ''),
+          bic: value
+        }, '/validate-bank-transfer/', 'bank_transfer_status');
+      }
+    });
+
+    document.getElementById('wallet_address').addEventListener('input', function(e) {
+      let value = e.target.value.trim();
+      if (!value) {
+        showError('wallet_address_error', "Wallet address is required.");
+      } else if (!patterns.wallet_address.test(value)) {
+        showError('wallet_address_error', "Invalid wallet address (40 hex chars, optional 0x).");
+      } else {
+        showError('wallet_address_error', "");
+        validateAsync('crypto', {
+          wallet_address: value,
+          crypto_type: document.getElementById('crypto_type').value
+        }, '/validate-crypto/', 'crypto_status');
+      }
+    });
+
+    document.getElementById('crypto_type').addEventListener('change', function(e) {
+      const wallet_address = document.getElementById('wallet_address').value;
+      if (wallet_address && !document.getElementById('wallet_address_error').textContent) {
+        validateAsync('crypto', {
+          wallet_address: wallet_address,
+          crypto_type: e.target.value
+        }, '/validate-crypto/', 'crypto_status');
+      }
+    });
+
+    function selectInvoice(invoiceId, amountDue) {
+      document.querySelectorAll('.invoice-card').forEach(card => card.classList.remove('selected'));
+      const selectedCard = Array.from(document.querySelectorAll('.invoice-card')).find(card => {
+        return card.textContent.includes(`Invoice #${invoiceId}`);
+      });
+      if (selectedCard) {
+        selectedCard.classList.add('selected');
+        document.getElementById('selected_invoice_id').value = invoiceId;
+        document.getElementById('pay-button').textContent = `Confirm Payment - ₹${amountDue.toFixed(2)}`;
+      }
+    }
+
+    function selectPaymentMethod(method) {
+      document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+      document.querySelector(`[data-method="${method}"]`).classList.add('active');
+      document.getElementById('selected_payment_method').value = method.trim();
+      document.querySelectorAll('.payment-details').forEach(detail => detail.style.display = 'none');
+      document.getElementById(`${method}_details`).style.display = 'block';
+      const inputs = document.getElementById(`${method}_details`).querySelectorAll('.input-field');
+      inputs.forEach(input => input.dispatchEvent(new Event('input')));
+    }
+
+    function updateModalStage(stage, message, isSuccess = null) {
+      const modal = document.getElementById('modalLoader');
+      const title = document.getElementById('modal-title');
+      const icon = document.getElementById('modal-icon');
+      const messageElem = document.getElementById('modal-message');
+      const progressFill = document.getElementById('progress-fill');
+      const steps = document.querySelectorAll('.step');
+
+      steps.forEach(step => step.classList.remove('active', 'completed'));
+      let progressWidth = 0;
+
+      if (stage === 'validation') {
+        title.textContent = 'Payment Validation';
+        icon.innerHTML = '<div class="spinner"></div>';
+        messageElem.textContent = message || 'Validating your payment details...';
+        progressWidth = 0;
+        steps[0].classList.add('active');
+      } else if (stage === 'processing') {
+        title.textContent = 'Payment Processing';
+        icon.innerHTML = '<div class="spinner"></div>';
+        messageElem.textContent = message || 'Processing your payment and sending confirmation...';
+        progressWidth = 50;
+        steps[0].classList.add('completed');
+        steps[1].classList.add('active');
+      } else if (stage === 'confirmation') {
+        title.textContent = isSuccess ? 'Payment Successful' : 'Payment Failed';
+        icon.innerHTML = isSuccess
+          ? '<svg class="confirmation-icon" fill="none" stroke="var(--success-color)" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>'
+          : '<svg class="confirmation-icon" fill="none" stroke="var(--danger-color)" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>';
+        messageElem.textContent = message || (isSuccess ? 'Your payment was processed successfully!' : 'Payment failed. Please try again.');
+        progressWidth = 100;
+        steps[0].classList.add('completed');
+        steps[1].classList.add('completed');
+        steps[2].classList.add('active');
+      }
+
+      progressFill.style.width = `${progressWidth}%`;
+      modal.classList.add('active');
+    }
+
+    async function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    selectPaymentMethod('credit_card');
+
+    document.getElementById('paymentForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const invoiceId = document.getElementById('selected_invoice_id').value;
+      if (!invoiceId) {
+        alert("Please select an invoice to pay.");
+        return;
+      }
+
+      const method = document.getElementById('selected_payment_method').value.trim();
+      const inputs = document.getElementById(`${method}_details`).querySelectorAll('.input-field');
+      let hasErrors = false;
+      inputs.forEach(input => {
+        input.dispatchEvent(new Event('input'));
+        if (document.getElementById(`${input.id}_error`)?.textContent) hasErrors = true;
+      });
+
+      if (hasErrors) {
+        alert("Please correct the errors in the payment details.");
+        return;
+      }
+
+      const form = event.target;
+      const formData = new FormData(form);
+      let data = {};
+      formData.forEach((value, key) => {
+        data[key] = value.trim();
+      });
+
+      if (method === 'credit_card') {
+        data.bank_name = document.getElementById('bank_name_credit').value.trim();
+      } else if (method === 'bank_transfer') {
+        data.bank_name = document.getElementById('bank_name_transfer').value.trim();
+      }
+
+      // Show Validation stage
+      updateModalStage('validation');
+      await delay(500); // Minimum duration for Validation stage
+
+      // Show Processing stage and start fetch
+      updateModalStage('processing');
+      try {
+        const response = await fetch('/validate-payment/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': form.querySelector('[name="csrfmiddlewaretoken"]').value
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        const isSuccess = response.status === 200 && result.status === 'validated';
+
+        // Show Confirmation stage
+        updateModalStage('confirmation', isSuccess ? result.message : (result.errors ? result.errors.join(", ") : "Validation failed"), isSuccess);
+
+        if (isSuccess) {
+          await delay(1500); // Display success for 1.5s
+          form.removeEventListener('submit', arguments.callee);
+          form.submit();
+        }
+      } catch (error) {
+        updateModalStage('confirmation', "An error occurred during processing.", false);
+        console.error("Processing error:", error);
+      }
+    });
+  </script>
+</body>
+</html>

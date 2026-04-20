@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auction Orders - {{ auction_title }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #dbeafe;
+      --secondary-color: #475569;
+      --success-color: #10b981;
+      --info-color: #0ea5e9;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --light-color: #f8fafc;
+      --dark-color: #1e293b;
+      --muted-color: #64748b;
+      --border-color: #e2e8f0;
+      --hover-color: #f1f5f9;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      color: #334155;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      padding: 0 20px;
+    }
+
+    .card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+      background: #fff;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.07), 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-header {
+      background: var(--primary-color);
+      color: #fff;
+      padding: 20px;
+      border-bottom: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-header h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .card-body {
+      padding: 30px;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--dark-color);
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+
+    .table {
+      font-size: 0.95rem;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .table thead th {
+      background-color: var(--light-color);
+      font-weight: 600;
+      color: var(--secondary-color);
+      padding: 15px;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .table tbody tr {
+      border-bottom: 1px solid var(--border-color);
+      transition: background 0.15s ease;
+    }
+
+    .table tbody tr:hover {
+      background: var(--hover-color);
+    }
+
+    .table td {
+      padding: 15px;
+      vertical-align: middle;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.35em 0.65em;
+      border-radius: 6px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .alert {
+      border-radius: 8px;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn {
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      border-color: var(--primary-dark);
+    }
+
+    .btn-outline-primary {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .btn-outline-primary:hover {
+      background-color: var(--primary-color);
+      color: #fff;
+    }
+
+    .btn-outline-light {
+      border-color: rgba(255, 255, 255, 0.5);
+      color: #fff;
+    }
+
+    .btn-outline-light:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+
+    .order-details {
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 10px 0;
+      border: 1px solid var(--border-color);
+    }
+
+    .order-image {
+      max-width: 60px;
+      height: auto;
+      border-radius: 6px;
+      margin-right: 10px;
+      object-fit: cover;
+      border: 1px solid var(--border-color);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted-color);
+    }
+
+    .empty-state i {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      color: var(--secondary-color);
+      opacity: 0.5;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    /* Professional Progress Bar Styles */
+    .progress-container {
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .progress-track {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 60px;
+      padding-top: 15px;
+    }
+
+    .progress-track::before {
+      content: '';
+      position: absolute;
+      top: 30px;
+      left: 0;
+      height: 4px;
+      width: 100%;
+      background-color: #e2e8f0;
+      z-index: 1;
+    }
+
+    .progress-step {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 30px;
+    }
+
+    .progress-step-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #94a3b8;
+      font-size: 14px;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .progress-step.active .progress-step-icon {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+
+    .progress-step.completed .progress-step-icon {
+      background-color: var(--success-color);
+      border-color: var(--success-color);
+      color: white;
+    }
+
+    .progress-step-label {
+      position: absolute;
+      top: 40px;
+      font-size: 0.75rem;
+      color: var(--muted-color);
+      white-space: nowrap;
+      transform: translateX(-50%);
+      left: 50%;
+      text-align: center;
+      margin-top: 5px;
+      font-weight: 500;
+      width: 90px;
+    }
+
+    .progress-step.active .progress-step-label {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .progress-step.completed .progress-step-label {
+      color: var(--success-color);
+    }
+
+    .progress-track .progress-line {
+      position: absolute;
+      top: 30px;
+      height: 4px;
+      background-color: var(--success-color);
+      z-index: 1;
+      transition: width 0.5s ease;
+    }
+
+    .progress-info {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted-color);
+      font-size: 0.85rem;
+    }
+
+    .progress-info span:last-child {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .progress-date {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      font-size: 0.75rem;
+      color: var(--muted-color);
+    }
+
+    @media (max-width: 992px) {
+      .card-body {
+        padding: 20px;
+      }
+
+      .table td, .table th {
+        padding: 12px 8px;
+      }
+
+      .progress-track {
+        margin-bottom: 80px;
+      }
+
+      .progress-step-label {
+        transform: translateX(-50%) rotate(-45deg);
+        width: 70px;
+        font-size: 0.7rem;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .progress-track {
+        margin-bottom: 100px;
+      }
+
+      .progress-step-label {
+        transform: translateX(-50%) rotate(-45deg);
+        width: 60px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .card-header h3 {
+        font-size: 1.25rem;
+      }
+
+      .table {
+        font-size: 0.85rem;
+      }
+
+      .btn {
+        padding: 6px 12px;
+      }
+
+      .progress-track {
+        margin-bottom: 110px;
+      }
+
+      .progress-step-label {
+        font-size: 0.65rem;
+        transform: translateX(-50%) rotate(-60deg);
+        top: 35px;
+        width: 50px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <!-- Messages -->
+    {% if messages %}
+      <div class="mb-4" id="message-container">
+        {% for message in messages %}
+          <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% elif message.tags == 'warning' %}alert-warning{% else %}alert-info{% endif %} fade-in" role="alert">
+            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %} me-2"></i>
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Auction Orders Card -->
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fas fa-shopping-basket me-2"></i>Orders for {{ auction_title }} (ID: {{ auction_id }})</h3>
+        <a href="{% url 'manage_user' managed_user_id %}" class="btn btn-outline-light btn-sm">
+          <i class="fas fa-arrow-left me-2"></i>Back
+        </a>
+      </div>
+      <div class="card-body">
+        <!-- Buying Orders -->
+        {% if buying_orders %}
+          <div class="mb-5">
+            <h4 class="section-title">Buying Orders</h4>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Order ID</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Shipping</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for order in buying_orders %}
+                  <tr data-order-id="{{ order.order_id }}" data-order-type="buying">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ order.order_id }}</td>
+                    <td class="fw-medium">
+                      {% if order.images %}
+                        <img src="{{ order.images.0 }}" alt="{{ order.auction_title }}" class="order-image">
+                      {% endif %}
+                      {{ order.auction_title }}
+                    </td>
+                    <td>{{ order.order_date }}</td>
+                    <td>₹{{ order.payment_amount|floatformat:2 }}</td>
+                    <td>
+                      <span class="badge {% if order.payment_status == 'Paid' %}bg-success{% elif order.payment_status == 'Pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                        {{ order.payment_status|capfirst }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge order-status {% if order.order_status == 'Delivered' %}bg-success{% elif order.order_status == 'Processing' %}bg-info{% elif order.order_status == 'Shipped' %}bg-primary{% else %}bg-secondary{% endif %}">
+                        {{ order.order_status|capfirst }}
+                      </span>
+                    </td>
+                    <td class="shipping-status">{{ order.shipping_status }}</td>
+                    <td>
+                      <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#buying-details-{{ order.order_id }}" aria-expanded="false" title="View Details">
+                        <i class="fas fa-info-circle"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="collapse" id="buying-details-{{ order.order_id }}">
+                    <td colspan="9">
+                      <div class="order-details">
+                        <p><strong>Tracking Number:</strong> {{ order.tracking_number }}</p>
+                        <p><strong>Shipping Address:</strong> {{ order.shipping_address }}</p>
+                        <p><strong>Delivery Date:</strong> <span class="delivery-date">{{ order.delivery_date }}</span></p>
+
+                        <!-- Professional Progress Bar -->
+                        <div class="progress-container" data-order-id="{{ order.order_id }}" data-order-type="buying">
+                          <div class="progress-info">
+                            <span>Order Progress</span>
+                            <span class="progress-percentage">{{ order.progress }}%</span>
+                          </div>
+
+                          <div class="progress-track">
+                            <div class="progress-line" style="width: {{ order.progress }}%;"></div>
+
+                            <div class="progress-step {% if order.progress >= 0 %}active{% endif %} {% if order.progress > 0 %}completed{% endif %}">
+                              <div class="progress-step-icon">
+                                {% if order.progress > 0 %}<i class="fas fa-check"></i>{% else %}1{% endif %}
+                              </div>
+                              <div class="progress-step-label">Order Placed</div>
+                            </div>
+
+                            <div class="progress-step {% if order.progress >= 25 %}active{% endif %} {% if order.progress > 25 %}completed{% endif %}">
+                              <div class="progress-step-icon">
+                                {% if order.progress > 25 %}<i class="fas fa-check"></i>{% else %}2{% endif %}
+                              </div>
+                              <div class="progress-step-label">Processing</div>
+                            </div>
+
+                            <div class="progress-step {% if order.progress >= 50 %}active{% endif %} {% if order.progress > 50 %}completed{% endif %}">
+                              <div class="progress-step-icon">
+                                {% if order.progress > 50 %}<i class="fas fa-check"></i>{% else %}3{% endif %}
+                              </div>
+                              <div class="progress-step-label">Picked Up</div>
+                            </div>
+
+                            <div class="progress-step {% if order.progress >= 60 %}active{% endif %} {% if order.progress > 60 %}completed{% endif %}">
+                              <div class="progress-step-icon">
+                                {% if order.progress > 60 %}<i class="fas fa-check"></i>{% else %}4{% endif %}
+                              </div>
+                              <div class="progress-step-label">Shipped</div>
+                            </div>
+
+                            <div class="progress-step {% if order.progress >= 75 %}active{% endif %} {% if order.progress > 75 %}completed{% endif %}">
+                              <div class="progress-step-icon">
+                                {% if order.progress > 75 %}<i class="fas fa-check"></i>{% else %}5{% endif %}
+                              </div>
+                              <div class="progress-step-label">Out for Delivery</div>
+                            </div>
+
+                            <div class="progress-step {% if order.progress >= 100 %}active{% endif %} {% if order.progress == 100 %}completed{% endif %}">
+                              <div class="progress-step-icon">
+                                {% if order.progress == 100 %}<i class="fas fa-check"></i>{% else %}6{% endif %}
+                              </div>
+                              <div class="progress-step-label">Delivered</div>
+                            </div>
+                          </div>
+
+                          <div class="progress-date">
+                            <span>{{ order.order_date }}</span>
+                            <span class="delivery-date">{{ order.delivery_date }}</span>
+                          </div>
+                        </div>
+
+                        {% if order.images %}
+                          <p><strong>Images:</strong></p>
+                          <div class="d-flex flex-wrap">
+                            {% for image in order.images %}
+                              <img src="{{ image }}" alt="Auction Image" class="order-image mb-2">
+                            {% endfor %}
+                          </div>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Selling Orders -->
+        {% if selling_orders %}
+          <div class="mb-5">
+            <h4 class="section-title">Selling Orders</h4>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Order ID</th>
+                    <th>Title</th>
+                    <th>Buyer</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Shipping</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for order in selling_orders %}
+                  <tr data-order-id="{{ order.order_id }}" data-order-type="selling">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ order.order_id }}</td>
+                    <td class="fw-medium">
+                      {% if order.images %}
+                        <img src="{{ order.images.0 }}" alt="{{ order.auction_title }}" class="order-image">
+                      {% endif %}
+                      {{ order.auction_title }}
+                    </td>
+                    <td>{{ order.buyer_name }} ({{ order.buyer_email }})</td>
+                    <td>{{ order.order_date }}</td>
+                    <td>₹{{ order.payment_amount|floatformat:2 }}</td>
+                    <td>
+                      <span class="badge {% if order.payment_status == 'Paid' %}bg-success{% elif order.payment_status == 'Pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                        {{ order.payment_status|capfirst }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge order-status {% if order.order_status == 'Delivered' %}bg-success{% elif order.order_status == 'Processing' %}bg-info{% elif order.order_status == 'Shipped' %}bg-primary{% else %}bg-secondary{% endif %}">
+                        {{ order.order_status|capfirst }}
+                      </span>
+                    </td>
+                    <td class="shipping-status">{{ order.shipping_status }}</td>
+                    <td>
+                      <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#selling-details-{{ order.order_id }}" aria-expanded="false" title="View Details">
+                        <i class="fas fa-info-circle"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="collapse" id="selling-details-{{ order.order_id }}">
+                    <td colspan="10">
+                      <div class="order-details">
+                        <p><strong>Buyer ID:</strong> {{ order.buyer_id }}</p>
+                        <p><strong>Tracking Number:</strong> {{ order.tracking_number }}</p>
+                        <p><strong>Shipping Address:</strong> {{ order.shipping_address }}</p>
+                        <p><strong>Delivery Date:</strong> <span class="delivery-date">{{ order.delivery_date }}</span></p>
+
+                        <!-- Professional Progress Bar -->
+                        <div class="progress-container" data-order-id="{{ order.order_id }}" data-order-type="selling">
+                          <div class="progress-info">
+                            <span>Order Progress</span>
+                            <span class="progress-percentage">{{ order.progress }}%</span>
+                          </div>
+
+                          <div class="progress-track">
+                            <div class="progress-line" style="width: {{ order.progress }}%;"></div>
+
+                            <div class="progress-step {% if order.progress >= 0 %}active{% endif %} {% if order.progress > 0 %}completed{% endif %}">
+                              <div class="progress-step-icon">
+                                {% if order.progress > 0 %}<i class="fas fa-check"></i>{% else %}1{% endif %}
+                              </div>
+                              <div class="progress-step-label">Order Placed</div>
+                            </div>
+
+                            <div class="progress-step {% if order.progress >= 25 %}active{% endif %} {% if order.progress > 25 %}completed{% endif %}">
+                              <div class="progress-step-icon">
+                                {% if order.progress > 25 %}<i class="fas fa-check"></i>{% else %}2{% endif %}
+                              </div>
+                              <div class="progress-step-label">Processing</div>
+                            </div>
+
+                            <div class="progress-step {% if order.progress >= 50 %}active{% endif %} {% if order.progress > 50 %}completed{% endif %}">
+                              <div class="progress-step-icon">
+                                {% if order.progress > 50 %}<i class="fas fa-check"></i>{% else %}3{% endif %}
+                              </div>
+                              <div class="progress-step-label">Picked Up</div>
+                            </div>
+
+                            <div class="progress-step {% if order.progress >= 60 %}active{% endif %} {% if order.progress > 60 %}completed{% endif %}">
+                              <div class="progress-step-icon">
+                                {% if order.progress > 60 %}<i class="fas fa-check"></i>{% else %}4{% endif %}
+                              </div>
+                              <div class="progress-step-label">Shipped</div>
+                            </div>
+
+                            <div class="progress-step {% if order.progress >= 75 %}active{% endif %} {% if order.progress > 75 %}completed{% endif %}">
+                              <div class="progress-step-icon">
+                                {% if order.progress > 75 %}<i class="fas fa-check"></i>{% else %}5{% endif %}
+                              </div>
+                              <div class="progress-step-label">Out for Delivery</div>
+                            </div>
+
+                            <div class="progress-step {% if order.progress >= 100 %}active{% endif %} {% if order.progress == 100 %}completed{% endif %}">
+                              <div class="progress-step-icon">
+                                {% if order.progress == 100 %}<i class="fas fa-check"></i>{% else %}6{% endif %}
+                              </div>
+                              <div class="progress-step-label">Delivered</div>
+                            </div>
+                          </div>
+
+                          <div class="progress-date">
+                            <span>{{ order.order_date }}</span>
+                            <span class="delivery-date">{{ order.delivery_date }}</span>
+                          </div>
+                        </div>
+
+                        {% if order.images %}
+                          <p><strong>Images:</strong></p>
+                          <div class="d-flex flex-wrap">
+                            {% for image in order.images %}
+                              <img src="{{ image }}" alt="Auction Image" class="order-image mb-2">
+                            {% endfor %}
+                          </div>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Empty State -->
+        {% if not buying_orders and not selling_orders %}
+          <div class="empty-state">
+            <i class="fas fa-shopping-cart"></i>
+            <p>No orders found for this auction.</p>
+            <a href="{% url 'manage_user' managed_user_id %}" class="btn btn-primary mt-3">
+              <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Fade in animation for cards
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, 100 * index);
+      });
+
+      // Add highlight to expanded rows
+      const collapses = document.querySelectorAll('.collapse');
+      collapses.forEach(collapse => {
+        collapse.addEventListener('show.bs.collapse', function () {
+          this.closest('tr').classList.add('bg-light');
+        });
+        collapse.addEventListener('hide.bs.collapse', function () {
+          this.closest('tr').classList.remove('bg-light');
+        });
+      });
+
+      // Add tooltip initialization
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+
+      // AJAX for real-time updates
+      function updateOrderDetails() {
+        fetch(window.location.href, {
+          method: 'GET',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+          }
+        })
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          return response.json();
+        })
+        .then(data => {
+          // Update buying orders
+          if (data.buying_orders) {
+            Object.entries(data.buying_orders).forEach(([orderId, details]) => {
+              updateOrder(orderId, 'buying', details);
+            });
+          }
+
+          // Update selling orders
+          if (data.selling_orders) {
+            Object.entries(data.selling_orders).forEach(([orderId, details]) => {
+              updateOrder(orderId, 'selling', details);
+            });
+          }
+        })
+        .catch(error => console.error('Error fetching order details:', error));
+      }
+
+      function updateOrder(orderId, orderType, details) {
+        const row = document.querySelector(`tr[data-order-id="${orderId}"][data-order-type="${orderType}"]`);
+        const container = document.querySelector(`.progress-container[data-order-id="${orderId}"][data-order-type="${orderType}"]`);
+
+        if (row) {
+          // Update table row
+          const statusBadge = row.querySelector('.order-status');
+          statusBadge.textContent = details.order_status.charAt(0).toUpperCase() + details.order_status.slice(1);
+          statusBadge.className = 'badge order-status';
+          if (details.order_status === 'Delivered') statusBadge.classList.add('bg-success');
+          else if (details.order_status === 'Processing') statusBadge.classList.add('bg-info');
+          else if (details.order_status === 'Shipped') statusBadge.classList.add('bg-primary');
+          else statusBadge.classList.add('bg-secondary');
+
+          const shippingStatus = row.querySelector('.shipping-status');
+          shippingStatus.textContent = details.shipping_status;
+        }
+
+        if (container) {
+          // Update progress percentage
+          const percentageElement = container.querySelector('.progress-percentage');
+          percentageElement.textContent = `${details.progress}%`;
+
+          // Update progress line
+          const progressLine = container.querySelector('.progress-line');
+          progressLine.style.width = `${details.progress}%`;
+
+          // Update steps
+          const steps = [
+            { threshold: 0, index: 0 },
+            { threshold: 25, index: 1 },
+            { threshold: 50, index: 2 },
+            { threshold: 60, index: 3 },
+            { threshold: 75, index: 4 },
+            { threshold: 100, index: 5 }
+          ];
+
+          const stepElements = container.querySelectorAll('.progress-step');
+          steps.forEach((step, index) => {
+            const stepElement = stepElements[index];
+            stepElement.classList.toggle('active', details.progress >= step.threshold);
+            stepElement.classList.toggle('completed', details.progress > step.threshold || (index === 5 && details.progress === 100));
+
+            const icon = stepElement.querySelector('.progress-step-icon');
+            if (details.progress > step.threshold || (index === 5 && details.progress === 100)) {
+              icon.innerHTML = '<i class="fas fa-check"></i>';
+            } else {
+              icon.textContent = `${index + 1}`;
+            }
+          });
+
+          // Update delivery date
+          const deliveryDates = container.closest('.order-details').querySelectorAll('.delivery-date');
+          deliveryDates.forEach(date => date.textContent = details.delivery_date);
+        }
+      }
+
+      // Poll every 5 seconds
+      setInterval(updateOrderDetails, 5000);
+
+      // Initial update
+      updateOrderDetails();
+    });
+  </script>
+</body>
+</html>

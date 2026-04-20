@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password</title>
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    /* Container */
+    .forgot-password-container {
+      background: #fff;
+      padding: 2rem 3rem;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    .forgot-password-container h2 {
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
+    /* Form Styles */
+    .forgot-password-container form {
+      display: flex;
+      flex-direction: column;
+    }
+    .forgot-password-container label {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 5px;
+      text-align: left;
+    }
+    .forgot-password-container input[type="email"] {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+    .forgot-password-container input[type="email"]:focus {
+      border-color: #6366f1;
+      outline: none;
+    }
+    .forgot-password-container button {
+      padding: 0.75rem;
+      border: none;
+      border-radius: 5px;
+      background: #6366f1;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .forgot-password-container button:hover {
+      background: #4f46e5;
+    }
+    /* Error Message Styling */
+    .error-message {
+      margin-top: 1rem;
+      background: #fdecea;
+      color: #d93025;
+      padding: 0.75rem;
+      border-radius: 5px;
+      font-size: 14px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="forgot-password-container">
+    <h2>Forgot Password</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <label for="email">Enter your Email</label>
+      <input type="email" id="email" name="email" placeholder="Email" required>
+      <button type="submit">Submit</button>
+    </form>
+    <div>
+      {% if messages %}
+        <div class="error-message">
+          {% for message in messages %}
+            {{ message }}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

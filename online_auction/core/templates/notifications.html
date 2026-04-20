@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notification Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    .notification-enter { animation: slideIn 0.3s ease-out; }
+    .notification-exit { animation: fadeOut 0.2s ease-in forwards; }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(200, 200, 200, 0.1);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 4px;
+    }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #6b7280;
+    }
+    .toast {
+      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+      transform: translateY(-100%);
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 antialiased">
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+      <header class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <a href="{% url 'udash' %}" class="flex items-center px-4 py-2 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg" title="Go back to dashboard">
+            <i class="fas fa-arrow-left mr-2"></i>Back
+          </a>
+          <div>
+            <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Notification Center</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+              Manage and track your important updates
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button id="mark-all-read" class="flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg">
+            <i class="fas fa-check-double mr-2"></i>Mark All Read
+          </button>
+          <button id="delete-all" class="flex items-center px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg">
+            <i class="fas fa-trash mr-2"></i>Delete All
+          </button>
+          <div class="relative">
+            <span id="unread-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">0</span>
+            <i class="fas fa-bell text-gray-500 dark:text-gray-400 text-xl"></i>
+          </div>
+        </div>
+      </header>
+
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex space-x-3">
+          <button data-filter="all" class="filter-btn px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+            All Notifications
+          </button>
+          <button data-filter="unread" class="filter-btn px-4 py-2 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors">
+            Unread
+          </button>
+          <button data-filter="read" class="filter-btn px-4 py-2 rounded-lg bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 font-medium hover:bg-green-200 dark:hover:bg-green-800 transition-colors">
+            Read
+          </button>
+        </div>
+      </div>
+
+      <div class="h-[600px] overflow-y-auto custom-scrollbar">
+        <div id="notifications-container" class="divide-y divide-gray-200 dark:divide-gray-700">
+          {% if notifications %}
+            {% for notification in notifications %}
+              <div class="notification-item p-6 flex items-start notification-enter" data-notification-id="{{ notification.id }}">
+                <div class="flex-shrink-0 mr-4">
+                  <i class="fas fa-bell text-blue-500 text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <p class="font-medium text-gray-900 dark:text-gray-100">
+                      Notification ID: {{ notification.id }}
+                    </p>
+                    <div class="flex items-center space-x-2">
+                      <span class="text-xs text-gray-500 dark:text-gray-400 status-text">
+                        {% if notification.is_read %}
+                          Read
+                        {% else %}
+                          Unread
+                        {% endif %}
+                      </span>
+                      <button class="mark-read-btn text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300" title="Mark as read" {% if notification.is_read %}disabled{% endif %}>
+                        <i class="fas fa-check"></i>
+                      </button>
+                      <button class="delete-btn text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300" title="Delete notification">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <p class="mt-2 text-gray-600 dark:text-gray-300">
+                    {{ notification.message }}
+                  </p>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="p-8 text-center">
+              <div class="mx-auto mb-4 text-gray-400 dark:text-gray-500 text-5xl">
+                <i class="fas fa-bell-slash"></i>
+              </div>
+              <p class="text-gray-500 dark:text-gray-400 text-lg">No notifications at the moment</p>
+              <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">Stay tuned for updates</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast fixed top-4 right-4 max-w-sm w-full bg-green-50 dark:bg-green-900 border border-green-100 dark:border-green-700 rounded-lg shadow-lg p-4 hidden">
+    <div class="flex items-center">
+      <svg class="w-6 h-6 text-green-600 dark:text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+      </svg>
+      <span class="text-gray-800 dark:text-gray-200"></span>
+    </div>
+  </div>
+
+  <script>
+    // URLs from Django template
+    const markReadUrlBase = "{% url 'mark_notification_read' notification_id=0 %}".replace('/0/', '');
+    const markAllReadUrl = "{% url 'mark_all_notifications_read' %}";
+    const deleteUrlBase = "{% url 'delete_notification' notification_id=0 %}".replace('/0/', '');
+    const deleteAllUrl = "{% url 'delete_all_notifications' %}";
+
+    // Toast Notification System
+    function showToast(message, type = 'success') {
+      const toast = document.querySelector('.toast');
+      const icon = toast.querySelector('svg');
+      const text = toast.querySelector('span');
+      text.textContent = message;
+
+      // Reset classes
+      toast.classList.remove('bg-green-50', 'border-green-100', 'text-gray-800', 'dark:bg-green-900', 'dark:border-green-700', 'dark:text-gray-200');
+      toast.classList.remove('bg-red-50', 'border-red-100', 'text-red-700', 'dark:bg-red-900', 'dark:border-red-700', 'dark:text-red-200');
+      icon.classList.remove('text-green-600', 'dark:text-green-400', 'text-red-600', 'dark:text-red-400');
+
+      // Apply classes based on type
+      if (type === 'error') {
+        toast.classList.add('bg-red-50', 'border-red-100', 'text-red-700', 'dark:bg-red-900', 'dark:border-red-700', 'dark:text-red-200');
+        icon.classList.add('text-red-600', 'dark:text-red-400');
+      } else {
+        toast.classList.add('bg-green-50', 'border-green-100', 'text-gray-800', 'dark:bg-green-900', 'dark:border-green-700', 'dark:text-gray-200');
+        icon.classList.add('text-green-600', 'dark:text-green-400');
+      }
+
+      toast.classList.remove('hidden');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, 3000);
+    }
+
+    // Update unread count
+    function updateUnreadCount() {
+      const count = [...document.querySelectorAll('.notification-item')].filter(item => item.querySelector('.status-text').textContent.includes('Unread')).length;
+      document.getElementById('unread-count').textContent = count;
+      // Show/hide no notifications message
+      const container = document.getElementById('notifications-container');
+      if (count === 0 && document.querySelectorAll('.notification-item').length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center">
+            <div class="mx-auto mb-4 text-gray-400 dark:text-gray-500 text-5xl">
+              <i class="fas fa-bell-slash"></i>
+            </div>
+            <p class="text-gray-500 dark:text-gray-400 text-lg">No notifications at the moment</p>
+            <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">Stay tuned for updates</p>
+          </div>
+        `;
+      }
+    }
+
+    // Filter functionality
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('bg-gray-200', 'dark:bg-gray-600'));
+        this.classList.add('bg-gray-200', 'dark:bg-gray-600');
+        const filter = this.dataset.filter;
+        document.querySelectorAll('.notification-item').forEach(item => {
+          if (filter === 'all') {
+            item.style.display = 'flex';
+          } else if (filter === 'unread') {
+            item.style.display = item.querySelector('.status-text').textContent.includes('Unread') ? 'flex' : 'none';
+          } else if (filter === 'read') {
+            item.style.display = item.querySelector('.status-text').textContent.includes('Read') ? 'flex' : 'none';
+          }
+        });
+      });
+    });
+
+    // Mark notification as read
+    document.querySelectorAll('.mark-read-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const notificationItem = this.closest('.notification-item');
+        const notificationId = notificationItem.dataset.notificationId;
+
+        fetch(`${markReadUrlBase}/${notificationId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCsrfToken(),
+          },
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              notificationItem.querySelector('.status-text').textContent = 'Read';
+              btn.disabled = true;
+              btn.classList.add('text-gray-400', 'dark:text-gray-500', 'cursor-not-allowed');
+              btn.classList.remove('text-blue-500', 'hover:text-blue-600', 'dark:text-blue-400', 'dark:hover:text-blue-300');
+              updateUnreadCount();
+              showToast('Notification marked as read');
+            } else {
+              showToast(data.error || 'Failed to mark notification as read', 'error');
+            }
+          })
+          .catch(() => showToast('An error occurred', 'error'));
+      });
+    });
+
+    // Delete individual notification
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const notificationItem = this.closest('.notification-item');
+        const notificationId = notificationItem.dataset.notificationId;
+
+        fetch(`${deleteUrlBase}/${notificationId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCsrfToken(),
+          },
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              notificationItem.classList.add('notification-exit');
+              setTimeout(() => {
+                notificationItem.remove();
+                updateUnreadCount();
+                showToast('Notification deleted');
+              }, 200); // Match animation duration
+            } else {
+              showToast(data.error || 'Failed to delete notification', 'error');
+            }
+          })
+          .catch(() => showToast('An error occurred', 'error'));
+      });
+    });
+
+    // Delete all notifications
+    document.getElementById('delete-all').addEventListener('click', function () {
+      if (confirm('Are you sure you want to delete all notifications?')) {
+        fetch(deleteAllUrl, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCsrfToken(),
+          },
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              document.querySelectorAll('.notification-item').forEach(item => {
+                item.classList.add('notification-exit');
+              });
+              setTimeout(() => {
+                document.getElementById('notifications-container').innerHTML = `
+                  <div class="p-8 text-center">
+                    <div class="mx-auto mb-4 text-gray-400 dark:text-gray-500 text-5xl">
+                      <i class="fas fa-bell-slash"></i>
+                    </div>
+                    <p class="text-gray-500 dark:text-gray-400 text-lg">No notifications at the moment</p>
+                    <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">Stay tuned for updates</p>
+                  </div>
+                `;
+                updateUnreadCount();
+                showToast('All notifications deleted');
+              }, 200); // Match animation duration
+            } else {
+              showToast(data.error || 'Failed to delete all notifications', 'error');
+            }
+          })
+          .catch(() => showToast('An error occurred', 'error'));
+      }
+    });
+
+    // Get CSRF token from cookies
+    function getCsrfToken() {
+      const name = 'csrftoken';
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    // Initial unread count
+    updateUnreadCount();
+  </script>
+</body>
+</html>

@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Online Auction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --secondary-color: #8b5cf6;
+            --accent-color: #f97316;
+            --dark-color: #0f172a;
+            --light-color: #f8fafc;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #06b6d4;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --card-border: 1px solid rgba(226, 232, 240, 0.8);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: all 0.5s cubic-bezier(0, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://cdnjs.cloudflare.com/ajax/libs/patternify/1.0.0/img/patterns/subtle-dots@2X.png');
+            opacity: 0.05;
+            z-index: -1;
+        }
+
+        /* Modern Professional Navbar */
+        .professional-navbar {
+            background: linear-gradient(135deg, var(--dark-color), #1e3a8a);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 0.8rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            color: white !important;
+            position: relative;
+            overflow: hidden;
+            font-size: 1.4rem;
+        }
+
+        .logo-icon {
+            color: var(--accent-color);
+            filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.4));
+            transition: var(--transition);
+        }
+
+        .logo-text {
+            margin-left: 0.6rem;
+            background: linear-gradient(to right, #fff, var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: var(--transition-slow);
+        }
+
+        .navbar-brand:hover .logo-icon {
+            transform: rotate(-10deg);
+            color: #fff;
+        }
+
+        .navbar-brand:hover .logo-text {
+            background: linear-gradient(to right, var(--primary-light), #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85) !important;
+            font-weight: 500;
+            margin: 0 6px;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            position: relative;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 60%;
+            height: 2px;
+            background: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .nav-link i {
+            transition: var(--transition);
+        }
+
+        .nav-link:hover i {
+            transform: translateY(-2px);
+            color: var(--accent-color);
+        }
+
+        .navbar-toggler {
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .navbar-toggler:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.15);
+        }
+
+        .navbar-toggler-icon {
+            background-image: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navbar-toggler-icon::before {
+            content: '\f0c9';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+            content: '\f00d';
+            color: var(--accent-color);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px 0 60px;
+            position: relative;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 16px;
+            color: white;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 25px rgba(43, 45, 66, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+            transform: translateY(0);
+        }
+
+        .welcome-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px rgba(43, 45, 66, 0.25);
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-card::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: -60px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .user-avatar {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin-bottom: 1.2rem;
+            position: relative;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .user-avatar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .user-avatar:hover::before {
+            left: 100%;
+        }
+
+        .user-avatar i {
+            transition: var(--transition);
+        }
+
+        .user-avatar:hover i {
+            transform: scale(1.1);
+            color: var(--accent-color);
+        }
+
+        .premium-badge {
+            background: linear-gradient(45deg, var(--warning-color), #fcd34d);
+            color: #7c2d12;
+            padding: 8px 22px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 6px 12px rgba(245, 158, 11, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .premium-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #fbbf24, #fcd34d);
+            z-index: -1;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .premium-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(245, 158, 11, 0.35);
+        }
+
+        .premium-badge:hover::before {
+            opacity: 1;
+        }
+
+        .premium-badge i {
+            animation: star-pulse 2s infinite alternate;
+        }
+
+        @keyframes star-pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.2); }
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.8rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.2rem;
+            transition: var(--transition);
+            border: var(--card-border);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 0;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            transition: var(--transition-slow);
+        }
+
+        .feature-card:hover::before {
+            height: 100%;
+        }
+
+        .feature-card:hover:not(.locked) {
+            transform: translateY(-8px);
+            box-shadow: var(--card-shadow);
+            border-color: rgba(226, 232, 240, 0.3);
+        }
+
+        .feature-icon-container {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .feature-card:not(.locked):hover .feature-icon-container {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transform: scale(1.1);
+            box-shadow: 0 10px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .feature-card:not(.locked):hover .feature-icon {
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .feature-card h3 {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .feature-card:not(.locked):hover h3 {
+            transform: translateX(10px);
+            color: var(--primary-dark);
+        }
+
+        .feature-card p {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .feature-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white !important;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-block;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.25);
+            align-self: flex-start;
+        }
+
+        .feature-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .feature-btn:hover::before {
+            left: 100%;
+        }
+
+        .feature-btn:hover:not(.locked) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-color));
+        }
+
+        .feature-card.locked {
+            filter: blur(3px);
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .feature-card.locked::after {
+            content: '\f023';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            color: var(--danger-color);
+            opacity: 0.8;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-card.locked:hover {
+            transform: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .footer {
+            background: linear-gradient(135deg, var(--dark-color), #1e3a8a);
+            color: white;
+            padding: 1.8rem 0;
+            margin-top: auto;
+            box-shadow: 0 -4px 10px rgba(15, 23, 42, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+        }
+
+        .footer a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Profile Incomplete Modal */
+        .profile-modal .modal-dialog {
+            max-width: 500px;
+        }
+
+        .profile-modal .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: modalFadeIn 0.5s ease forwards;
+        }
+
+        .profile-modal .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            z-index: -1;
+        }
+
+        .profile-modal .modal-content::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color), var(--secondary-color));
+            z-index: -2;
+            animation: gradientBorder 4s linear infinite;
+        }
+
+        @keyframes gradientBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .profile-modal .modal-header {
+            border-bottom: none;
+            padding: 1.5rem 2rem 0;
+            position: relative;
+        }
+
+        .profile-modal .modal-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 2rem;
+            right: 2rem;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+
+        .profile-modal .modal-title {
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-modal .modal-title i {
+            margin-right: 0.75rem;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            animation: pulseIcon 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseIcon {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .profile-modal .modal-body {
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        .profile-modal .modal-footer {
+            border-top: none;
+            padding: 1rem 2rem 2rem;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .profile-modal .btn-complete {
+            background: linear-gradient(90deg, var(--accent-color), #fb923c);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+            z-index: 1;
+        }
+
+        .profile-modal .btn-complete::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .profile-modal .btn-complete:hover::before {
+            left: 100%;
+        }
+
+        .profile-modal .btn-complete:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
+            background: linear-gradient(90deg, #fb923c, var(--accent-color));
+        }
+
+        .profile-modal .btn-remind {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-modal .btn-remind:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.15);
+        }
+
+        .profile-modal .btn-close-custom {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-modal .btn-close-custom:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            opacity: 0;
+            animation: fadeIn 0.7s ease forwards;
+        }
+
+        .animate-delay-1 { animation-delay: 0.1s; }
+        .animate-delay-2 { animation-delay: 0.2s; }
+        .animate-delay-3 { animation-delay: 0.3s; }
+        .animate-delay-4 { animation-delay: 0.4s; }
+        .animate-delay-5 { animation-delay: 0.5s; }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+        .feature-card:nth-child(4) { animation-delay: 0.4s; }
+        .feature-card:nth-child(5) { animation-delay: 0.5s; }
+
+        @media (max-width: 992px) {
+            .navbar-nav {
+                background: rgba(15, 23, 42, 0.95);
+                padding: 1rem;
+                border-radius: 10px;
+                margin-top: 1rem;
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .nav-link {
+                padding: 0.8rem 1rem;
+                margin: 0.3rem 0;
+                border-radius: 6px;
+            }
+
+            .welcome-card {
+                padding: 2rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .welcome-card {
+                text-align: center;
+                padding: 2rem 1.5rem;
+            }
+
+            .welcome-card .d-flex {
+                flex-direction: column;
+            }
+
+            .user-avatar {
+                margin: 0 auto 1.5rem;
+            }
+
+            .premium-badge {
+                margin-top: 1.5rem;
+            }
+
+            .feature-icon-container {
+                margin: 0 auto 1.5rem;
+            }
+
+            .feature-card {
+                text-align: center;
+                padding: 2rem 1.5rem;
+            }
+
+            .feature-btn {
+                align-self: center;
+            }
+
+            .profile-modal .modal-footer {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .profile-modal .modal-content {
+                border-radius: 16px;
+            }
+
+            .profile-modal .modal-title {
+                font-size: 1.4rem;
+            }
+
+            .profile-modal .modal-body {
+                font-size: 0.95rem;
+                padding: 1.25rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark professional-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-gavel me-2 logo-icon"></i>
+                <span class="logo-text">AuctionHub</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'auct_list' %}"><i class="fas fa-list me-1"></i>Auctions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profman' %}"><i class="fas fa-user-cog me-1"></i>Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'watchlist' %}"><i class="fas fa-star me-1"></i>Watchlist</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'upgrade' %}"><i class="fas fa-crown me-1"></i>Premium</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'notifications_page' %}"><i class="fas fa-bell me-2"></i>Alerts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'view_orders' %}"><i class="fas fa-list-alt me-1"></i>View Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'wallet' %}"><i class="fas fa-wallet me-1"></i>Wallet Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="welcome-card animate-fade-in">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h1 class="h3 mb-2">Welcome back, {{ username }}!</h1>
+                        <p class="mb-0">User ID: {{ user_id }}</p>
+                    </div>
+                    {% if is_premium == 1 %}
+                    <div class="premium-badge">
+                        <i class="fas fa-star"></i>
+                        Premium Member
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card animate-fade-in">
+                    <div class="feature-icon-container">
+                        <i class="fas fa-hand-holding-usd feature-icon"></i>
+                    </div>
+                    <h3 class="h5 mb-3">Active Bids</h3>
+                    <p class="text-muted mb-4">Track your current bids and auction status</p>
+                    <a href="{% url 'my_bids' %}" class="feature-btn">View Bids</a>
+                </div>
+                <div class="feature-card animate-fade-in {% if account_status != 'verified' %}locked{% endif %}">
+                    <div class="feature-icon-container">
+                        <i class="fas fa-plus-circle feature-icon"></i>
+                    </div>
+                    <h3 class="h5 mb-3">Create Auction</h3>
+                    <p class="text-muted mb-4">List new items for auction</p>
+                    <a href="{% url 'create_auction' %}" class="feature-btn">Start Auction</a>
+                </div>
+                <div class="feature-card animate-fade-in">
+                    <div class="feature-icon-container">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                    </div>
+                    <h3 class="h5 mb-3">My Auctions</h3>
+                    <p class="text-muted mb-4">Manage your active auctions</p>
+                    <a href="{% url 'my_auc' %}" class="feature-btn">Manage</a>
+                </div>
+                <div class="feature-card animate-fade-in">
+                    <div class="feature-icon-container">
+                        <i class="fas fa-history feature-icon"></i>
+                    </div>
+                    <h3 class="h5 mb-3">Bidding History</h3>
+                    <p class="text-muted mb-4">Review your past bidding activity</p>
+                    <a href="{% url 'bidding_history' %}" class="feature-btn">View History</a>
+                </div>
+                <div class="feature-card animate-fade-in">
+                    <div class="feature-icon-container">
+                        <i class="fas fa-wallet feature-icon"></i>
+                    </div>
+                    <h3 class="h5 mb-3">Due Payments</h3>
+                    <p class="text-muted mb-4">Manage your payment options</p>
+                    <a href="{% url 'payment_page' %}" class="feature-btn">Manage</a>
+                </div>
+                <div class="feature-card animate-fade-in">
+                    <div class="feature-icon-container">
+                        <i class="fas fa-envelope feature-icon"></i>
+                    </div>
+                    <h3 class="h5 mb-3">Contact Us</h3>
+                    <p class="text-muted mb-4">Get in touch with our support team</p>
+                    <a href="{% url 'submit_feedback' %}" class="feature-btn">Contact</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Profile Incomplete Modal -->
+    {% if profile_incomplete %}
+    <div class="modal fade profile-modal" id="profileIncompleteModal" tabindex="-1" aria-labelledby="profileIncompleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="profileIncompleteModalLabel">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Complete Your Profile
+                    </h5>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Unlock the full AuctionHub experience by completing your profile. Add your phone number, address, pincode, bank account details, and ID proof to access all features.
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'profman' %}" class="btn-complete">Complete Profile Now</a>
+                    <button type="button" class="btn-remind" data-bs-dismiss="modal">Remind Me Later</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="mb-0">© 2025 AuctionHub. All rights reserved.
+                <a href="{% url 'about' %}" class="mx-2">About Us</a> |
+
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        {% if profile_incomplete %}
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileModal = new bootstrap.Modal(document.getElementById('profileIncompleteModal'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            profileModal.show();
+            setInterval(function() {
+                if (!document.getElementById('profileIncompleteModal').classList.contains('show')) {
+                    profileModal.show();
+                }
+            }, 10000);
+            document.querySelector('.btn-close-custom').addEventListener('click', function() {
+                profileModal.hide();
+            });
+            document.querySelector('.btn-remind').addEventListener('click', function() {
+                profileModal.hide();
+            });
+        });
+        {% endif %}
+    </script>
+</body>
+</html>

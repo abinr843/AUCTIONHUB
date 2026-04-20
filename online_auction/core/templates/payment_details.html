@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Details | AuctionHub Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5e35b1;
+            --primary-light: #7e57c2;
+            --primary-dark: #4527a0;
+            --secondary-color: #2196f3;
+            --success-color: #00c853;
+            --warning-color: #ffab00;
+            --danger-color: #f44336;
+            --dark-color: #121212;
+            --light-bg: #f5f7fa;
+            --muted-color: #78909c;
+            --border-radius: 12px;
+            --card-shadow: 0 8px 24px rgba(149, 157, 165, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            color: #37474f;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: #ffffff;
+            min-height: 100vh;
+            width: 280px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-right: 1px solid #e0e0e0;
+            padding: 2rem 1.5rem;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-brand-icon {
+            background: var(--primary-color);
+            color: #fff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .sidebar-brand-icon i {
+            font-size: 1.5rem;
+        }
+
+        .sidebar-brand-text {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--dark-color);
+        }
+
+        .sidebar-brand-accent {
+            color: var(--primary-color);
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-header {
+            color: #9e9e9e;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.5rem 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar .nav-link {
+            color: #616161;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            margin: 4px 0;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar .nav-link:hover {
+            background: #f5f5f5;
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .sidebar .nav-link.active {
+            background: var(--primary-light);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .sidebar .nav-link i {
+            width: 20px;
+            margin-right: 12px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-weight: 600;
+            font-size: 1.75rem;
+            color: var(--dark-color);
+        }
+
+        .header-actions .btn {
+            border-radius: var(--border-radius);
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .dashboard-card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            background: white;
+            transition: var(--transition);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header-title {
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .card-header-subtitle {
+            color: var(--muted-color);
+            font-size: 0.875rem;
+        }
+
+        .table-container {
+            padding: 1rem;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .custom-table thead th {
+            color: var(--muted-color);
+            font-weight: 500;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.75rem 1rem;
+            border: none;
+        }
+
+        .custom-table tbody tr {
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .custom-table tbody tr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .custom-table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border: none;
+            color: #455a64;
+        }
+
+        .custom-table tbody td:first-child {
+            border-top-left-radius: var(--border-radius);
+            border-bottom-left-radius: var(--border-radius);
+        }
+
+        .custom-table tbody td:last-child {
+            border-top-right-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
+        }
+
+        .payment-id {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .amount {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .status-badge i {
+            margin-right: 5px;
+            font-size: 0.7rem;
+        }
+
+        .status-paid {
+            background-color: rgba(0, 200, 83, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-paid i {
+            color: #00c853; /* Explicitly set completed sign (check-circle) to green */
+        }
+
+        .status-pending {
+            background-color: rgba(255, 171, 0, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-failed {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--danger-color);
+        }
+
+        .action-btn {
+            background: #f5f5f5;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--dark-color);
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            background: var(--primary-light);
+            color: white;
+        }
+
+        .action-btn i {
+            margin-right: 5px;
+        }
+
+        .distribute-btn {
+            background: #00c853;
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 200, 83, 0.2);
+            display: inline-block;
+        }
+
+        .distribute-btn:hover {
+            background: #00a843;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+        }
+
+        .distribute-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .distribute-btn:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .distribute-btn i {
+            margin-right: 5px;
+        }
+
+        .details-panel {
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            padding: 1.25rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: var(--muted-color);
+            margin-bottom: 0.25rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .error-message {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--danger-color);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .error-message i {
+            margin-right: 8px;
+        }
+
+        .error-message .dismiss-btn {
+            background: none;
+            border: none;
+            color: var(--danger-color);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .error-message .dismiss-btn:hover {
+            color: #d32f2f;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 5rem 2rem;
+            color: var(--muted-color);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+            color: var(--primary-light);
+        }
+
+        .empty-state-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-subtext {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        @media (max-width: 1199px) {
+            .detail-group {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                box-shadow: none;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+                box-shadow: 6px 0 18px rgba(0,0,0,0.1);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+
+            .toggle-sidebar {
+                display: block !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-actions {
+                margin-top: 1rem;
+            }
+
+            .detail-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .custom-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        .toggle-sidebar {
+            display: none;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: var(--transition);
+        }
+
+        .toggle-sidebar:hover {
+            background: var(--primary-dark);
+            transform: rotate(90deg);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-gavel fa-2x"></i>
+            </div>
+            <div class="sidebar-brand-text">
+                Auction<span class="sidebar-brand-accent">Hub</span>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-header">Dashboard</div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'adash' %}">
+                        <i class="fas fa-home"></i>
+                        Overview
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-header">Management</div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'list_users' %}">
+                        <i class="fas fa-users"></i>
+                        Users
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin_auction_list' %}">
+                        <i class="fas fa-gavel"></i>
+                        Auctions
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'payment_details' %}">
+                        <i class="fas fa-credit-card"></i>
+                        Payments
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin_feedback' %}">
+                        <i class="fas fa-comment-dots"></i>
+                        Enquiry
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'invoice_list' %}">
+                        <i class="fas fa-file-invoice"></i>
+                        Invoices
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-header">System</div>
+            <ul class="nav flex-column">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Toggle Sidebar Button (Mobile) -->
+    <button class="toggle-sidebar" id="toggleSidebar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Payment Details</h1>
+        </div>
+
+        <!-- Premium Payments Card -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-header-title">Premium Payments</h2>
+                    <p class="card-header-subtitle">Transactions related to premium subscriptions</p>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>User</th>
+                            <th>Method</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in premium_payments %}
+                        <tr>
+                            <td><span class="payment-id">PAY-{{ payment.id }}</span></td>
+                            <td>
+                                <div>User #{{ payment.user_id|default:"N/A" }}</div>
+                                <small class="text-muted">Invoice #{{ payment.invoice_id|default:"N/A" }}</small>
+                            </td>
+                            <td>
+                                {% if payment.payment_method == 'Credit Card' %}
+                                <i class="far fa-credit-card me-1"></i>
+                                {% elif payment.payment_method == 'PayPal' %}
+                                <i class="fab fa-paypal me-1"></i>
+                                {% elif payment.payment_method == 'Bank Transfer' %}
+                                <i class="fas fa-university me-1"></i>
+                                {% else %}
+                                <i class="fas fa-money-bill-wave me-1"></i>
+                                {% endif %}
+                                {{ payment.payment_method|default:"N/A" }}
+                            </td>
+                            <td><span class="amount">₹{{ payment.payment_amount|floatformat:2|default:"N/A" }}</span></td>
+                            <td>
+                                <span class="status-badge
+                                    {% if payment.payment_status|lower == 'paid' or payment.payment_status|lower == 'completed' %}
+                                        status-paid
+                                    {% elif payment.payment_status|lower == 'pending' %}
+                                        status-pending
+                                    {% else %}
+                                        status-failed
+                                    {% endif %}">
+                                    {% if payment.payment_status|lower == 'paid' or payment.payment_status|lower == 'completed' %}
+                                        <i class="fas fa-check-circle"></i>
+                                    {% elif payment.payment_status|lower == 'pending' %}
+                                        <i class="fas fa-clock"></i>
+                                    {% else %}
+                                        <i class="fas fa-times-circle"></i>
+                                    {% endif %}
+                                    {{ payment.payment_status|default:"N/A" }}
+                                </span>
+                            </td>
+                            <td>
+                                <div>{{ payment.payment_date|date:"M d, Y"|default:"N/A" }}</div>
+                                <small class="text-muted">{{ payment.payment_date|date:"H:i"|default:"" }}</small>
+                            </td>
+                            <td>
+                                <button class="action-btn" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#paymentDetails{{ payment.id }}" aria-expanded="false">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapse" id="paymentDetails{{ payment.id }}">
+                            <td colspan="7" class="p-0">
+                                <div class="details-panel">
+                                    <div class="detail-group">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Transaction ID</div>
+                                            <div class="detail-value">{{ payment.transaction_id|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Auction ID</div>
+                                            <div class="detail-value">{{ payment.auction_id|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Premium Type</div>
+                                            <div class="detail-value">{{ payment.premium_type|default:"N/A" }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="detail-group">
+                                        {% if payment.payment_method == 'Credit Card' %}
+                                        <div class="detail-item">
+                                            <div class="detail-label">Credit Card Number</div>
+                                            <div class="detail-value">{{ payment.credit_card_number|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Credit Card Expiry</div>
+                                            <div class="detail-value">{{ payment.credit_card_expiry|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Credit Card CVC</div>
+                                            <div class="detail-value">{{ payment.credit_card_cvc|default:"N/A" }}</div>
+                                        </div>
+                                        {% elif payment.payment_method == 'Debit Card' %}
+                                        <div class="detail-item">
+                                            <div class="detail-label">Debit Card Number</div>
+                                            <div class="detail-value">{{ payment.debit_card_number|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Debit Card Expiry</div>
+                                            <div class="detail-value">{{ payment.debit_card_expiry|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Debit Card CVC</div>
+                                            <div class="detail-value">{{ payment.debit_card_cvc|default:"N/A" }}</div>
+                                        </div>
+                                        {% elif payment.payment_method == 'PayPal' %}
+                                        <div class="detail-item">
+                                            <div class="detail-label">PayPal Email</div>
+                                            <div class="detail-value">{{ payment.paypal_email|default:"N/A" }}</div>
+                                        </div>
+                                        {% elif payment.payment_method == 'Bank Transfer' %}
+                                        <div class="detail-item">
+                                            <div class="detail-label">Bank Account Number</div>
+                                            <div class="detail-value">{{ payment.bank_account_number|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Routing Number</div>
+                                            <div class="detail-value">{{ payment.bank_routing_number|default:"N/A" }}</div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Payment Notes</div>
+                                        <div class="detail-value">{{ payment.payment_notes|default:"No additional notes" }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">
+                                        <i class="fas fa-crown"></i>
+                                    </div>
+                                    <h3 class="empty-state-text">No Premium Payments Found</h3>
+                                    <p class="empty-state-subtext">There are no premium payment transactions recorded yet.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Auction Payments Card -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-header-title">Auction Payments</h2>
+                    <p class="card-header-subtitle">Transactions related to auction purchases</p>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>User</th>
+                            <th>Method</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in auction_payments %}
+                        <tr>
+                            <td><span class="payment-id">PAY-{{ payment.id }}</span></td>
+                            <td>
+                                <div>User #{{ payment.user_id|default:"N/A" }}</div>
+                                <small class="text-muted">Invoice #{{ payment.invoice_id|default:"N/A" }}</small>
+                            </td>
+                            <td>
+                                {% if payment.payment_method == 'Credit Card' %}
+                                <i class="far fa-credit-card me-1"></i>
+                                {% elif payment.payment_method == 'PayPal' %}
+                                <i class="fab fa-paypal me-1"></i>
+                                {% elif payment.payment_method == 'Bank Transfer' %}
+                                <i class="fas fa-university me-1"></i>
+                                {% else %}
+                                <i class="fas fa-money-bill-wave me-1"></i>
+                                {% endif %}
+                                {{ payment.payment_method|default:"N/A" }}
+                            </td>
+                            <td><span class="amount">₹{{ payment.payment_amount|floatformat:2|default:"N/A" }}</span></td>
+                            <td>
+                                <span class="status-badge
+                                    {% if payment.payment_status|lower == 'paid' or payment.payment_status|lower == 'completed' %}
+                                        status-paid
+                                    {% elif payment.payment_status|lower == 'pending' %}
+                                        status-pending
+                                    {% else %}
+                                        status-failed
+                                    {% endif %}">
+                                    {% if payment.payment_status|lower == 'paid' or payment.payment_status|lower == 'completed' %}
+                                        <i class="fas fa-check-circle"></i>
+                                    {% elif payment.payment_status|lower == 'pending' %}
+                                        <i class="fas fa-clock"></i>
+                                    {% else %}
+                                        <i class="fas fa-times-circle"></i>
+                                    {% endif %}
+                                    {{ payment.payment_status|default:"N/A" }}
+                                </span>
+                            </td>
+                            <td>
+                                <div>{{ payment.payment_date|date:"M d, Y"|default:"N/A" }}</div>
+                                <small class="text-muted">{{ payment.payment_date|date:"H:i"|default:"" }}</small>
+                            </td>
+                            <td>
+                                <button class="action-btn" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#paymentDetails{{ payment.id }}" aria-expanded="false">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapse" id="paymentDetails{{ payment.id }}">
+                            <td colspan="7" class="p-0">
+                                <div class="details-panel">
+                                    <div class="detail-group">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Transaction ID</div>
+                                            <div class="detail-value">{{ payment.transaction_id|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Auction ID</div>
+                                            <div class="detail-value">{{ payment.auction_id|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Premium Type</div>
+                                            <div class="detail-value">{{ payment.premium_type|default:"N/A" }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="detail-group">
+                                        {% if payment.payment_method == 'Credit Card' %}
+                                        <div class="detail-item">
+                                            <div class="detail-label">Credit Card Number</div>
+                                            <div class="detail-value">{{ payment.credit_card_number|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Credit Card Expiry</div>
+                                            <div class="detail-value">{{ payment.credit_card_expiry|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Credit Card CVC</div>
+                                            <div class="detail-value">{{ payment.credit_card_cvc|default:"N/A" }}</div>
+                                        </div>
+                                        {% elif payment.payment_method == 'Debit Card' %}
+                                        <div class="detail-item">
+                                            <div class="detail-label">Debit Card Number</div>
+                                            <div class="detail-value">{{ payment.debit_card_number|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Debit Card Expiry</div>
+                                            <div class="detail-value">{{ payment.debit_card_expiry|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Debit Card CVC</div>
+                                            <div class="detail-value">{{ payment.debit_card_cvc|default:"N/A" }}</div>
+                                        </div>
+                                        {% elif payment.payment_method == 'PayPal' %}
+                                        <div class="detail-item">
+                                            <div class="detail-label">PayPal Email</div>
+                                            <div class="detail-value">{{ payment.paypal_email|default:"N/A" }}</div>
+                                        </div>
+                                        {% elif payment.payment_method == 'Bank Transfer' %}
+                                        <div class="detail-item">
+                                            <div class="detail-label">Bank Account Number</div>
+                                            <div class="detail-value">{{ payment.bank_account_number|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Routing Number</div>
+                                            <div class="detail-value">{{ payment.bank_routing_number|default:"N/A" }}</div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Payment Notes</div>
+                                        <div class="detail-value">{{ payment.payment_notes|default:"No additional notes" }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">
+                                        <i class="fas fa-gavel"></i>
+                                    </div>
+                                    <h3 class="empty-state-text">No Auction Payments Found</h3>
+                                    <p class="empty-state-subtext">There are no auction payment transactions recorded yet.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Seller Payouts Card -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-header-title">Seller Payouts</h2>
+                    <p class="card-header-subtitle">Payouts processed for sellers</p>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Payout ID</th>
+                            <th>Seller</th>
+                            <th>Method</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payout in seller_payouts %}
+                        <tr>
+                            <td><span class="payment-id">PO-{{ payout.id }}</span></td>
+                            <td>
+                                <div>Seller #{{ payout.seller_id|default:"N/A" }}</div>
+                                <small class="text-muted">Invoice #{{ payout.invoice_id|default:"N/A" }}</small>
+                            </td>
+                            <td>
+                                {% if payout.payout_method == 'Bank Transfer' %}
+                                <i class="fas fa-university me-1"></i>
+                                {% else %}
+                                <i class="fas fa-money-bill-wave me-1"></i>
+                                {% endif %}
+                                {{ payout.payout_method|default:"N/A" }}
+                            </td>
+                            <td><span class="amount">₹{{ payout.payout_amount|floatformat:2|default:"N/A" }}</span></td>
+                            <td>
+                                <span class="status-badge
+                                    {% if payout.payout_status|lower == 'completed' %}
+                                        status-paid
+                                    {% elif payout.payout_status|lower == 'pending' %}
+                                        status-pending
+                                    {% else %}
+                                        status-failed
+                                    {% endif %}">
+                                    {% if payout.payout_status|lower == 'completed' %}
+                                        <i class="fas fa-check-circle"></i>
+                                    {% elif payout.payout_status|lower == 'pending' %}
+                                        <i class="fas fa-clock"></i>
+                                    {% else %}
+                                        <i class="fas fa-times-circle"></i>
+                                    {% endif %}
+                                    {{ payout.payout_status|default:"N/A" }}
+                                </span>
+                            </td>
+                            <td>
+                                <div>{{ payout.payout_date|date:"M d, Y"|default:"N/A" }}</div>
+                                <small class="text-muted">{{ payout.payout_date|date:"H:i"|default:"" }}</small>
+                            </td>
+                            <td>
+                                <button class="action-btn" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#payoutDetails{{ payout.id }}" aria-expanded="false">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapse" id="payoutDetails{{ payout.id }}">
+                            <td colspan="7" class="p-0">
+                                <div class="details-panel">
+                                    <div class="detail-group">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Transaction ID</div>
+                                            <div class="detail-value">{{ payout.transaction_id|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Auction ID</div>
+                                            <div class="detail-value">{{ payout.auction_id|default:"N/A" }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Invoice ID</div>
+                                            <div class="detail-value">{{ payout.invoice_id|default:"N/A" }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">
+                                        <i class="fas fa-money-check-alt"></i>
+                                    </div>
+                                    <h3 class="empty-state-text">No Seller Payouts Found</h3>
+                                    <p class="empty-state-subtext">There are no seller payouts recorded yet.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Fund Distributions Card -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-header-title">Fund Distributions</h2>
+                    <p class="card-header-subtitle">All fund distributions to sellers</p>
+                </div>
+                <button class="action-btn" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#fundDistributions" aria-expanded="false">
+                    <i class="fas fa-chevron-down"></i> Toggle
+                </button>
+            </div>
+            <div class="collapse show" id="fundDistributions">
+                <div class="table-container">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Distribution ID</th>
+                                <th>Seller</th>
+                                <th>Auction ID</th>
+                                <th>Platform Share</th>
+                                <th>Seller Share</th>
+                                <th>Status</th>
+                                <th>Scheduled Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for distribution in fund_distributions %}
+                            <tr>
+                                <td><span class="payment-id">FD-{{ distribution.id }}</span></td>
+                                <td>
+                                    <div>Seller #{{ distribution.seller_id|default:"N/A" }}</div>
+                                    <small class="text-muted">Invoice #{{ distribution.invoice_id|default:"N/A" }}</small>
+                                </td>
+                                <td>{{ distribution.auction_id|default:"N/A" }}</td>
+                                <td><span class="amount">₹{{ distribution.platform_share|floatformat:2|default:"N/A" }}</span></td>
+                                <td><span class="amount">₹{{ distribution.seller_share|floatformat:2|default:"N/A" }}</span></td>
+                                <td>
+                                    <span class="status-badge
+                                        {% if distribution.status|lower == 'transferred' %}
+                                            status-paid
+                                        {% elif distribution.status|lower == 'pending' %}
+                                            status-pending
+                                        {% else %}
+                                            status-failed
+                                        {% endif %}">
+                                        {% if distribution.status|lower == 'transferred' %}
+                                            <i class="fas fa-check-circle"></i>
+                                        {% elif distribution.status|lower == 'pending' %}
+                                            <i class="fas fa-clock"></i>
+                                        {% else %}
+                                            <i class="fas fa-times-circle"></i>
+                                        {% endif %}
+                                        {{ distribution.status|default:"N/A" }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div>{{ distribution.distribution_date|date:"M d, Y"|default:"N/A" }}</div>
+                                    <small class="text-muted">{{ distribution.distribution_date|date:"H:i"|default:"" }}</small>
+                                </td>
+                                <td>
+                                    <button class="action-btn" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#distributionDetails{{ distribution.id }}" aria-expanded="false">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="collapse" id="distributionDetails{{ distribution.id }}">
+                                <td colspan="8" class="p-0">
+                                    <div class="details-panel">
+                                        {% if error_message and failed_distribution_id == distribution.id %}
+                                        <div class="error-message">
+                                            <div>
+                                                <i class="fas fa-exclamation-circle"></i>
+                                                {{ error_message }}
+                                            </div>
+                                            <button class="dismiss-btn" onclick="this.parentElement.style.display='none';">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        {% endif %}
+                                        <div class="detail-group">
+                                            <div class="detail-item">
+                                                <div class="detail-label">Invoice ID</div>
+                                                <div class="detail-value">{{ distribution.invoice_id|default:"N/A" }}</div>
+                                            </div>
+                                            <div class="detail-item">
+                                                <div class="detail-label">Auction ID</div>
+                                                <div class="detail-value">{{ distribution.auction_id|default:"N/A" }}</div>
+                                            </div>
+                                            <div class="detail-item">
+                                                <div class="detail-label">Seller ID</div>
+                                                <div class="detail-value">{{ distribution.seller_id|default:"N/A" }}</div>
+                                            </div>
+                                        </div>
+                                        {% if distribution.status|lower == 'pending' %}
+                                        <div class="detail-item">
+                                            <a href="{% url 'process_manual_fund_distribution' distribution.id %}" class="distribute-btn">
+                                                <i class="fas fa-dollar-sign"></i> Distribute Fund
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8">
+                                    <div class="empty-state">
+                                        <div class="empty-state-icon">
+                                            <i class="fas fa-money-check-alt"></i>
+                                        </div>
+                                        <h3 class="empty-state-text">No Fund Distributions Found</h3>
+                                        <p class="empty-state-subtext">There are no fund distributions recorded.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle Sidebar Functionality
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+
+        // Responsive behavior
+        function checkWidth() {
+            if (window.innerWidth < 992) {
+                document.getElementById('sidebar').classList.remove('show');
+            }
+        }
+
+        window.addEventListener('resize', checkWidth);
+
+        // Auto-expand the details panel if there's an error message for that distribution
+        document.addEventListener('DOMContentLoaded', function() {
+            {% if error_message and failed_distribution_id %}
+            var element = document.getElementById('distributionDetails{{ failed_distribution_id }}');
+            if (element) {
+                element.classList.add('show');
+            }
+            {% endif %}
+        });
+    </script>
+</body>
+</html>
