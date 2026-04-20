@@ -38,3 +38,4 @@ online_auction/online_auction/settings.py
 
 # Logs
 *.log
+online_auction/core/views.py
