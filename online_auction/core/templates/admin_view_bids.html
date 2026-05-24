@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bid Management - {{ auction.title }} | Auction Platform</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    :root {
+      --primary: #1A237E;
+      --primary-light: #303F9F;
+      --secondary: #5C6BC0;
+      --accent: #FFA726;
+      --light: #F8F9FC;
+      --light-gray: #E8EAF6;
+      --dark: #1A237E;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(28, 37, 126, 0.05);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    .page-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: var(--border-radius);
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: radial-gradient(circle at 100% 0%, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.05) 100%);
+    }
+
+    .page-title {
+      font-weight: 700;
+      font-size: 2rem;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.25rem;
+    }
+
+    .auction-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .meta-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(4px);
+      border-radius: calc(var(--border-radius) - 2px);
+      padding: 1.25rem;
+      transition: transform 0.2s ease;
+    }
+
+    .meta-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .meta-label {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 0.5rem;
+    }
+
+    .meta-value {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .section-card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 2rem;
+      border: 1px solid #E8EAF6;
+    }
+
+    .section-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #E8EAF6;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--light-gray);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+    }
+
+    .badge-count {
+      background: var(--accent);
+      color: white;
+      padding: 0.35rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-left: auto;
+    }
+
+    .table {
+      margin: 0;
+      --bs-table-striped-bg: #f8f9fc;
+    }
+
+    .table thead th {
+      background: var(--light-gray);
+      color: var(--secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      padding: 1rem 1.5rem;
+      border-bottom: none;
+    }
+
+    .table tbody td {
+      padding: 1.25rem 1.5rem;
+      vertical-align: middle;
+      border-color: #E8EAF6;
+    }
+
+    .bidder-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .bidder-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--light-gray);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .bid-amount {
+      font-weight: 600;
+      color: var(--primary);
+      position: relative;
+      padding-left: 1.5rem;
+    }
+
+    .bid-amount::before {
+      content: "₹";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9em;
+      color: var(--secondary);
+    }
+
+    .timestamp {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--secondary);
+      font-size: 0.9rem;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #4CAF50;
+      display: inline-block;
+    }
+
+    .status-indicator.inactive {
+      background: #B0BEC5;
+    }
+
+    .refresh-info {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--light-gray);
+      border-radius: 30px;
+      color: var(--secondary);
+      font-size: 0.85rem;
+      margin-top: 2rem;
+    }
+
+    .empty-state {
+      padding: 3rem 1rem;
+      text-align: center;
+      color: var(--secondary);
+    }
+
+    .empty-icon {
+      font-size: 2.5rem;
+      color: var(--light-gray);
+      margin-bottom: 1rem;
+    }
+
+    .skeleton-loader {
+      animation: skeleton-loading 1s linear infinite alternate;
+      border-radius: 4px;
+    }
+
+    @keyframes skeleton-loading {
+      0% { background-color: hsl(220, 20%, 95%); }
+      100% { background-color: hsl(220, 20%, 85%); }
+    }
+
+    @media (max-width: 768px) {
+      .page-container {
+        padding: 1rem;
+      }
+
+      .section-header {
+        flex-wrap: wrap;
+      }
+
+      .table thead th,
+      .table tbody td {
+        padding: 1rem;
+      }
+
+      .bidder-info {
+        flex-wrap: wrap;
+      }
+    }
+
+    /* Go Back Button Styles */
+    .go-back-btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-top: 1.5rem;
+    }
+
+    .go-back-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(26, 35, 126, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="page-header">
+      <h1 class="page-title">Bid Management Console</h1>
+      <p class="mb-0" style="opacity: 0.9;">Detailed overview of all bidding activity</p>
+
+      <div class="auction-meta">
+        <div class="meta-card">
+          <div class="meta-label">Auction Title</div>
+          <div class="meta-value">{{ auction.title }}</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">Auction ID</div>
+          <div class="meta-value">#{{ auction.id }}</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">Total Bids</div>
+          <div class="meta-value" id="total-bids">0</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">Current Price</div>
+          <div class="meta-value" id="current-price">₹{{ auction.current_price|floatformat:2 }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bidding Sections -->
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="section-card">
+          <div class="section-header">
+            <div class="section-title">
+              <div class="section-icon">
+                <i class="fas fa-gavel"></i>
+              </div>
+              <span>Manual Bids</span>
+            </div>
+            <span class="badge-count" id="regular-bids-count">0</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>Bidder</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="regular-bids-body">
+                <!-- Loading state -->
+                <tr>
+                  <td colspan="3" class="py-4">
+                    <div class="d-flex align-items-center gap-3">
+                      <div class="skeleton-loader" style="width: 40px; height: 40px; border-radius: 50%;"></div>
+                      <div style="flex: 1;">
+                        <div class="skeleton-loader" style="height: 16px; width: 60%; margin-bottom: 4px;"></div>
+                        <div class="skeleton-loader" style="height: 14px; width: 40%;"></div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="section-card">
+          <div class="section-header">
+            <div class="section-title">
+              <div class="section-icon">
+                <i class="fas fa-robot"></i>
+              </div>
+              <span>Proxy Bids</span>
+            </div>
+            <span class="badge-count" id="proxy-bids-count">0</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>Bidder</th>
+                  <th>Current</th>
+                  <th>Maximum</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="proxy-bids-body">
+                <!-- Loading state -->
+                <tr>
+                  <td colspan="4" class="py-4">
+                    <div class="d-flex align-items-center gap-3">
+                      <div class="skeleton-loader" style="width: 40px; height: 40px; border-radius: 50%;"></div>
+                      <div style="flex: 1;">
+                        <div class="skeleton-loader" style="height: 16px; width: 60%; margin-bottom: 4px;"></div>
+                        <div class="skeleton-loader" style="height: 14px; width: 40%;"></div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="refresh-info">
+      <i class="fas fa-circle-notch fa-spin"></i>
+      <span>Live Updates Active • Last refreshed: <span id="last-refresh">Just now</span></span>
+    </div>
+
+    <!-- Go Back Button -->
+    <div class="text-center">
+      <a href="{% url 'admin_auct_deta' auction.id %}" class="btn go-back-btn">
+        <i class="fas fa-arrow-left me-2"></i> Go Back
+      </a>
+    </div>
+
+    <script>
+    $(document).ready(function() {
+      const auctionId = {{ auction.id }};
+      const bidsUrl = "{% url 'admin_view_bids' auction.id %}?json=true";
+
+      function fetchBids() {
+        $.ajax({
+          url: bidsUrl,
+          type: 'GET',
+          dataType: 'json',
+          success: function(data) {
+            if (data.error) {
+              console.error('Error:', data.error);
+              $('#regular-bids-body').html(`
+                <tr>
+                  <td colspan="3">
+                    <div class="empty-state">
+                      <i class="fas fa-exclamation-circle fa-2x mb-3" style="color: #ef4444;"></i>
+                      <p>Error loading bids. Please try again later.</p>
+                    </div>
+                  </td>
+                </tr>
+              `);
+              $('#proxy-bids-body').html(`
+                <tr>
+                  <td colspan="4">
+                    <div class="empty-state">
+                      <i class="fas fa-exclamation-circle fa-2x mb-3" style="color: #ef4444;"></i>
+                      <p>Error loading bids. Please try again later.</p>
+                    </div>
+                  </td>
+                </tr>
+              `);
+              return;
+            }
+
+            // Update total bids
+            $('#total-bids').text(data.total_bids);
+
+            // Update current price (if provided by JSON)
+            if (data.current_price !== undefined) {
+              $('#current-price').text(`₹${data.current_price.toFixed(2)}`);
+            }
+
+            // Update regular bids count
+            $('#regular-bids-count').text(data.regular_bids.length);
+
+            // Update regular bids
+            const regularBidsBody = $('#regular-bids-body');
+            regularBidsBody.empty();
+            if (data.regular_bids.length === 0) {
+              regularBidsBody.append(`
+                <tr>
+                  <td colspan="3">
+                    <div class="empty-state">
+                      <i class="fas fa-info-circle fa-2x mb-3" style="color: #94a3b8;"></i>
+                      <p>No regular bids placed yet.</p>
+                    </div>
+                  </td>
+                </tr>
+              `);
+            } else {
+              data.regular_bids.forEach(bid => {
+                regularBidsBody.append(`
+                  <tr>
+                    <td>
+                      <div class="bidder-name">
+                        <i class="fas fa-user me-2" style="color: #64748b;"></i>
+                        ${bid.bidder_username}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="amount">₹${bid.amount.toFixed(2)}</div>
+                    </td>
+                    <td>
+                      <div class="timestamp">
+                        <i class="far fa-clock me-1"></i>
+                        ${new Date(bid.timestamp).toLocaleString()}
+                      </div>
+                    </td>
+                  </tr>
+                `);
+              });
+            }
+
+            // Update proxy bids count
+            $('#proxy-bids-count').text(data.proxy_bids.length);
+
+            // Update proxy bids
+            const proxyBidsBody = $('#proxy-bids-body');
+            proxyBidsBody.empty();
+            if (data.proxy_bids.length === 0) {
+              proxyBidsBody.append(`
+                <tr>
+                  <td colspan="4">
+                    <div class="empty-state">
+                      <i class="fas fa-info-circle fa-2x mb-3" style="color: #94a3b8;"></i>
+                      <p>No proxy bids placed yet.</p>
+                    </div>
+                  </td>
+                </tr>
+              `);
+            } else {
+              data.proxy_bids.forEach(bid => {
+                proxyBidsBody.append(`
+                  <tr>
+                    <td>
+                      <div class="bidder-name">
+                        <i class="fas fa-user me-2" style="color: #64748b;"></i>
+                        ${bid.bidder_username}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="amount">₹${bid.current_bid.toFixed(2)}</div>
+                    </td>
+                    <td>
+                      <div class="max-amount">₹${bid.proxy_max_amount ? bid.proxy_max_amount.toFixed(2) : 'N/A'}</div>
+                    </td>
+                    <td>
+                      <div class="timestamp">
+                        <i class="far fa-clock me-1"></i>
+                        ${new Date(bid.timestamp).toLocaleString()}
+                      </div>
+                    </td>
+                  </tr>
+                `);
+              });
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error('AJAX Error:', status, error);
+            $('#regular-bids-body').html(`
+              <tr>
+                <td colspan="3">
+                  <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-3" style="color: #ef4444;"></i>
+                    <p>Error connecting to server. Please try again later.</p>
+                  </div>
+                </td>
+              </tr>
+            `);
+            $('#proxy-bids-body').html(`
+              <tr>
+                <td colspan="4">
+                  <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-3" style="color: #ef4444;"></i>
+                    <p>Error connecting to server. Please try again later.</p>
+                  </div>
+                </td>
+              </tr>
+            `);
+          }
+        });
+      }
+
+      // Fetch bids immediately and then every 5 seconds
+      fetchBids();
+      setInterval(fetchBids, 5000); // Poll every 5 seconds
+
+      // Update the spinning refresh icon
+      setInterval(function() {
+        $('.fa-sync-alt').toggleClass('fa-spin');
+      }, 5000);
+    });
+    </script>
+  </div>
+</body>
+</html>

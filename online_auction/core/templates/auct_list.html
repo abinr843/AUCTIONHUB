@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Auctions Collection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <style>
+    /* Existing CSS remains unchanged */
+    :root {
+      --primary-color: #1a365d;
+      --primary-light: #2d547d;
+      --accent-color: #c5a47e;
+      --dark-color: #0a192f;
+      --light-color: #f8f9fc;
+      --white: #ffffff;
+      --text-primary: #2d3748;
+      --text-secondary: #718096;
+      --border-color: #e2e8f0;
+      --success-color: #38a169;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light-color);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 0 2rem;
+      width: 100%;
+    }
+
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--border-color);
+      z-index: 1000;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .page-title {
+      font-size: 2.25rem;
+      color: var(--dark-color);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      position: relative;
+    }
+
+    .page-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--accent-color);
+    }
+
+    .search-container {
+      display: grid;
+      grid-template-columns: 1fr 2fr auto;
+      gap: 1rem;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    .custom-select {
+      width: 100%;
+      padding: 0.875rem 1.25rem;
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      appearance: none;
+      transition: var(--transition);
+    }
+
+    .custom-select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.1);
+    }
+
+    .select-arrow {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.875rem 1.25rem 0.875rem 2.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      background: var(--white);
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+
+    .filter-button {
+      padding: 0.875rem 1.75rem;
+      background: var(--primary-color);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .filter-button:hover {
+      background: var(--primary-light);
+      transform: translateY(-1px);
+    }
+
+    .go-back-button {
+      padding: 0.75rem 1.5rem;
+      background: var(--light-color);
+      color: var(--primary-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .go-back-button:hover {
+      background: var(--white);
+      border-color: var(--primary-color);
+      transform: translateY(-1px);
+    }
+
+    .floating-button {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 60px;
+      height: 60px;
+      background: var(--primary-color);
+      color: var(--white);
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+      cursor: pointer;
+      transition: var(--transition);
+      z-index: 1000;
+    }
+
+    .floating-button:hover {
+      background: var(--primary-light);
+      transform: scale(1.1);
+    }
+
+    .auctions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 3rem 0;
+      width: 100%;
+    }
+
+    .auction-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      transform: translateY(0);
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .auction-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-media {
+      position: relative;
+      height: 240px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .auction-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s ease;
+      opacity: 0.9;
+    }
+
+    .auction-card:hover .auction-image {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--accent-color);
+      color: var(--white);
+      padding: 0.375rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .card-content {
+      padding: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      background: var(--white);
+      transition: var(--transition);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .auction-card:hover .card-content {
+      background: var(--light-color);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--dark-color);
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+      transition: var(--transition);
+      word-wrap: break-word;
+    }
+
+    .auction-card:hover .card-title {
+      color: var(--primary-color);
+    }
+
+    .card-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      width: 100%;
+    }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .detail-label {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    .detail-value {
+      font-weight: 600;
+      color: var(--dark-color);
+      text-align: right;
+      word-wrap: break-word;
+      max-width: 60%;
+    }
+
+    .current-bid {
+      font-size: 1.1rem;
+      color: var(--success-color);
+    }
+
+    .card-actions {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: auto;
+    }
+
+    .action-button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .primary-action {
+      background: var(--primary-color);
+      color: var(--white);
+    }
+
+    .primary-action:hover {
+      background: var(--primary-light);
+      transform: translateY(-1px);
+    }
+
+    .secondary-action {
+      background: var(--light-color);
+      color: var(--primary-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .secondary-action:hover {
+      background: var(--white);
+      border-color: var(--primary-color);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      grid-column: 1 / -1;
+    }
+
+    .empty-icon {
+      font-size: 3.5rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      opacity: 0.6;
+    }
+
+    .empty-text {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    @media (max-width: 1024px) {
+      .search-container {
+        grid-template-columns: 1fr;
+      }
+      .auctions-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 1.5rem;
+      }
+      .page-title {
+        font-size: 1.875rem;
+      }
+      .card-media {
+        height: 200px;
+      }
+      .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0 1rem;
+      }
+      .page-title {
+        font-size: 1.625rem;
+      }
+      .filter-button span {
+        display: none;
+      }
+      .filter-button {
+        padding: 0.75rem;
+      }
+      .auctions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header class="sticky-header">
+    <div class="header-content">
+      <div class="header-top">
+        <h1 class="page-title">Premium Auctions</h1>
+        <a href="{% url 'udash' %}" class="go-back-button">
+          <i class="fas fa-arrow-left"></i> Go Back
+        </a>
+      </div>
+      <form method="GET" action="{% url 'auct_list' %}" class="search-container">
+        <div class="select-wrapper">
+          <select class="custom-select" name="category" onchange="this.form.submit()">
+            <option value="" {% if not category_filter %}selected{% endif %}>All Categories</option>
+            {% for category in categories %}
+              <option value="{{ category.id }}" {% if category_filter == category.id|stringformat:"s" %}selected{% endif %}>
+                {{ category.name }}
+              </option>
+            {% endfor %}
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+        <div class="input-wrapper" style="position: relative;">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" class="search-input" name="search" placeholder="Search auctions..." value="{{ search_keywords|default:'' }}">
+        </div>
+        <button type="submit" class="filter-button">
+          <i class="fas fa-sliders-h"></i>
+          <span>Apply Filters</span>
+        </button>
+        <input type="number" name="price_min" placeholder="Min Price" value="{{ price_min|default:'' }}" class="search-input" style="grid-column: 1; margin-top: 1rem;">
+        <input type="number" name="price_max" placeholder="Max Price" value="{{ price_max|default:'' }}" class="search-input" style="grid-column: 2; margin-top: 1rem;">
+        <label style="grid-column: 3; margin-top: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <input type="checkbox" name="ending_soon" value="1" {% if ending_soon %}checked{% endif %}>
+          <span>Ending Soon</span>
+        </label>
+      </form>
+    </div>
+  </header>
+
+  <main>
+    <div class="auctions-grid">
+      {% for auction in auctions %}
+      <article class="auction-card">
+        <div class="card-media">
+          <img src="{{ auction.image_url }}" alt="{{ auction.title }}" class="auction-image">
+          <span class="card-badge">
+            {% if auction.is_ended %}
+              Ended
+            {% else %}
+              {{ auction.auction_type|title }} - Live
+            {% endif %}
+          </span>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">{{ auction.title }}</h3>
+          <div class="card-details">
+            <div class="detail-item">
+              <span class="detail-label">Type</span>
+              <span class="detail-value">{{ auction.auction_type|title }}</span>
+            </div>
+            {% if auction.auction_type == "regular" %}
+              <div class="detail-item">
+                <span class="detail-label">Starting Price</span>
+                <span class="detail-value">₹{{ auction.starting_price|floatformat:2 }}</span>
+              </div>
+
+            {% endif %}
+            {% if auction.buy_it_now_price %}
+              <div class="detail-item">
+                <span class="detail-label">Buy It Now</span>
+                <span class="detail-value">₹{{ auction.buy_it_now_price|floatformat:2 }}</span>
+              </div>
+            {% endif %}
+            {% if auction.auction_type == "sealed_bid" %}
+              <div class="detail-item">
+                <span class="detail-label">Bids</span>
+                <span class="detail-value">Sealed</span>
+              </div>
+            {% endif %}
+            <div class="detail-item">
+              <span class="detail-label">Ends</span>
+              <span class="detail-value">{{ auction.end_date|date:"M d, Y H:i" }}</span>
+            </div>
+          </div>
+          <div class="card-actions">
+            {% if not auction.is_ended %}
+              {% if auction.buy_it_now_price %}
+                <a href="{% url 'auct_deta' auction.id %}" class="action-button primary-action">
+                  <i class="fas fa-shopping-cart"></i> Buy Now
+                </a>
+              {% elif auction.auction_type == "regular" %}
+                <a href="{% url 'auct_deta' auction.id %}" class="action-button primary-action">
+                  <i class="fas fa-gavel"></i> Place Bid
+                </a>
+              {% elif auction.auction_type == "sealed_bid" %}
+                <a href="{% url 'auct_deta' auction.id %}" class="action-button primary-action">
+                  <i class="fas fa-lock"></i> Submit Bid
+                </a>
+              {% endif %}
+              {% if auction.is_make_offer_enabled %}
+                <a href="{% url 'make_offer' auction.id %}" class="action-button secondary-action">
+                  <i class="fas fa-handshake"></i> Make Offer
+                </a>
+              {% else %}
+                <button class="action-button secondary-action">
+                  <i class="fas fa-heart"></i> Watch
+                </button>
+              {% endif %}
+            {% else %}
+              <button class="action-button primary-action" disabled>
+                <i class="fas fa-check"></i> Auction Ended
+              </button>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+      {% empty %}
+      <div class="empty-state">
+        <i class="fas fa-box-open empty-icon"></i>
+        <h3 class="empty-text">No active auctions found</h3>
+        <a href="{% url 'auct_list' %}" class="filter-button">
+          <i class="fas fa-sync"></i>
+          <span>Refresh Search</span>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </main>
+
+  <!-- Floating Button -->
+  <button class="floating-button" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Card hover effects
+    document.querySelectorAll('.auction-card').forEach(card => {
+      card.addEventListener('mouseover', () => {
+        card.style.zIndex = 10;
+      });
+      card.addEventListener('mouseout', () => {
+        card.style.zIndex = 1;
+      });
+    });
+
+    // Display any Django messages
+    {% if messages %}
+      {% for message in messages %}
+        alert("{{ message }}");
+      {% endfor %}
+    {% endif %}
+  });
+</script>
+</body>
+</html>

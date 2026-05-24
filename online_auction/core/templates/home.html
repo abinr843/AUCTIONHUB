@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover and win extraordinary items at AuctionHub, the premier online auction platform for luxury watches, rare collectibles, cars, and jewelry.">
+  <meta name="keywords" content="auction, luxury auctions, online bidding, rare collectibles, luxury watches">
+  <meta name="author" content="AuctionHub Team">
+  <meta property="og:title" content="AuctionHub - Premium Online Auction Platform">
+  <meta property="og:description" content="Join AuctionHub for exclusive auctions of luxury items and rare collectibles.">
+  <meta property="og:image" content="https://yourdomain.com/auctionhub-logo.png">
+  <meta property="og:url" content="https://yourdomain.com">
+  <title>AuctionHub - Premium Online Auction Platform</title>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: #fff;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out forwards;
+    }
+
+    nav {
+      position: fixed;
+      width: 100%;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to right, #4361ee, #7209b7);
+      color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 50;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: bold;
+      font-size: 1.25rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #e0e0e0;
+    }
+
+    .login-btn, .profile-btn, .logout-btn {
+      background-color: white;
+      color: #4361ee;
+      padding: 0.5rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .login-btn:hover, .profile-btn:hover, .logout-btn:hover {
+      background-color: #f0f0f0;
+    }
+
+    .mobile-menu-btn, .mobile-menu {
+      display: none;
+    }
+
+    header {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: white;
+      padding: 0 1rem;
+    }
+
+    .hero-content {
+      text-align: center;
+      max-width: 800px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(45deg, #4361ee, #7209b7);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      font-weight: bold;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      max-width: 36rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .primary-btn {
+      background-color: #4361ee;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+
+    .primary-btn:hover {
+      background-color: #3a56d4;
+      transform: translateY(-2px);
+    }
+
+    .secondary-btn {
+      border: 2px solid white;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+
+    .secondary-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    section {
+      padding: 5rem 1rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      color: #333;
+      margin-bottom: 4rem;
+      font-weight: bold;
+    }
+
+    .categories-section {
+      background-color: #f9fafb;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 2rem;
+    }
+
+    .category-card {
+      background-color: white;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .category-card:hover {
+      transform: scale(1.03);
+    }
+
+    .category-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .category-desc {
+      color: #666;
+    }
+
+    .about-section {
+      background-color: white;
+    }
+
+    .about-text {
+      font-size: 1.125rem;
+      color: #666;
+      max-width: 48rem;
+      margin: 0 auto;
+    }
+
+    .testimonials-section {
+      background-color: #f1f5f9;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 2rem;
+    }
+
+    .testimonial-card {
+      background-color: white;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .testimonial-text {
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .testimonial-author {
+      font-weight: 600;
+    }
+
+    .auctions-section {
+      background-color: #fff;
+    }
+
+    .auctions-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 2rem;
+    }
+
+    .auction-card {
+      background-color: white;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .auction-card:hover {
+      transform: scale(1.03);
+    }
+
+    .auction-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .auction-desc {
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+
+    .auction-date {
+      font-size: 0.875rem;
+      color: #999;
+    }
+
+    .chatbot-toggle {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: linear-gradient(to right, #4361ee, #7209b7);
+      color: white;
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      border: none;
+      cursor: pointer;
+      z-index: 50;
+      transition: transform 0.3s;
+      aria-label: "Open Chatbot";
+    }
+
+    .chatbot-toggle:hover {
+      transform: scale(1.1);
+    }
+
+    .chatbot-container {
+      position: fixed;
+      bottom: 5rem;
+      right: 1.5rem;
+      width: 90%;
+      max-width: 24rem;
+      background-color: white;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      z-index: 50;
+      transition: all 0.3s ease-in-out;
+      transform: translateY(100%);
+      display: none;
+    }
+
+    .chatbot-container.open {
+      transform: translateY(0);
+    }
+
+    .chatbot-header {
+      background: linear-gradient(to right, #4361ee, #7209b7);
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chatbot-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      font-size: 1.125rem;
+    }
+
+    .chatbot-close {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      aria-label: "Close Chatbot";
+    }
+
+    .chatbot-messages {
+      height: 300px;
+      overflow-y: auto;
+      padding: 1rem;
+      background-color: #f9fafb;
+      scroll-behavior: smooth;
+    }
+
+    .chatbot-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chatbot-messages::-webkit-scrollbar-thumb {
+      background: #7209b7;
+      border-radius: 3px;
+    }
+
+    .chatbot-messages::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    .message-row {
+      display: flex;
+      margin-bottom: 1rem;
+    }
+
+    .message-row.user {
+      justify-content: flex-end;
+    }
+
+    .message-row.bot {
+      justify-content: flex-start;
+    }
+
+    .message-bubble {
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      max-width: 70%;
+    }
+
+    .message-bubble.user {
+      background-color: #7209b7;
+      color: white;
+    }
+
+    .message-bubble.bot {
+      background-color: #e6f0ff;
+      color: #1e40af;
+    }
+
+    .chatbot-input-area {
+      padding: 1rem;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .chatbot-form {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .chatbot-input {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      outline: none;
+    }
+
+    .chatbot-input:focus {
+      border-color: #4361ee;
+      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+    }
+
+    .chatbot-send {
+      background-color: #4361ee;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .chatbot-send:hover {
+      background-color: #3a56d4;
+    }
+
+    @media (min-width: 640px) {
+      .hero-btns {
+        flex-direction: row;
+      }
+
+      .gradient-text {
+        font-size: 4rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .categories-grid, .testimonials-grid, .auctions-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .categories-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .testimonials-grid, .auctions-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .mobile-menu-btn {
+        display: none;
+      }
+
+      .nav-links {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 1023px) {
+      .nav-links {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+      }
+
+      .mobile-menu {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(to bottom, #4361ee, #7209b7);
+        color: white;
+        z-index: 40;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .mobile-menu.open {
+        transform: translateX(0);
+      }
+
+      .close-mobile-menu {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+      }
+
+      .mobile-menu-list {
+        margin-top: 3rem;
+        list-style: none;
+      }
+
+      .mobile-menu-item {
+        margin-bottom: 1rem;
+      }
+
+      .mobile-menu-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .mobile-login-btn, .mobile-profile-btn, .mobile-logout-btn {
+        background-color: white;
+        color: #4361ee;
+        padding: 0.5rem 1.5rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .typing-bubble {
+      background-color: #e6f0ff;
+      color: #1e40af;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .typing-dot {
+      height: 8px;
+      width: 8px;
+      border-radius: 50%;
+      background-color: #4361ee;
+      margin: 0 2px;
+      animation: typingBounce 1s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% {
+        transform: translateY(0);
+      }
+      30% {
+        transform: translateY(-4px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">
+      <i class="fas fa-gavel me-2 logo-icon"></i>
+      <span class="logo-text">AuctionHub</span>
+    </div>
+
+    <div class="nav-links">
+      <a href="#" class="nav-link" aria-label="Home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        Home
+      </a>
+      <a href="#categories" class="nav-link" aria-label="Categories">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 000 4h6a2 2 0 000-4M9 11a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2h4" />
+        </svg>
+        Categories
+      </a>
+      <a href="#featured" class="nav-link" aria-label="Auctions">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+        </svg>
+        Auctions
+      </a>
+      <a href="#testimonials" class="nav-link" aria-label="Testimonials">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+        </svg>
+        Testimonials
+      </a>
+      <a href="#about" class="nav-link" aria-label="About Us">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        About Us
+      </a>
+      {% if is_authenticated %}
+        <a href="{% url 'udash' %}" class="nav-link" aria-label="Dashboard">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2m-4 0h-2a2 2 0 00-2 2v12a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2z" />
+          </svg>
+          Dashboard
+        </a>
+      {% endif %}
+      {% if not is_authenticated %}
+        <a href="{% url 'auth_page' %}" class="login-btn" aria-label="Login">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+          </svg>
+          Login
+        </a>
+      {% else %}
+        <a href="{% url 'profman' %}" class="profile-btn" aria-label="Profile">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zm-4 7c-3.313 0-6 2.686-6 6h12c0-3.314-2.687-6-6-6z" />
+          </svg>
+          Profile
+        </a>
+        <a href="{% url 'logout' %}" class="logout-btn" aria-label="Logout">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          Logout
+        </a>
+      {% endif %}
+    </div>
+
+    <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Open Menu">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </nav>
+
+  <div id="mobile-menu" class="mobile-menu">
+    <button id="close-mobile-menu" class="close-mobile-menu" aria-label="Close Menu">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+    <ul class="mobile-menu-list">
+      <li class="mobile-menu-item">
+        <a href="#" class="mobile-menu-link" aria-label="Home">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          Home
+        </a>
+      </li>
+      <li class="mobile-menu-item">
+        <a href="#categories" class="mobile-menu-link" aria-label="Categories">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 000 4h6a2 2 0 000-4M9 11a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2h4" />
+          </svg>
+          Categories
+        </a>
+      </li>
+      <li class="mobile-menu-item">
+        <a href="#featured" class="mobile-menu-link" aria-label="Auctions">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+          </svg>
+          Auctions
+        </a>
+      </li>
+      <li class="mobile-menu-item">
+        <a href="#testimonials" class="mobile-menu-link" aria-label="Testimonials">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+          </svg>
+          Testimonials
+        </a>
+      </li>
+      <li class="mobile-menu-item">
+        <a href="#about" class="mobile-menu-link" aria-label="About Us">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          About Us
+        </a>
+      </li>
+      {% if is_authenticated %}
+        <li class="mobile-menu-item">
+          <a href="{% url 'udash' %}" class="mobile-menu-link" aria-label="Dashboard">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2m-4 0h-2a2 2 0 00-2 2v12a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2z" />
+            </svg>
+            Dashboard
+          </a>
+        </li>
+      {% endif %}
+      {% if not is_authenticated %}
+        <li class="mobile-menu-item">
+          <a href="{% url 'auth_page' %}" class="mobile-login-btn" aria-label="Login">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+            </svg>
+            Login
+          </a>
+        </li>
+      {% else %}
+        <li class="mobile-menu-item">
+          <a href="{% url 'profman' %}" class="mobile-profile-btn" aria-label="Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zm-4 7c-3.313 0-6 2.686-6 6h12c0-3.314-2.687-6-6-6z" />
+            </svg>
+            Profile
+          </a>
+        </li>
+        <li class="mobile-menu-item">
+          <a href="{% url 'logout' %}" class="mobile-logout-btn" aria-label="Logout">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Logout
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+
+  <header>
+    <div class="hero-content animate-fade-in">
+      <h1 class="gradient-text" data-aos="fade-up">Discover & Win Extraordinary Items</h1>
+      {% if is_authenticated %}
+        <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+          Welcome back, {{ username|default:"User" }}! Dive into our exclusive auctions and bid on rare collectibles, luxury items, and unique experiences.
+        </p>
+      {% else %}
+        <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+          Join the world's most exclusive auction platform for rare collectibles, luxury items, and unique experiences.
+        </p>
+      {% endif %}
+      <div class="hero-btns" data-aos="fade-up" data-aos-delay="400">
+        <a href="#categories" class="primary-btn">Explore Auctions</a>
+        {% if not is_authenticated %}
+          <a href="{% url 'auth_page' %}" class="secondary-btn">Join Free</a>
+        {% else %}
+          <a href="{% url 'profman' %}" class="secondary-btn">View Profile</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <section id="categories" class="categories-section">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">Premium Categories</h2>
+      <div class="categories-grid">
+        <div class="category-card" data-aos="zoom-in">
+          <h3 class="category-title">Luxury Watches</h3>
+          <p class="category-desc">Rolex, Patek Philippe, Audemars Piguet</p>
+        </div>
+        <div class="category-card" data-aos="zoom-in">
+          <h3 class="category-title">Rare Collectibles</h3>
+          <p class="category-desc">Antiques, Vintage Items, Rare Artifacts</p>
+        </div>
+        <div class="category-card" data-aos="zoom-in">
+          <h3 class="category-title">Luxury Cars</h3>
+          <p class="category-desc">Ferrari, Lamborghini, Classic Cars</p>
+        </div>
+        <div class="category-card" data-aos="zoom-in">
+          <h3 class="category-title">Jewelry & Diamonds</h3>
+          <p class="category-desc">Gold, Diamonds, Precious Stones</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="featured" class="auctions-section">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">Featured Auctions</h2>
+      {% if auctions %}
+        <div class="auctions-grid">
+          {% for auction in auctions %}
+            <div class="auction-card" data-aos="zoom-in">
+              <h3 class="auction-title">{{ auction.title }}</h3>
+              <p class="auction-desc">{{ auction.description }}</p>
+              <p class="auction-date">Start: {{ auction.start_date }} | End: {{ auction.end_date }}</p>
+              <p class="auction-date">Type: {{ auction.auction_type }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p data-aos="fade-up">No auctions available at the moment. Check back soon!</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <section id="about" class="about-section">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">About AuctionHub</h2>
+      <p class="about-text" data-aos="fade-up">
+        AuctionHub is a premium auction platform that connects buyers and sellers worldwide. We offer a secure, transparent, and exciting bidding experience with high-value items across various categories.
+      </p>
+    </div>
+  </section>
+
+  <section id="testimonials" class="testimonials-section">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">What Our Users Say</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card" data-aos="fade-up">
+          <p class="testimonial-text">"AuctionHub is the best auction platform I've ever used! The experience is seamless and trustworthy."</p>
+          <h3 class="testimonial-author">- John Doe</h3>
+        </div>
+        <div class="testimonial-card" data-aos="fade-up">
+          <p class="testimonial-text">"I won my dream luxury watch at an unbelievable price. Highly recommended!"</p>
+          <h3 class="testimonial-author">- Sarah Lee</h3>
+        </div>
+        <div class="testimonial-card" data-aos="fade-up">
+          <p class="testimonial-text">"A professional platform with excellent customer support. The best place for rare collectibles!"</p>
+          <h3 class="testimonial-author">- Michael Smith</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <button id="chatbot-toggle" class="chatbot-toggle" aria-label="Open Chatbot">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+    </svg>
+  </button>
+
+  <div id="chatbot-container" class="chatbot-container">
+    <div class="chatbot-header">
+      <div class="chatbot-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+        AuctionHub Assistant
+      </div>
+      <button id="chatbot-close" class="chatbot-close" aria-label="Close Chatbot">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="chatbot-messages" id="chatbot-messages">
+      <div class="message-row bot">
+        <div class="message-bubble bot">
+          {% if is_authenticated %}
+            Welcome back, {{ username|default:"User" }}! How can I assist you with your auctions today?
+          {% else %}
+            Hi there! How can I help you with AuctionHub today?
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="chatbot-input-area">
+      <form id="chatbot-form" class="chatbot-form">
+        <label for="chatbot-input" class="visually-hidden">Chat with AuctionHub Assistant</label>
+        <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Type your message...">
+        <button type="submit" class="chatbot-send" aria-label="Send Message">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  // Initialize AOS
+  AOS.init({
+    duration: 1000,
+    once: true
+  });
+
+  // Mobile Menu Toggle
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const closeMobileMenu = document.getElementById('close-mobile-menu');
+
+  mobileMenuBtn.addEventListener('click', function() {
+    mobileMenu.classList.add('open');
+  });
+
+  closeMobileMenu.addEventListener('click', function() {
+    mobileMenu.classList.remove('open');
+  });
+
+  // Chatbot Toggle
+  const chatbotToggle = document.getElementById('chatbot-toggle');
+  const chatbotClose = document.getElementById('chatbot-close');
+  const chatbotContainer = document.getElementById('chatbot-container');
+
+  chatbotToggle.addEventListener('click', function() {
+    chatbotContainer.style.display = 'block';
+    setTimeout(() => {
+      chatbotContainer.classList.add('open');
+    }, 10);
+  });
+
+  chatbotClose.addEventListener('click', function() {
+    chatbotContainer.classList.remove('open');
+    setTimeout(() => {
+      chatbotContainer.style.display = 'none';
+    }, 300);
+  });
+
+  // Chatbot Functionality with AJAX
+  const chatbotForm = document.getElementById('chatbot-form');
+  const chatbotInput = document.getElementById('chatbot-input');
+  const chatbotMessages = document.getElementById('chatbot-messages');
+
+  let debounceTimer;
+
+  chatbotForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    clearTimeout(debounceTimer);
+
+    const userInput = chatbotInput.value.trim();
+    if (!userInput) {
+      addMessage('Please enter a message!', 'bot');
+      return;
+    }
+
+    addMessage(userInput, 'user');
+    showTypingIndicator();
+
+    debounceTimer = setTimeout(() => {
+      fetch('/chatbot_user_response/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ message: userInput })
+      })
+      .then(response => response.json())
+      .then(data => {
+        removeTypingIndicator();
+        if (data.success) {
+          addMessage(data.response, 'bot');
+        } else {
+          // Improved error handling
+          const errorMessage = data.response.includes('cannot access local variable')
+            ? 'Oops, something went wrong! Try rephrasing or ask about auctions! 😊'
+            : `Sorry, something went wrong: ${data.response}. Please try again! 😞`;
+          addMessage(errorMessage, 'bot');
+        }
+        chatbotInput.value = '';
+      })
+      .catch(error => {
+        removeTypingIndicator();
+        addMessage('Network error. Please check your connection and try again.', 'bot');
+        console.error('Fetch error:', error);
+      });
+    }, 300);
+  });
+
+  function addMessage(message, sender) {
+    const messageRow = document.createElement('div');
+    messageRow.classList.add('message-row', sender);
+
+    const messageBubble = document.createElement('div');
+    messageBubble.classList.add('message-bubble', sender);
+    messageBubble.textContent = message;
+
+    messageRow.appendChild(messageBubble);
+    chatbotMessages.appendChild(messageRow);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+  }
+
+  function showTypingIndicator() {
+    const typingRow = document.createElement('div');
+    typingRow.classList.add('typing-indicator');
+    typingRow.id = 'typing-indicator';
+
+    const typingBubble = document.createElement('div');
+    typingBubble.classList.add('typing-bubble');
+
+    for (let i = 0; i < 3; i++) {
+      const dot = document.createElement('div');
+      dot.classList.add('typing-dot');
+      typingBubble.appendChild(dot);
+    }
+
+    typingRow.appendChild(typingBubble);
+    chatbotMessages.appendChild(typingRow);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+  }
+
+  function removeTypingIndicator() {
+    const typingIndicator = document.getElementById('typing-indicator');
+    if (typingIndicator) {
+      typingIndicator.remove();
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+});
+</script>
+</body>
+</html>

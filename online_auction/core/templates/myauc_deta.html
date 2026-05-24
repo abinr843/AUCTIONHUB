@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ auction.title }} - Auction Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2A2E35;
+      --secondary: #FF6B6B;
+      --accent: #4ECDC4;
+      --light: #F8F9FA;
+      --dark: #212529;
+      --success: #20c997;
+      --warning: #ffc107;
+      --info: #0dcaf0;
+      --sold: #6c757d; /* Gray for sold status */
+      --border-radius: 12px;
+      --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      color: var(--primary);
+      line-height: 1.6;
+    }
+
+    .page-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .auction-card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      transition: var(--transition);
+      margin-bottom: 2rem;
+    }
+
+    .auction-header {
+      background: linear-gradient(135deg, var(--primary) 0%, #1a1d23 100%);
+      color: white;
+      padding: 2.5rem 2rem;
+      position: relative;
+    }
+
+    .auction-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 1rem;
+    }
+
+    .type-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--accent);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .sold-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: var(--sold);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .timer-container {
+      background: rgba(255,255,255,0.1);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .timer {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .timer-label {
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      opacity: 0.75;
+      margin-bottom: 0.5rem;
+    }
+
+    .stopped-message {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--secondary);
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .sold-message {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--sold);
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .auction-body {
+      padding: 0;
+    }
+
+    .auction-content {
+      padding: 2rem;
+    }
+
+    .auction-sidebar {
+      border-left: 1px solid rgba(0,0,0,0.05);
+      height: 100%;
+    }
+
+    .detail-item {
+      padding: 1.25rem;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .detail-item:last-child {
+      border-bottom: none;
+    }
+
+    .detail-item i {
+      color: var(--accent);
+      font-size: 1.2rem;
+      width: 30px;
+      padding-top: 0.25rem;
+    }
+
+    .detail-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #6c757d;
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+
+    .detail-value {
+      font-weight: 500;
+      color: var(--primary);
+    }
+
+    .section-card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-header {
+      background: var(--light);
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title i {
+      color: var(--accent);
+    }
+
+    .section-content {
+      padding: 1.5rem;
+    }
+
+    .bid-detail {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .bid-detail:last-child {
+      border-bottom: none;
+    }
+
+    .bid-label {
+      font-weight: 500;
+      color: #6c757d;
+    }
+
+    .bid-value {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .bid-value.highlight {
+      color: var(--success);
+    }
+
+    .winner-section {
+      background: rgba(32,201,151,0.1);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      border: 1px solid rgba(32,201,151,0.2);
+    }
+
+    .winner-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .winner-title i {
+      color: var(--success);
+    }
+
+    .winner-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .winner-detail {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .winner-label {
+      font-weight: 600;
+      color: #495057;
+      width: 120px;
+    }
+
+    .winner-value {
+      color: var(--primary);
+    }
+
+    .no-winner {
+      text-align: center;
+      color: #6c757d;
+      font-weight: 500;
+      margin: 1rem 0;
+    }
+
+    .btn-custom {
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border: none;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+
+    .btn-delete {
+      background: linear-gradient(135deg, var(--secondary) 0%, #ff5252 100%);
+      color: white;
+    }
+
+    .btn-delete:hover {
+      box-shadow: 0 5px 15px rgba(255,107,107,0.4);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .btn-edit {
+      background: linear-gradient(135deg, var(--warning) 0%, #fd7e14 100%);
+      color: white;
+    }
+
+    .btn-edit:hover {
+      box-shadow: 0 5px 15px rgba(255,193,7,0.4);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .btn-relist {
+      background: linear-gradient(135deg, #6ab04c 0%, #218c74 100%);
+      color: white;
+    }
+
+    .btn-relist:hover {
+      box-shadow: 0 5px 15px rgba(106,176,76,0.4);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .btn-back {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-back:hover {
+      background: #1a1d23;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .image-gallery {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .main-image-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--border-radius);
+      background: var(--light);
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .main-image {
+      max-width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .main-image:hover {
+      transform: scale(1.02);
+    }
+
+    .thumbnail-container {
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto;
+      padding: 1rem 0;
+      scrollbar-width: thin;
+    }
+
+    .thumbnail-container::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .thumbnail-container::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .thumbnail-container::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 10px;
+    }
+
+    .thumbnail-container::-webkit-scrollbar-thumb:hover {
+      background: #aaa;
+    }
+
+    .thumbnail {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .thumbnail:hover {
+      transform: translateY(-3px);
+      border: 2px solid var(--accent);
+    }
+
+    .thumbnail.active {
+      border: 2px solid var(--accent);
+    }
+
+    .bid-history {
+      margin-top: 2rem;
+    }
+
+    .bid-item {
+      padding: 0.75rem 1rem;
+      transition: background-color 0.2s ease;
+    }
+
+    .bid-item:hover {
+      background-color: rgba(0,0,0,0.02);
+    }
+
+    .bid-user {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .bid-amount {
+      font-weight: 600;
+      color: var(--success);
+    }
+
+    .bid-time {
+      color: #6c757d;
+      font-size: 0.85rem;
+    }
+
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .status-active {
+      background-color: rgba(32,201,151,0.1);
+      color: var(--success);
+    }
+
+    .status-closed {
+      background-color: rgba(108,117,125,0.1);
+      color: #6c757d;
+    }
+
+    .sticky-sidebar {
+      position: sticky;
+      top: 2rem;
+      padding: 2rem;
+    }
+
+    .action-buttons {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .breadcrumb-custom {
+      padding: 0.75rem 1rem;
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      display: inline-flex;
+      margin-bottom: 1.5rem;
+    }
+
+    .breadcrumb-item a {
+      color: #6c757d;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .breadcrumb-item a:hover {
+      color: var(--accent);
+    }
+
+    .breadcrumb-item.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @media (max-width: 991px) {
+      .auction-sidebar {
+        border-left: none;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        padding-top: 2rem;
+      }
+      .sticky-sidebar {
+        position: static;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .auction-title {
+        font-size: 1.8rem;
+      }
+      .main-image-container {
+        height: 300px;
+      }
+      .main-image {
+        max-height: 300px;
+      }
+      .page-container {
+        padding: 0 1rem;
+      }
+      .auction-header {
+        padding: 1.5rem 1rem;
+      }
+      .auction-content {
+        padding: 1.5rem 1rem;
+      }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .timer.ending {
+      color: var(--secondary);
+      animation: pulse 1s infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="auction-card">
+      <div class="auction-header">
+        {% if auction.status == 'sold' %}
+          <span class="sold-badge">Sold</span>
+        {% endif %}
+        <span class="type-badge">{{ auction.auction_type|title }} Auction</span>
+        <h1 class="auction-title text-center">{{ auction.title }}</h1>
+
+        <div class="timer-container">
+          <div class="row">
+            <div class="col-md-6 text-center">
+              <div class="timer-label">Starts In</div>
+              <div class="timer" id="start-timer"></div>
+            </div>
+            <div class="col-md-6 text-center">
+              <div class="timer-label">Ends In</div>
+              <div class="timer" id="end-timer"></div>
+            </div>
+          </div>
+          {% if auction.status == 'stopped' %}
+            <div class="stopped-message">Admin has stopped your auction</div>
+          {% elif auction.status == 'sold' %}
+            <div class="sold-message">This auction has been sold</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="auction-body">
+        <div class="row g-0">
+          <div class="col-lg-8">
+            <div class="auction-content">
+              <!-- Basic Information -->
+              <div class="section-card">
+                <div class="section-header">
+                  <h3 class="section-title"><i class='bx bx-info-circle'></i> Auction Information</h3>
+                </div>
+                <div class="section-content">
+                  <div class="detail-item">
+                    <i class='bx bx-id-card'></i>
+                    <div>
+                      <div class="detail-label">Auction ID</div>
+                      <div class="detail-value">{{ auction.id }}</div>
+                    </div>
+                  </div>
+
+                  <div class="detail-item">
+                    <i class='bx bx-detail'></i>
+                    <div>
+                      <div class="detail-label">Description</div>
+                      <div class="detail-value">{{ auction.description }}</div>
+                    </div>
+                  </div>
+
+                  <div class="detail-item">
+                    <i class='bx bx-category'></i>
+                    <div>
+                      <div class="detail-label">Category</div>
+                      <div class="detail-value">{{ auction.category }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Dynamic Auction Type Details -->
+              <div class="section-card">
+                <div class="section-header">
+                  <h3 class="section-title">
+                    {% if auction.auction_type == 'regular' %}
+                      <i class='bx bx-gavel'></i> Bidding Details
+                    {% elif auction.auction_type == 'buy_it_now' %}
+                      <i class='bx bx-shopping-bag'></i> Purchase Options
+                    {% elif auction.auction_type == 'sealed_bid' %}
+                      <i class='bx bx-lock-alt'></i> Sealed Bid Details
+                    {% endif %}
+                  </h3>
+                </div>
+                <div class="section-content">
+                  {% if auction.auction_type == 'regular' %}
+                    <div class="bid-detail">
+                      <span class="bid-label">Starting Price</span>
+                      <span class="bid-value">₹{{ auction.starting_price }}</span>
+                    </div>
+                    <div class="bid-detail">
+                      <span class="bid-label">Current Bid</span>
+                      <span class="bid-value highlight">₹{{ auction.current_bid }}</span>
+                    </div>
+                    <div class="bid-detail">
+                      <span class="bid-label">Bid Increment</span>
+                      <span class="bid-value">₹{{ auction.bid_increment }}</span>
+                    </div>
+                  {% elif auction.auction_type == 'buy_it_now' %}
+                    <div class="bid-detail">
+                      <div>
+                        <span class="bid-label">Buy It Now Price</span>
+                        <div class="small text-muted">Instant purchase option</div>
+                      </div>
+                      <span class="bid-value highlight">₹{{ auction.buy_it_now_price }}</span>
+                    </div>
+                    <div class="bid-detail">
+                      <div>
+                        <span class="bid-label">Offer Status</span>
+                        <div class="small text-muted">Negotiation availability</div>
+                      </div>
+                      <span class="status-badge {% if auction.is_make_offer_enabled %}status-active{% else %}status-closed{% endif %}">
+                        {% if auction.is_make_offer_enabled %}Open{% else %}Closed{% endif %}
+                      </span>
+                    </div>
+                  {% elif auction.auction_type == 'sealed_bid' %}
+                    <div class="bid-detail">
+                      <span class="bid-label">Reserve Price</span>
+                      <span class="bid-value">₹{{ auction.reserve_price }}</span>
+                    </div>
+                    <div class="bid-detail">
+                      <span class="bid-label">Winner Announcement</span>
+                      <span class="bid-value">{{ auction.sealed_bid_details.winner_selection_date|date:"M d, Y" }}</span>
+                    </div>
+                  {% endif %}
+
+                  <!-- Winner Section -->
+                  <div class="winner-section">
+                    {% if auction.winner_available %}
+                      <h4 class="winner-title"><i class='bx bx-trophy'></i> Auction Winner</h4>
+                      <div class="winner-details">
+                        <div class="winner-detail">
+                          <span class="winner-label">Winner:</span>
+                          <span class="winner-value">{{ auction.winner.username }}</span>
+                        </div>
+                        <div class="winner-detail">
+                          <span class="winner-label">Email:</span>
+                          <span class="winner-value">{{ auction.winner.email }}</span>
+                        </div>
+                        <div class="winner-detail">
+                          <span class="winner-label">Winning Bid:</span>
+                          <span class="winner-value">
+                            {% if auction.auction_type == 'sealed_bid' %}
+                              Confidential
+                            {% else %}
+                              ₹{{ auction.winner.final_price }}
+                            {% endif %}
+                          </span>
+                        </div>
+                      </div>
+                    {% else %}
+                      <div class="no-winner">
+                        <i class='bx bx-time bx-tada' style="font-size: 1.5rem;"></i>
+                        <p class="mt-2 mb-0">No Winner Selected Yet</p>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bid History -->
+              <div class="section-card">
+                <div class="section-header">
+                  <h3 class="section-title"><i class='bx bx-history'></i> Bid History</h3>
+                </div>
+                <div class="section-content p-0">
+                  <div class="list-group list-group-flush">
+                    {% for bid in auction.bid_history %}
+                      <div class="list-group-item bid-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <span class="bid-user">{{ bid.bidder_username }}</span>
+                          <span class="bid-amount">₹{{ bid.amount }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-1">
+                          <span class="bid-time"><i class='bx bx-time'></i> {{ bid.created_at|date:"M d, Y H:i" }}</span>
+                          <span class="small text-muted">{{ bid.bidder_email }}</span>
+                        </div>
+                      </div>
+                    {% empty %}
+                      <div class="list-group-item text-center py-4">
+                        <i class='bx bx-loader bx-spin' style="font-size: 1.5rem; color: #ccc;"></i>
+                        <p class="text-muted mt-2 mb-0">No bids placed yet</p>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="auction-sidebar">
+              <div class="sticky-sidebar">
+                <!-- Image Gallery -->
+                <div class="image-gallery">
+                  <div class="main-image-container">
+                    <img src="{{ auction.image_url }}" class="main-image" alt="{{ auction.title }}" id="main-image" onclick="openLightbox('{{ auction.image_url }}')">
+                  </div>
+                  <div class="thumbnail-container">
+                    {% for image in auction.images %}
+                      <img src="{{ image }}" class="thumbnail {% if forloop.first %}active{% endif %}" alt="Auction Thumbnail {{ forloop.counter }}" onclick="changeImageTo('{{ image }}', this)">
+                    {% empty %}
+                      <div class="d-flex align-items-center justify-content-center p-4 bg-light rounded" style="width: 100%;">
+                        <i class='bx bx-image-alt text-muted' style="font-size: 2rem;"></i>
+                        <span class="ms-2 text-muted">No additional images</span>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+
+                <!-- Status Information -->
+                <div class="mb-4 mt-4">
+                  <div class="alert d-flex align-items-center p-3" id="auction-status-alert" role="alert">
+                    <i class='bx bx-info-circle me-2' style="font-size: 1.5rem;"></i>
+                    <div id="auction-status-message">Checking auction status...</div>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                  <form action="{% url 'delete_auc' auction.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-delete btn-custom w-100">
+                      <i class='bx bx-trash'></i> Delete Auction
+                    </button>
+                  </form>
+                  <a href="{% url 'edit_auction' auction.id %}" class="btn btn-edit btn-custom w-100">
+                    <i class='bx bx-edit'></i> Edit Auction
+                  </a>
+                  {% if relist_available %}
+                    <a href="{% url 'relist_auction' auction_id=auction.id %}" class="btn btn-relist btn-custom w-100">
+                      <i class='bx bx-refresh'></i> Relist Auction
+                    </a>
+                  {% endif %}
+                  <a href="{% url 'my_auc' %}" class="btn btn-back btn-custom w-100">
+                    <i class='bx bx-arrow-back'></i> Back to Listings
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox for Image Preview -->
+  <div id="image-lightbox" class="lightbox" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1050; justify-content: center; align-items: center;">
+    <span class="close-btn" onclick="closeLightbox()" style="position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; z-index: 1060;">
+      <i class='bx bx-x'></i>
+    </span>
+    <img id="lightbox-img" class="lightbox-content" style="max-width: 90%; max-height: 90%; object-fit: contain;">
+  </div>
+
+  <!-- JavaScript for Functionality -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Image gallery functionality
+    function changeImageTo(src, element) {
+      document.getElementById('main-image').src = src;
+      document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
+      element.classList.add('active');
+    }
+
+    // Lightbox functionality
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('image-lightbox').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      document.getElementById('image-lightbox').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    document.getElementById('image-lightbox').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeLightbox();
+      }
+    });
+
+    // Timer functionality
+    var startTime = new Date("{{ auction.start_date|date:'Y-m-d H:i:s' }}").getTime();
+    var endTime = new Date("{{ auction.end_date|date:'Y-m-d H:i:s' }}").getTime();
+    var stoppedTime = {% if auction.status == 'stopped' %}"{{ auction.updated_at|date:'Y-m-d H:i:s' }}"{% else %}null{% endif %};
+    var auctionStatus = "{{ auction.status }}";
+
+    function updateTimers() {
+      var now = new Date().getTime();
+      var startTimerElement = document.getElementById("start-timer");
+      var endTimerElement = document.getElementById("end-timer");
+
+      // Handle sold status
+      if (auctionStatus === "sold") {
+        startTimerElement.innerHTML = "STARTED";
+        endTimerElement.innerHTML = "SOLD";
+        return; // Stop timer updates
+      }
+
+      // Handle stopped status
+      if (auctionStatus === "stopped" && stoppedTime) {
+        var stoppedDate = new Date(stoppedTime);
+        endTimerElement.innerHTML = "Stopped at: " + stoppedDate.toLocaleString();
+
+        if (stoppedDate.getTime() < startTime) {
+          var timeToStartWhenStopped = startTime - stoppedDate.getTime();
+          var days = Math.floor(timeToStartWhenStopped / (1000 * 60 * 60 * 24));
+          var hours = Math.floor((timeToStartWhenStopped % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          var minutes = Math.floor((timeToStartWhenStopped % (1000 * 60 * 60)) / (1000 * 60));
+          var seconds = Math.floor((timeToStartWhenStopped % (1000 * 60)) / 1000);
+          startTimerElement.innerHTML = "Stopped before start: " + days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+        } else {
+          startTimerElement.innerHTML = "Started before stop";
+        }
+        return; // Stop further updates
+      }
+
+      // Update start timer
+      if (now < startTime) {
+        var timeToStart = startTime - now;
+        var days = Math.floor(timeToStart / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((timeToStart % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((timeToStart % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((timeToStart % (1000 * 60)) / 1000);
+        startTimerElement.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+      } else {
+        startTimerElement.innerHTML = "STARTED";
+      }
+
+      // Update end timer
+      if (now <= endTime) {
+        var timeLeft = endTime - now;
+        var days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        endTimerElement.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+
+        if (timeLeft < 3600000) {
+          endTimerElement.classList.add('ending');
+        } else {
+          endTimerElement.classList.remove('ending');
+        }
+      } else {
+        endTimerElement.innerHTML = "ENDED";
+        endTimerElement.classList.remove('ending');
+      }
+    }
+
+    updateTimers();
+    // Only run the interval if the auction is neither stopped nor sold
+    {% if auction.status != 'stopped' and auction.status != 'sold' %}
+      setInterval(updateTimers, 1000);
+    {% endif %}
+  </script>
+</body>
+</html>

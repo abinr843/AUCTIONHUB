@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bidding Portfolio - AuctionHub Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {% load custom_filters %}
+    <style>
+        :root {
+            --primary: #2A2A72;
+            --secondary: #6366F1;
+            --accent: #4F46E5;
+            --success: #10B981;
+            --error: #EF4444;
+            --warning: #F59E0B;
+            --surface: #FFFFFF;
+            --background: #F8FAFC;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --radius: 12px;
+            --shadow: 0 12px 32px rgba(0,0,0,0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            margin: 0;
+            padding: 2rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auction-grid {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+        }
+
+        .auction-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .auction-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+        }
+
+        .card-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            position: relative;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.1), transparent);
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card-header .auction-id {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        .card-body {
+            padding: 2rem;
+            position: relative;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: var(--transition);
+        }
+
+        .status-badge i {
+            margin-right: 0.8rem;
+        }
+
+        .won { background: rgba(16, 185, 129, 0.15); color: #10B981; }
+        .lost { background: rgba(239, 68, 68, 0.15); color: #EF4444; }
+        .pending { background: rgba(245, 158, 11, 0.15); color: #F59E0B; }
+
+        .bid-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background: var(--background);
+            border: 1px solid rgba(99, 102, 241, 0.05);
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+        }
+
+        .bid-history {
+            border-top: 1px solid rgba(99, 102, 241, 0.1);
+            padding-top: 2rem;
+            margin-top: 2rem;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            position: relative;
+        }
+
+        .history-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 24px;
+            right: 24px;
+            height: 1px;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .difference {
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            display: inline-block;
+            margin: 1.5rem 0;
+        }
+
+        .positive { background: rgba(16, 185, 129, 0.15); color: #10B981; }
+        .negative { background: rgba(239, 68, 68, 0.15); color: #EF4444; }
+        .neutral { background: rgba(99, 102, 241, 0.05); color: var(--text-secondary); }
+
+        .empty-state {
+            text-align: center;
+            padding: 6rem 2rem;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        .back-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 2rem;
+            background: var(--accent);
+            color: white;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            background: var(--primary);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .auction-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-button {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 0.8rem 1.5rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auction-card {
+            animation: fadeIn 0.6s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Auction Bidding Portfolio</h1>
+            <p>Detailed overview of your auction participation and bidding history</p>
+        </div>
+
+        {% if auctions %}
+        <div class="auction-grid">
+            {% for auction in auctions %}
+            <div class="auction-card">
+                <div class="card-header">
+                    <h3>{{ auction.auction_title }}</h3>
+                    <div class="auction-id">Auction ID: #{{ auction.auction_id }}</div>
+                    <div class="status-badge {{ auction.status|lower }}">
+                        <i class="fas fa-{% if auction.status == 'Won' %}trophy{% elif auction.status == 'Lost' %}times{% else %}hourglass-half{% endif %}"></i>
+                        <span>{{ auction.status }}</span>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="bid-metrics">
+                        <div class="metric">
+                            <div class="metric-value">{{ auction.user_max_bid|currency }}</div>
+                            <div class="metric-label">Your Maximum Bid</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">{{ auction.current_bid|currency }}</div>
+                            <div class="metric-label">Final Price</div>
+                        </div>
+                    </div>
+
+                    <div class="difference {{ auction.difference|bid_class }}">
+                        {% if auction.difference > 0 %}
+                        +{{ auction.difference|currency }}
+                        {% else %}
+                        {{ auction.difference|currency }}
+                        {% endif %}
+                        <span class="metric-label">Bid Difference</span>
+                    </div>
+
+                    <div class="bid-history">
+                        <h4>Bidding Timeline</h4>
+                        {% for bid in auction.bid_history %}
+                        <div class="history-item">
+                            <div>
+                                <span class="amount">{{ bid.amount|currency }}</span>
+                                <small class="time">{{ bid.time_ago }}</small>
+                            </div>
+                            {% if bid.is_winner %}
+                            <span class="status-badge won" style="margin: 0; padding: 0.4rem 0.8rem;">
+                                <i class="fas fa-crown"></i>
+                                Winning
+                            </span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-chart-line empty-icon"></i>
+            <h3>No Bidding Activity Recorded</h3>
+            <p>Participate in active auctions to populate your bidding portfolio.</p>
+        </div>
+        {% endif %}
+
+        <a href="javascript:history.back()" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Return to Dashboard
+        </a>
+    </div>
+
+    <script>
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add card hover effects
+        document.querySelectorAll('.auction-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html>

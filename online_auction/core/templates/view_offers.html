@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Offers Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    .offer-card {
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      border-left: 4px solid transparent;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .offer-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .status-pending { background-color: #fffbeb; color: #d97706; }
+    .status-accepted { background-color: #ecfdf5; color: #059669; }
+    .status-rejected { background-color: #fef2f2; color: #dc2626; }
+    .status-expired { background: linear-gradient(135deg, #ff7e5f, #feb47b); color: white; }
+    .price-badge {
+      background: linear-gradient(135deg, #3B82F6 0%, #2563eb 100%);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+    }
+    .toggle-btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .toggle-active {
+      background-color: #1a365d;
+      color: white;
+    }
+    .toggle-inactive {
+      background-color: #f3f4f6;
+      color: #1f2937;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-8 max-w-7xl">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-8 space-y-4 sm:space-y-0">
+      <h1 class="text-3xl font-bold text-gray-900">Offers Dashboard</h1>
+      <a href="{% url 'my_auc' %}" class="inline-flex items-center bg-white hover:bg-gray-50 text-gray-700 font-semibold py-2 px-4 rounded-lg border border-gray-200 transition duration-200 ease-in-out">
+        <i class="fas fa-arrow-left mr-2 text-blue-600"></i>Back to Auctions
+      </a>
+    </div>
+
+    <!-- Toggle Buttons -->
+    <div class="flex space-x-4 mb-6">
+      <button id="btnReceived" class="toggle-btn toggle-active">Received Offers</button>
+      <button id="btnSent" class="toggle-btn toggle-inactive">My Sent Offers</button>
+      <button id="btnAuction" class="toggle-btn toggle-inactive">Auction Offers</button>
+    </div>
+
+    <!-- Received Offers Section -->
+    <div id="sectionReceived">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Offers Received</h2>
+      {% if offers %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for offer in offers %}
+            <div class="offer-card bg-white rounded-xl overflow-hidden">
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                  <div>
+                    <h2 class="text-lg font-semibold text-gray-900 truncate">{{ offer.auction_title }}</h2>
+                    <p class="text-xs text-gray-500 mt-1">Auction ID: {{ offer.auction_id }}</p>
+                  </div>
+                  <span class="status-badge
+                    {% if offer.status == 'pending' %}status-pending
+                    {% elif offer.status == 'accepted' %}status-accepted
+                    {% elif offer.status == 'rejected' %}status-rejected
+                    {% elif offer.status == 'expired' %}status-expired
+                    {% endif %}">
+                    {{ offer.status|capfirst }}
+                  </span>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl mb-6">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <p class="text-xs font-medium text-gray-600 mb-1">Offer Price</p>
+                      <p class="text-xl font-bold text-gray-900">₹{{ offer.offer_price }}</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-xs font-medium text-gray-600 mb-1">Buy It Now</p>
+                      <p class="text-xl font-bold text-green-700">₹{{ offer.buy_it_now_price }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-6">
+                  <p class="text-sm text-gray-600 italic border-l-4 border-blue-200 pl-3">
+                    <i class="fas fa-quote-left text-gray-400 mr-2"></i>
+                    {{ offer.offer_message|default:"No message provided" }}
+                  </p>
+                </div>
+                <div class="border-t pt-4">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <p class="text-sm font-medium text-gray-900 flex items-center">
+                        <i class="fas fa-user-circle text-blue-600 mr-2"></i>
+                        {{ offer.buyer_username }}
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">
+                        <i class="fas fa-clock text-gray-400 mr-2"></i>
+                        {{ offer.created_at|date:"M d, Y H:i" }}
+                      </p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-xs font-medium text-gray-600">Contact</p>
+                      <p class="text-xs text-blue-600 hover:underline">{{ offer.buyer_email }}</p>
+                    </div>
+                  </div>
+                </div>
+                {% if offer.status == 'pending' %}
+                  <div class="mt-6 pt-4 border-t border-dashed border-gray-200">
+                    <div class="flex justify-end space-x-3">
+                      {% if offer.accepted_count == 0 %}
+                        <form action="{% url 'accept_offer' offer.offer_id %}" method="post">
+                          {% csrf_token %}
+                          <input type="hidden" name="auction_id" value="{{ offer.auction_id }}">
+                          <input type="hidden" name="buyer_email" value="{{ offer.buyer_email }}">
+                          <button type="submit" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition duration-200 ease-in-out transform hover:scale-105">
+                            <i class="fas fa-check-circle mr-2"></i>Accept Offer
+                          </button>
+                        </form>
+                      {% else %}
+                        <p class="text-sm text-gray-600">An offer has already been accepted.</p>
+                      {% endif %}
+                      <form action="{% url 'reject_offer' offer.offer_id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="auction_id" value="{{ offer.auction_id }}">
+                        <input type="hidden" name="buyer_id" value="{{ offer.buyer_id }}">
+                        <input type="hidden" name="buyer_email" value="{{ offer.buyer_email }}">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md transition duration-200 ease-in-out transform hover:scale-105">
+                          <i class="fas fa-times-circle mr-2"></i>Reject
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="bg-white rounded-xl shadow-sm p-8 text-center border-2 border-dashed border-gray-200">
+          <i class="fas fa-comments-dollar text-6xl text-gray-300 mb-6"></i>
+          <h3 class="text-xl font-semibold text-gray-700 mb-2">No offers received yet</h3>
+          <p class="text-gray-500">Your active auctions will appear here once buyers start making offers. Check back soon!</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- My Sent Offers Section -->
+    <div id="sectionSent" class="hidden">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">My Sent Offers</h2>
+      {% if sent_offers %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for offer in sent_offers %}
+            <div class="offer-card bg-white rounded-xl overflow-hidden">
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                  <div>
+                    <h2 class="text-lg font-semibold text-gray-900 truncate">{{ offer.auction_title }}</h2>
+                    <p class="text-xs text-gray-500 mt-1">Auction ID: {{ offer.auction_id }}</p>
+                  </div>
+                  <span class="status-badge
+                    {% if offer.status == 'pending' %}status-pending
+                    {% elif offer.status == 'accepted' %}status-accepted
+                    {% elif offer.status == 'rejected' %}status-rejected
+                    {% elif offer.status == 'expired' %}status-expired
+                    {% endif %}">
+                    {{ offer.status|capfirst }}
+                  </span>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl mb-6">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <p class="text-xs font-medium text-gray-600 mb-1">Offer Price</p>
+                      <p class="text-xl font-bold text-gray-900">₹{{ offer.offer_price }}</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-xs font-medium text-gray-600 mb-1">Buy It Now</p>
+                      <p class="text-xl font-bold text-green-700">₹{{ offer.buy_it_now_price }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-6">
+                  <p class="text-sm text-gray-600 italic border-l-4 border-blue-200 pl-3">
+                    <i class="fas fa-quote-left text-gray-400 mr-2"></i>
+                    {{ offer.offer_message|default:"No message provided" }}
+                  </p>
+                </div>
+                <div class="border-t pt-4">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <p class="text-sm font-medium text-gray-900 flex items-center">
+                        <i class="fas fa-user-circle text-blue-600 mr-2"></i>
+                        {{ offer.seller_username }}
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">
+                        <i class="fas fa-clock text-gray-400 mr-2"></i>
+                        {{ offer.created_at|date:"M d, Y H:i" }}
+                      </p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-xs font-medium text-gray-600">Contact Seller</p>
+                      <p class="text-xs text-blue-600 hover:underline">{{ offer.seller_email }}</p>
+                    </div>
+                  </div>
+                </div>
+                {% if offer.status == 'accepted' %}
+                  <div class="mt-6 pt-4 border-t border-dashed border-gray-200">
+                    <a href="{% url 'checkout_offer' offer.offer_id %}"
+                       class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition duration-200 ease-in-out transform hover:scale-105">
+                      <i class="fas fa-shopping-cart mr-2"></i>
+                      Proceed to Check Out
+                    </a>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="bg-white rounded-xl shadow-sm p-8 text-center border-2 border-dashed border-gray-200">
+          <i class="fas fa-paper-plane text-6xl text-gray-300 mb-6"></i>
+          <h3 class="text-xl font-semibold text-gray-700 mb-2">No sent offers yet</h3>
+          <p class="text-gray-500">You haven't submitted any offers yet.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Auction Offers Section -->
+    <div id="sectionAuction" class="hidden">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Auction Offers</h2>
+      {% if auction_offers %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for offer in auction_offers %}
+            <div class="offer-card bg-white rounded-xl overflow-hidden">
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                  <div>
+                    <h2 class="text-lg font-semibold text-gray-900 truncate">{{ offer.auction_title }}</h2>
+                    <p class="text-xs text-gray-500 mt-1">Auction ID: {{ offer.auction_id }}</p>
+                    <!-- Second Winner Indicator -->
+                    {% if offer.is_second_winner == 1 %}
+                      <p class="text-sm text-blue-600 font-medium mt-1">
+                        <i class="fas fa-award mr-1"></i>Second Winner Offer
+                      </p>
+                    {% endif %}
+                  </div>
+                  <span class="status-badge
+                    {% if offer.status == 'pending' %}status-pending
+                    {% elif offer.status == 'accepted' %}status-accepted
+                    {% elif offer.status == 'rejected' %}status-rejected
+                    {% elif offer.status == 'expired' %}status-expired
+                    {% endif %}">
+                    {{ offer.status|capfirst }}
+                  </span>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl mb-6">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <p class="text-xs font-medium text-gray-600 mb-1">Offer Price</p>
+                      <p class="text-xl font-bold text-gray-900">₹{{ offer.offer_price }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-6">
+                  <p class="text-sm text-gray-600 italic border-l-4 border-blue-200 pl-3">
+                    <i class="fas fa-quote-left text-gray-400 mr-2"></i>
+                    {{ offer.offer_message|default:"No message provided" }}
+                  </p>
+                </div>
+                <div class="border-t pt-4">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <p class="text-sm font-medium text-gray-900 flex items-center">
+                        <i class="fas fa-user-circle text-blue-600 mr-2"></i>
+                        {{ offer.seller_username }}
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">
+                        <i class="fas fa-clock text-gray-400 mr-2"></i>
+                        {{ offer.created_at|date:"M d, Y H:i" }}
+                      </p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-xs font-medium text-gray-600">Contact Seller</p>
+                      <p class="text-xs text-blue-600 hover:underline">{{ offer.seller_email }}</p>
+                    </div>
+                  </div>
+                </div>
+                {% if offer.status == 'pending' %}
+                  <div class="mt-6 pt-4 border-t border-dashed border-gray-200">
+                    <div class="flex justify-end space-x-3">
+                      {% if offer.accepted_count == 0 %}
+                        <form action="{% url 'accept_second_winner_offer' offer.offer_id %}" method="post">
+                          {% csrf_token %}
+                          <input type="hidden" name="auction_id" value="{{ offer.auction_id }}">
+                          <input type="hidden" name="buyer_id" value="{{ request.session.user_id }}">
+                          <input type="hidden" name="buyer_email" value="{{ offer.buyer_email|default:'' }}">
+                          <button type="submit" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition duration-200 ease-in-out transform hover:scale-105">
+                            <i class="fas fa-check-circle mr-2"></i>Accept Offer
+                          </button>
+                        </form>
+                      {% else %}
+                        <p class="text-sm text-gray-600">An offer has already been accepted.</p>
+                      {% endif %}
+                      <form action="{% url 'reject_second_winner_offer' offer.offer_id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="auction_id" value="{{ offer.auction_id }}">
+                        <input type="hidden" name="buyer_id" value="{{ request.session.user_id }}">
+                        <input type="hidden" name="buyer_email" value="{{ offer.buyer_email|default:'' }}">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md transition duration-200 ease-in-out transform hover:scale-105">
+                          <i class="fas fa-times-circle mr-2"></i>Reject
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                {% elif offer.status == 'accepted' %}
+                  <div class="mt-6 pt-4 border-t border-dashed border-gray-200">
+                    <a href="{% url 'offer_checkout' offer.offer_id %}"
+                       class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition duration-200 ease-in-out transform hover:scale-105">
+                      <i class="fas fa-shopping-cart mr-2"></i>
+                      Proceed to Check Out
+                    </a>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="bg-white rounded-xl shadow-sm p-8 text-center border-2 border-dashed border-gray-200">
+          <i class="fas fa-comments-dollar text-6xl text-gray-300 mb-6"></i>
+          <h3 class="text-xl font-semibold text-gray-700 mb-2">No auction offers yet</h3>
+          <p class="text-gray-500">Offers for your regular and sealed bid auctions will appear here once buyers start making offers. Check back soon!</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    // Toggle between sections
+    const btnReceived = document.getElementById("btnReceived");
+    const btnSent = document.getElementById("btnSent");
+    const btnAuction = document.getElementById("btnAuction");
+    const sectionReceived = document.getElementById("sectionReceived");
+    const sectionSent = document.getElementById("sectionSent");
+    const sectionAuction = document.getElementById("sectionAuction");
+
+    btnReceived.addEventListener("click", () => {
+      btnReceived.classList.add("toggle-active");
+      btnReceived.classList.remove("toggle-inactive");
+      btnSent.classList.add("toggle-inactive");
+      btnSent.classList.remove("toggle-active");
+      btnAuction.classList.add("toggle-inactive");
+      btnAuction.classList.remove("toggle-active");
+      sectionReceived.classList.remove("hidden");
+      sectionSent.classList.add("hidden");
+      sectionAuction.classList.add("hidden");
+    });
+
+    btnSent.addEventListener("click", () => {
+      btnSent.classList.add("toggle-active");
+      btnSent.classList.remove("toggle-inactive");
+      btnReceived.classList.add("toggle-inactive");
+      btnReceived.classList.remove("toggle-active");
+      btnAuction.classList.add("toggle-inactive");
+      btnAuction.classList.remove("toggle-active");
+      sectionSent.classList.remove("hidden");
+      sectionReceived.classList.add("hidden");
+      sectionAuction.classList.add("hidden");
+    });
+
+    btnAuction.addEventListener("click", () => {
+      btnAuction.classList.add("toggle-active");
+      btnAuction.classList.remove("toggle-inactive");
+      btnReceived.classList.add("toggle-inactive");
+      btnReceived.classList.remove("toggle-active");
+      btnSent.classList.add("toggle-inactive");
+      btnSent.classList.remove("toggle-active");
+      sectionAuction.classList.remove("hidden");
+      sectionReceived.classList.add("hidden");
+      sectionSent.classList.add("hidden");
+    });
+  </script>
+</body>
+</html>

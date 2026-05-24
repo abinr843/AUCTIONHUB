@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bidding Restricted</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8d7da;
+            padding: 50px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+        h2 {
+            color: #721c24;
+        }
+        p {
+            color: #721c24;
+            font-size: 18px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>⚠️ Bidding Restricted</h2>
+        <p>Your bidding privileges have been restricted due to overdue payments.</p>
+        <p>Please clear your dues to continue participating in auctions.</p>
+        <a href="{% url 'udash' %}">Go to Dashboard</a>
+    </div>
+</body>
+</html>
